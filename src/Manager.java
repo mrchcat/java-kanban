@@ -3,7 +3,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Manager {
-    private HashMap<Integer, DeepTask> deepTasks;
+    private final HashMap<Integer, DeepTask> deepTasks;
     private static int count;
 
     Manager(HashMap<Integer, DeepTask> deepTasks, int count) {
@@ -25,7 +25,7 @@ public class Manager {
         String description = task.description;
         switch (task.type) {
             case Type.EPIC -> {
-                deepTask = new DeepTask(Type.EPIC, name, description, Status.NEW, new ArrayList<Integer>(), null);
+                deepTask = new DeepTask(Type.EPIC, name, description, Status.NEW, new ArrayList<>(), null);
                 deepTasks.put(id, deepTask);
                 newTask = new Task(id, Type.EPIC, name, description, Status.NEW, null);
             }
