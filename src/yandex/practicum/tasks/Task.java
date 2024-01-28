@@ -1,24 +1,26 @@
-import java.util.ArrayList;
+package yandex.practicum.tasks;
 
-public class DeepTask {
-    private final Type type;
+public abstract class Task {
+    private Integer id;
     private String name;
     private String description;
     private Status status;
-    private final ArrayList<Integer> subTasks;
-    private final Integer epicId;
 
-    public DeepTask(Type type, String name, String description, Status status, ArrayList<Integer> subTasks, Integer epicId) {
-        this.type = type;
+    public Task(String name, String description) {
+        this.id = null;
         this.name = name;
         this.description = description;
-        this.status = status;
-        this.subTasks = subTasks;
-        this.epicId = epicId;
+        this.status = Status.NEW;
     }
 
-    public Type getType() {
-        return type;
+    public abstract Type getType();
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -43,13 +45,5 @@ public class DeepTask {
 
     public void setStatus(Status status) {
         this.status = status;
-    }
-
-    public ArrayList<Integer> getSubTasks() {
-        return subTasks;
-    }
-
-    public Integer getEpicId() {
-        return epicId;
     }
 }
