@@ -1,6 +1,6 @@
-package yandex.practicum.tools;
+package ru.yandex.practicum.tools;
 
-import yandex.practicum.tasks.*;
+import ru.yandex.practicum.tasks.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;

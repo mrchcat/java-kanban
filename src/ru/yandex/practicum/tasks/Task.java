@@ -1,4 +1,4 @@
-package yandex.practicum.tasks;
+package ru.yandex.practicum.tasks;
 
 public abstract class Task {
     private Integer id;

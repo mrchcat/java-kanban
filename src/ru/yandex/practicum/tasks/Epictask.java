@@ -1,4 +1,4 @@
-package yandex.practicum.tasks;
+package ru.yandex.practicum.tasks;
 
 public class Epictask extends Task {
     public Epictask(String name, String description) {

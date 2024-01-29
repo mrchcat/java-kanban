@@ -1,5 +1,7 @@
-package yandex.practicum;
+package ru.yandex.practicum;
 
+import ru.yandex.practicum.tasks.*;
+import ru.yandex.practicum.tools.Manager;
 import yandex.practicum.tasks.*;
 import yandex.practicum.tools.*;
 import java.util.List;

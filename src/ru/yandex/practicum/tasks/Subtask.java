@@ -1,4 +1,4 @@
-package yandex.practicum.tasks;
+package ru.yandex.practicum.tasks;
 
 public class Subtask extends Task {
     private final Integer epicId;
