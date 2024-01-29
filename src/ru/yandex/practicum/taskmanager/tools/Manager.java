@@ -8,10 +8,9 @@ import java.util.List;
 
 
 public class Manager {
-    private final HashMap<Integer, Task> tasks; //id таска - сам таск
-    private final HashMap<Integer, ArrayList<Integer>> subordinates; //id эпика - id подчиненной задачи
-
-    private static int count; //номера тасков
+    private final HashMap<Integer, Task> tasks; //коллекция <id задачи, задача>
+    private final HashMap<Integer, ArrayList<Integer>> subordinates; //коллекция <id эпика, массив id подзадач>
+    private static int count; //общее количество задач
 
     public Manager() {
         this.tasks = new HashMap<>();
@@ -98,7 +97,6 @@ public class Manager {
             copy.setStatus(original.getStatus());
             return copy;
         } else return null;
-
     }
 
     public Task delete(Integer id) {
@@ -156,9 +154,8 @@ public class Manager {
         return copyList;
     }
 
-//Обновление по образцу, содержащемуся в task. Обновлению подлежат только текстовые поля и статус.
-// Остальные поля игнорируются
-
+// Обновление по образцу, содержащемуся в task.
+// Обновлению подлежат только текстовые поля и статус, остальные поля игнорируются.
     public Selftask update(Selftask task) {
         if ((task == null) || (task.getId() == null)) return null;
         Integer id = task.getId();
@@ -179,7 +176,6 @@ public class Manager {
 
         oldTask.setName(task.getName());
         oldTask.setDescription(task.getDescription());
-
         return (Epictask) get(id);
     }
 
@@ -188,7 +184,6 @@ public class Manager {
         Integer id = task.getId();
         Task oldTask = tasks.get(id);
         if (oldTask == null) return null;
-
 
         oldTask.setName(task.getName());
         oldTask.setDescription(task.getDescription());
@@ -199,19 +194,19 @@ public class Manager {
         Status status = task.getStatus();
         switch (status) {
             case Status.NEW -> {
-                if (isAllSubNew(epic)) epic.setStatus(Status.NEW);
+                if (isAllSubsNew(epic)) epic.setStatus(Status.NEW);
                 else epic.setStatus(Status.IN_PROGRESS);
             }
             case Status.IN_PROGRESS -> epic.setStatus(Status.IN_PROGRESS);
             case Status.DONE -> {
-                if (isAllSubDone(epic)) epic.setStatus(Status.DONE);
+                if (isAllSubsDone(epic)) epic.setStatus(Status.DONE);
                 else epic.setStatus(Status.IN_PROGRESS);
             }
         }
         return (Subtask) get(id);
     }
 
-    private boolean isAllSubNew(Epictask epic) {
+    private boolean isAllSubsNew(Epictask epic) {
         var subList = subordinates.get(epic.getId());
         for (Integer subId : subList) {
             if (tasks.get(subId).getStatus() != Status.NEW) return false;
@@ -219,13 +214,12 @@ public class Manager {
         return true;
     }
 
-    private boolean isAllSubDone(Epictask epic) {
+    private boolean isAllSubsDone(Epictask epic) {
         var subList = subordinates.get(epic.getId());
         for (Integer subId : subList) {
             if (tasks.get(subId).getStatus() != Status.DONE) return false;
         }
         return true;
     }
-
 }
 

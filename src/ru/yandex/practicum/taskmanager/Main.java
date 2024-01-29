@@ -2,9 +2,6 @@ package ru.yandex.practicum.taskmanager;
 
 import ru.yandex.practicum.taskmanager.tasks.*;
 import ru.yandex.practicum.taskmanager.tools.Manager;
-import ru.yandex.practicum.tasks.*;
-import yandex.practicum.tasks.*;
-import yandex.practicum.tools.*;
 import java.util.List;
 
 public class Main {
@@ -65,11 +62,11 @@ public class Main {
         Subtask task6 = new Subtask("ss", "ssdd", 2);
         task6 = manager.add(task6);
         System.out.println(manager.get(2));
-//        task6.setStatus(Status.DONE);
-//        manager.update(task6);
-//        System.out.println(manager.get(6));
-//        list = manager.getAll();
-//        System.out.println(list);
+        task6.setStatus(Status.DONE);
+        manager.update(task6);
+        System.out.println(manager.get(6));
+        list = manager.getAll();
+        System.out.println(list);
         manager.clear();
         list = manager.getAll();
         System.out.println(list);

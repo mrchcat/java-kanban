@@ -16,5 +16,4 @@ public class Epictask extends Task {
         return "<Epic: id=" + super.getId() + "; name=" + super.getName() + "; desc=" +
                 super.getDescription() + "; status=" + super.getStatus() + ">";
     }
-
 }
