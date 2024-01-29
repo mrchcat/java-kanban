@@ -21,6 +21,7 @@ public class Manager {
 
     public void clear() {
         tasks.clear();
+        subordinates.clear();
     }
 
     private Integer generateId() {
