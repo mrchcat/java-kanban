@@ -1,6 +1,6 @@
-package ru.yandex.practicum.tools;
+package ru.yandex.practicum.taskmanager.tools;
 
-import ru.yandex.practicum.tasks.*;
+import ru.yandex.practicum.taskmanager.tasks.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,7 +72,6 @@ public class Manager {
         }
         return toReturn;
     }
-
 
     private Selftask copy(Selftask original) {
         if (original != null) {

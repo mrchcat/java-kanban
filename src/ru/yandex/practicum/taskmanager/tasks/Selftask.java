@@ -1,4 +1,4 @@
-package ru.yandex.practicum.tasks;
+package ru.yandex.practicum.taskmanager.tasks;
 
 public class Selftask extends Task {
 

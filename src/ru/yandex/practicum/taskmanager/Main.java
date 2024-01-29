@@ -1,7 +1,8 @@
-package ru.yandex.practicum;
+package ru.yandex.practicum.taskmanager;
 
+import ru.yandex.practicum.taskmanager.tasks.*;
+import ru.yandex.practicum.taskmanager.tools.Manager;
 import ru.yandex.practicum.tasks.*;
-import ru.yandex.practicum.tools.Manager;
 import yandex.practicum.tasks.*;
 import yandex.practicum.tools.*;
 import java.util.List;
