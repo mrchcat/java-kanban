@@ -2,12 +2,15 @@ package ru.yandex.practicum.taskmanager;
 
 import ru.yandex.practicum.taskmanager.enums.*;
 import ru.yandex.practicum.taskmanager.tasks.*;
-import ru.yandex.practicum.taskmanager.utils.Manager;
+import ru.yandex.practicum.taskmanager.utils.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        Manager manager = new Manager();
+        Manager manager=init();
+
         Selftask task1 = manager.add(new Selftask("сходить в магазин", "хлеб, колбаса, сыр"));
         Epictask task2 = manager.add(new Epictask("сходить на рыбалку", "удочки, черви, водка"));
         Subtask task3 = manager.add(new Subtask("купить удочки", "спиннинг", task2.getId()));
@@ -19,9 +22,9 @@ public class Main {
         manager.delete(task1.getId());
         list = manager.getAll();
         System.out.println(list);
-        List<Subtask> sublist =manager.getAllSubs(task2.getId());
+        List<Subtask> sublist = manager.getAllSubs(task2.getId());
         System.out.println(sublist);
-        System.out.println(manager.get(1));
+        System.out.println(manager.get(2));
         task1.setStatus(Status.DONE);
         task1.setName("dddd");
         System.out.println(manager.get(1));
@@ -30,7 +33,7 @@ public class Main {
         task1.setId(-1);
         manager.update(task1);
         System.out.println(manager.get(1));
-        Selftask taskN=null;
+        Selftask taskN = null;
         manager.update(taskN);
         System.out.println(manager.add(taskN));
         task2.setName("ssss");
@@ -62,6 +65,7 @@ public class Main {
         System.out.println(list);
         Subtask task6 = new Subtask("ss", "ssdd", 2);
         task6 = manager.add(task6);
+        System.out.println(manager.get(6));
         System.out.println(manager.get(2));
         task6.setStatus(Status.DONE);
         manager.update(task6);
@@ -71,5 +75,12 @@ public class Main {
         manager.clear();
         list = manager.getAll();
         System.out.println(list);
+    }
+
+    private static Manager init(){
+        var tasks = new CacheBase<Integer, Task>();
+        var subordinates = new CacheBase<Integer, ArrayList<Integer>>();
+        var generator = new SerialGenerator(1);
+        return new Manager(tasks, subordinates, generator);
     }
 }

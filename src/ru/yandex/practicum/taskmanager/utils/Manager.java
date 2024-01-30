@@ -4,19 +4,20 @@ import ru.yandex.practicum.taskmanager.enums.*;
 import ru.yandex.practicum.taskmanager.tasks.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 
 public class Manager {
-    private final HashMap<Integer, Task> tasks; //коллекция <id задачи, задача>
-    private final HashMap<Integer, ArrayList<Integer>> subordinates; //коллекция <id эпика, массив id подзадач>
-    private static int count; //общее количество задач
+    private final Repository<Integer, Task> tasks; //хранилище <id задачи, задача>
+    private final Repository<Integer, ArrayList<Integer>> subordinates; //хранилище <id эпика, массив id подзадач>
+    private final Generator generator; // генератор id
 
-    public Manager() {
-        this.tasks = new HashMap<>();
-        this.subordinates = new HashMap<>();
-        this.count = 1;
+    public Manager(Repository<Integer, Task> tasks,
+                   Repository<Integer, ArrayList<Integer>> subordinates,
+                   Generator generator) {
+        this.tasks = tasks;
+        this.subordinates = subordinates;
+        this.generator = generator;
     }
 
     public void clear() {
@@ -24,14 +25,10 @@ public class Manager {
         subordinates.clear();
     }
 
-    private Integer generateId() {
-        return count++;
-    }
-
     public Selftask add(Selftask task) {
         if (task == null) return null;
         Selftask copy = new Selftask(task.getName(), task.getDescription());
-        Integer id = generateId();
+        Integer id = generator.generateId();
         copy.setId(id);
         tasks.put(id, copy);
         return (Selftask) get(id);
@@ -40,7 +37,7 @@ public class Manager {
     public Epictask add(Epictask task) {
         if (task == null) return null;
         Epictask copy = new Epictask(task.getName(), task.getDescription());
-        Integer id = generateId();
+        Integer id = generator.generateId();
         copy.setId(id);
         tasks.put(id, copy);
         subordinates.put(id, new ArrayList<>());
@@ -52,7 +49,7 @@ public class Manager {
         Task someTask = tasks.get(epicId);
         if ((someTask != null) && (someTask.getType() == Type.EPIC)) {
             Subtask copy = new Subtask(task.getName(), task.getDescription(), epicId);
-            Integer id = generateId();
+            Integer id = generator.generateId();
             copy.setId(id);
             tasks.put(id, copy);
             subordinates.get(epicId).add(id);
@@ -104,7 +101,7 @@ public class Manager {
         Task deleted = null;
         Task task = tasks.get(id);
         if (task != null) {
-            deleted = tasks.remove(id);
+            deleted = tasks.delete(id);
             switch (task.getType()) {
                 case Type.EPIC -> {
                     for (Integer subId : subordinates.get(id)) {
@@ -155,7 +152,7 @@ public class Manager {
         return copyList;
     }
 
-// Обновление по образцу, содержащемуся в task.
+    // Обновление по образцу, содержащемуся в task.
 // Обновлению подлежат только текстовые поля и статус, остальные поля игнорируются.
     public Selftask update(Selftask task) {
         if ((task == null) || (task.getId() == null)) return null;
