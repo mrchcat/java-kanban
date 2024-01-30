@@ -153,7 +153,7 @@ public class Manager {
     }
 
     // Обновление по образцу, содержащемуся в task.
-// Обновлению подлежат только текстовые поля и статус, остальные поля игнорируются.
+    // Обновлению подлежат только текстовые поля и статус, остальные поля игнорируются.
     public Selftask update(Selftask task) {
         if ((task == null) || (task.getId() == null)) return null;
         Integer id = task.getId();

@@ -11,6 +11,6 @@ public class SerialGenerator implements Generator{
     @Override
     public Integer generateId() {
         count++;
-        return Integer.valueOf(count);
+        return count;
     }
 }
