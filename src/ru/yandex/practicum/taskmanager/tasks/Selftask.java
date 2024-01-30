@@ -1,5 +1,7 @@
 package ru.yandex.practicum.taskmanager.tasks;
 
+import ru.yandex.practicum.taskmanager.enums.*;
+
 public class Selftask extends Task {
 
     public Selftask(String name, String description) {

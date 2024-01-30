@@ -1,5 +1,6 @@
-package ru.yandex.practicum.taskmanager.tools;
+package ru.yandex.practicum.taskmanager.utils;
 
+import ru.yandex.practicum.taskmanager.enums.*;
 import ru.yandex.practicum.taskmanager.tasks.*;
 
 import java.util.ArrayList;

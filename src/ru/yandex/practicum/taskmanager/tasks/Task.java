@@ -1,5 +1,6 @@
 package ru.yandex.practicum.taskmanager.tasks;
 
+import ru.yandex.practicum.taskmanager.enums.*;
 public abstract class Task {
     private Integer id;
     private String name;

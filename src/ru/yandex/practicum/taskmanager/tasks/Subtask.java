@@ -1,5 +1,7 @@
 package ru.yandex.practicum.taskmanager.tasks;
 
+import ru.yandex.practicum.taskmanager.enums.*;
+
 public class Subtask extends Task {
     private final Integer epicId;
 
@@ -20,7 +22,7 @@ public class Subtask extends Task {
     @Override
     public String toString() {
         return "<Subtask: id=" + super.getId() + "; name=" + super.getName()
-                +"; desc=" +super.getDescription() + "; status=" + super.getStatus()
+                + "; desc=" + super.getDescription() + "; status=" + super.getStatus()
                 + "; epicId=" + epicId + ">";
     }
 
