@@ -28,7 +28,7 @@ public class Manager {
     public Selftask add(Selftask task) {
         if (task == null) return null;
         Selftask copy = new Selftask(task.getName(), task.getDescription());
-        Integer id = generator.generateId();
+        Integer id = generator.getId();
         copy.setId(id);
         tasks.put(id, copy);
         return (Selftask) get(id);
@@ -37,7 +37,7 @@ public class Manager {
     public Epictask add(Epictask task) {
         if (task == null) return null;
         Epictask copy = new Epictask(task.getName(), task.getDescription());
-        Integer id = generator.generateId();
+        Integer id = generator.getId();
         copy.setId(id);
         tasks.put(id, copy);
         subordinates.put(id, new ArrayList<>());
@@ -49,7 +49,7 @@ public class Manager {
         Task someTask = tasks.get(epicId);
         if ((someTask != null) && (someTask.getType() == Type.EPIC)) {
             Subtask copy = new Subtask(task.getName(), task.getDescription(), epicId);
-            Integer id = generator.generateId();
+            Integer id = generator.getId();
             copy.setId(id);
             tasks.put(id, copy);
             subordinates.get(epicId).add(id);

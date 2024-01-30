@@ -9,7 +9,7 @@ public class SerialGenerator implements Generator{
     }
 
     @Override
-    public Integer generateId() {
+    public Integer getId() {
         count++;
         return count;
     }
