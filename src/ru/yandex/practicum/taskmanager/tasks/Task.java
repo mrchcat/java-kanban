@@ -1,6 +1,8 @@
 package ru.yandex.practicum.taskmanager.tasks;
 
-import ru.yandex.practicum.taskmanager.enums.*;
+import ru.yandex.practicum.taskmanager.enums.Status;
+import ru.yandex.practicum.taskmanager.enums.Type;
+
 public abstract class Task {
     private Integer id;
     private String name;
@@ -46,5 +48,17 @@ public abstract class Task {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Task task)) return false;
+        return id.equals(task.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 }
