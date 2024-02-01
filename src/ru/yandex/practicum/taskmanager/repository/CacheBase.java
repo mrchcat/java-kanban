@@ -1,4 +1,4 @@
-package ru.yandex.practicum.taskmanager.utils;
+package ru.yandex.practicum.taskmanager.repository;
 
 import java.util.Collection;
 import java.util.HashMap;

@@ -1,12 +1,14 @@
-package ru.yandex.practicum.taskmanager.utils;
+package ru.yandex.practicum.taskmanager.service;
 
 import ru.yandex.practicum.taskmanager.enums.*;
+import ru.yandex.practicum.taskmanager.repository.Repository;
 import ru.yandex.practicum.taskmanager.tasks.*;
+import ru.yandex.practicum.taskmanager.utils.Generator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
+//TODO Что возвращать при поступлении ошибочного Id ? Exception, Optional, NULL ?
 public class Manager {
     private final Repository<Integer, Task> tasks; //хранилище <id задачи, задача>
     private final Repository<Integer, ArrayList<Integer>> subordinates; //хранилище <id эпика, массив id подзадач>

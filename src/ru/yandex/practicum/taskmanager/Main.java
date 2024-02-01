@@ -1,15 +1,25 @@
 package ru.yandex.practicum.taskmanager;
 
 import ru.yandex.practicum.taskmanager.enums.*;
+import ru.yandex.practicum.taskmanager.repository.CacheBase;
+import ru.yandex.practicum.taskmanager.service.Manager;
+import ru.yandex.practicum.taskmanager.utils.SerialGenerator;
 import ru.yandex.practicum.taskmanager.tasks.*;
-import ru.yandex.practicum.taskmanager.utils.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
+
+    private static Manager init() {
+        var tasks = new CacheBase<Integer, Task>();
+        var subordinates = new CacheBase<Integer, ArrayList<Integer>>();
+        var generator = new SerialGenerator(1);
+        return new Manager(tasks, subordinates, generator);
+    }
+
     public static void main(String[] args) {
-        Manager manager=init();
+        Manager manager = init();
 
         Selftask task1 = manager.add(new Selftask("сходить в магазин", "хлеб, колбаса, сыр"));
         Epictask task2 = manager.add(new Epictask("сходить на рыбалку", "удочки, черви, водка"));
@@ -75,12 +85,5 @@ public class Main {
         manager.clear();
         list = manager.getAll();
         System.out.println(list);
-    }
-
-    private static Manager init(){
-        var tasks = new CacheBase<Integer, Task>();
-        var subordinates = new CacheBase<Integer, ArrayList<Integer>>();
-        var generator = new SerialGenerator(1);
-        return new Manager(tasks, subordinates, generator);
     }
 }
