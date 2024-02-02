@@ -1,11 +1,16 @@
 package ru.yandex.practicum.taskmanager.service;
 
-import ru.yandex.practicum.taskmanager.enums.*;
+import ru.yandex.practicum.taskmanager.enums.Status;
+import ru.yandex.practicum.taskmanager.enums.Type;
 import ru.yandex.practicum.taskmanager.repository.Repository;
-import ru.yandex.practicum.taskmanager.tasks.*;
+import ru.yandex.practicum.taskmanager.tasks.Epictask;
+import ru.yandex.practicum.taskmanager.tasks.Selftask;
+import ru.yandex.practicum.taskmanager.tasks.Subtask;
+import ru.yandex.practicum.taskmanager.tasks.Task;
 import ru.yandex.practicum.taskmanager.utils.Generator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 //TODO Что возвращать при поступлении ошибочного Id ? Exception, Optional, NULL ?
@@ -138,7 +143,7 @@ public class Manager {
 
     public List<Subtask> getAllSubs(int id) {
         Task task = tasks.get(id);
-        List<Subtask> copyList = null;
+        List<Subtask> copyList = Collections.emptyList();
         if ((task != null) && (task.getType() == Type.EPIC)) {
             Epictask epic = (Epictask) task;
             Integer epicId = epic.getId();
