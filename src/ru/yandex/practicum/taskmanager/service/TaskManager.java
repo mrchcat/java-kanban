@@ -23,7 +23,8 @@ public class TaskManager {
 
     public TaskManager(Repository<Integer, Task> tasks,
                        Repository<Integer, ArrayList<Integer>> subordinates,
-                       Generator generator, CircularQueue<Task> queue) {
+                       Generator generator,
+                       CircularQueue<Task> queue) {
         this.tasks = tasks;
         this.subordinates = subordinates;
         this.generator = generator;

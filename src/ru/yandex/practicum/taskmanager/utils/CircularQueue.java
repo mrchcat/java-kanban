@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class CircularQueue<T> {
-
     private final int size;
     Repository<Integer, T> arr;
     private int pos;
