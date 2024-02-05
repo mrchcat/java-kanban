@@ -14,7 +14,6 @@ public class Main {
 
     public static void main(String[] args) {
         TaskManager taskManager = Managers.getDefault();
-
         Selftask task1 = taskManager.add(new Selftask("сходить в магазин", "хлеб, колбаса, сыр"));
         Epictask task2 = taskManager.add(new Epictask("сходить на рыбалку", "удочки, черви, водка"));
         Subtask task3 = taskManager.add(new Subtask("купить удочки", "спиннинг", task2.getId()));

@@ -27,10 +27,11 @@ public class TaskManager {
         this.tasks = tasks;
         this.subordinates = subordinates;
         this.generator = generator;
+        this.queue = queue;
     }
 
     public List<Task> getHistory() {
-
+        return queue.getAll();
     }
 
     public void clear() {
@@ -172,7 +173,8 @@ public class TaskManager {
                 case Type.SUBTASK -> copyList.add(copy((Subtask) task));
             }
         }
-        return copyList;
+        if (copyList.isEmpty()) return Collections.emptyList();
+        else return copyList;
     }
 
     public List<Subtask> getAllSubs(int id) {
@@ -190,7 +192,8 @@ public class TaskManager {
                 }
             }
         }
-        return copyList;
+        if (copyList.isEmpty()) return Collections.emptyList();
+        else return copyList;
     }
 
     // Обновление по образцу, содержащемуся в task.
