@@ -3,11 +3,11 @@ package ru.yandex.practicum.taskmanager.repository;
 import java.util.Collection;
 import java.util.HashMap;
 
-public class CacheBase <K,V> implements Repository<K,V> {
+public class InMemoryBase<K, V> implements Repository<K, V> {
 
     HashMap<K,V> base;
 
-    public CacheBase() {
+    public InMemoryBase() {
         this.base = new HashMap<>();
     }
 
