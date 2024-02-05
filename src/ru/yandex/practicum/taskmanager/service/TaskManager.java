@@ -19,7 +19,7 @@ public class TaskManager {
     private final Repository<Integer, Task> tasks; //хранилище <id задачи, задача>
     private final Repository<Integer, ArrayList<Integer>> subordinates; //хранилище <id эпика, массив id подзадач>
     private final Generator generator; // генератор id
-    private final CircularQueue<Task> queue;
+    private final CircularQueue<Task> history;
 
     public TaskManager(Repository<Integer, Task> tasks,
                        Repository<Integer, ArrayList<Integer>> subordinates,
@@ -27,11 +27,11 @@ public class TaskManager {
         this.tasks = tasks;
         this.subordinates = subordinates;
         this.generator = generator;
-        this.queue = queue;
+        this.history = queue;
     }
 
     public List<Task> getHistory() {
-        return queue.getAll();
+        return history.getAll();
     }
 
     public void clear() {
@@ -81,6 +81,7 @@ public class TaskManager {
                 case Type.SUBTASK -> toReturn = copy((Subtask) original);
             }
         }
+        history.put(toReturn);
         return toReturn;
     }
 
@@ -90,6 +91,7 @@ public class TaskManager {
         if (task.getType() == Type.EPIC) {
             epictask = (Epictask) task;
         }
+        history.put(epictask);
         return epictask;
     }
 
@@ -99,6 +101,7 @@ public class TaskManager {
         if (task.getType() == Type.SELF) {
             selftask = (Selftask) task;
         }
+        history.put(selftask);
         return selftask;
     }
 
@@ -108,6 +111,7 @@ public class TaskManager {
         if (task.getType() == Type.SUBTASK) {
             subtask = (Subtask) task;
         }
+        history.put(subtask);
         return subtask;
     }
 
