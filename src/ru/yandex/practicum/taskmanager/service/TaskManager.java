@@ -7,6 +7,7 @@ import ru.yandex.practicum.taskmanager.tasks.Epictask;
 import ru.yandex.practicum.taskmanager.tasks.Selftask;
 import ru.yandex.practicum.taskmanager.tasks.Subtask;
 import ru.yandex.practicum.taskmanager.tasks.Task;
+import ru.yandex.practicum.taskmanager.utils.CircularQueue;
 import ru.yandex.practicum.taskmanager.utils.Generator;
 
 import java.util.ArrayList;
@@ -18,13 +19,18 @@ public class TaskManager {
     private final Repository<Integer, Task> tasks; //хранилище <id задачи, задача>
     private final Repository<Integer, ArrayList<Integer>> subordinates; //хранилище <id эпика, массив id подзадач>
     private final Generator generator; // генератор id
+    private final CircularQueue<Task> queue;
 
     public TaskManager(Repository<Integer, Task> tasks,
                        Repository<Integer, ArrayList<Integer>> subordinates,
-                       Generator generator) {
+                       Generator generator, CircularQueue<Task> queue) {
         this.tasks = tasks;
         this.subordinates = subordinates;
         this.generator = generator;
+    }
+
+    public List<Task> getHistory() {
+
     }
 
     public void clear() {
@@ -76,6 +82,34 @@ public class TaskManager {
         }
         return toReturn;
     }
+
+    public Epictask getEpic(Integer id) {
+        Task task = get(id);
+        Epictask epictask = null;
+        if (task.getType() == Type.EPIC) {
+            epictask = (Epictask) task;
+        }
+        return epictask;
+    }
+
+    public Selftask getSelftask(Integer id) {
+        Task task = get(id);
+        Selftask selftask = null;
+        if (task.getType() == Type.SELF) {
+            selftask = (Selftask) task;
+        }
+        return selftask;
+    }
+
+    public Subtask getSubtask(Integer id) {
+        Task task = get(id);
+        Subtask subtask = null;
+        if (task.getType() == Type.SUBTASK) {
+            subtask = (Subtask) task;
+        }
+        return subtask;
+    }
+
 
     private Selftask copy(Selftask original) {
         if (original != null) {
