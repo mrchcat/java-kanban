@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 public class InMemoryBase<K, V> implements Repository<K, V> {
 
-    HashMap<K,V> base;
+    private final HashMap<K, V> base;
 
     public InMemoryBase() {
         this.base = new HashMap<>();

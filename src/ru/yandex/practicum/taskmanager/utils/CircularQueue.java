@@ -41,4 +41,9 @@ public class CircularQueue<T> {
             return list;
         }
     }
+
+    public void clear() {
+        pos = 0;
+        length = 0;
+    }
 }

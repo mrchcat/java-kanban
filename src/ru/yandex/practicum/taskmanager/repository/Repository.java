@@ -8,4 +8,9 @@ public interface Repository<K,V> {
     V delete(K key);
     void clear();
     Collection<V> values();
+
+    default void close() {
+    }
+
+    ;
 }

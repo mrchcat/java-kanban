@@ -1,32 +1,27 @@
 package ru.yandex.practicum.taskmanager;
 
-import ru.yandex.practicum.taskmanager.enums.Status;
-import ru.yandex.practicum.taskmanager.service.Managers;
-import ru.yandex.practicum.taskmanager.service.TaskManager;
-import ru.yandex.practicum.taskmanager.tasks.Epictask;
-import ru.yandex.practicum.taskmanager.tasks.Selftask;
-import ru.yandex.practicum.taskmanager.tasks.Subtask;
-import ru.yandex.practicum.taskmanager.tasks.Task;
-
-import java.util.List;
+import ru.yandex.practicum.taskmanager.repository.InMemoryArray;
+import ru.yandex.practicum.taskmanager.repository.Repository;
+import ru.yandex.practicum.taskmanager.utils.CircularQueue;
 public class Main {
 
     public static void main(String[] args) {
-//        Repository<Integer, Integer> queueArray = new InMemoryBase<>();
-//        CircularQueue<Integer> queue = new CircularQueue<>(4, queueArray);
-//        queue.put(1);
-//        System.out.println(queue.getAll());
-//        queue.put(2);
-//        System.out.println(queue.getAll());
-//        queue.put(3);
-//        System.out.println(queue.getAll());
-//        queue.put(4);
-//        System.out.println(queue.getAll());
-//        queue.put(5);
-//        System.out.println(queue.getAll());
-//        queue.put(6);
-//        System.out.println(queue.getAll());
-
+        int size = 4;
+        Repository<Integer, Integer> queueArray = new InMemoryArray<>(size);
+        CircularQueue<Integer> queue = new CircularQueue<>(size, queueArray);
+        queue.put(1);
+        System.out.println(queue.getAll());
+        queue.put(2);
+        System.out.println(queue.getAll());
+        queue.put(3);
+        System.out.println(queue.getAll());
+        queue.put(4);
+        System.out.println(queue.getAll());
+        queue.put(5);
+        System.out.println(queue.getAll());
+        queue.put(6);
+        System.out.println(queue.getAll());
+/*
         TaskManager taskManager = Managers.getDefault();
         Selftask task1 = taskManager.add(new Selftask("сходить в магазин", "хлеб, колбаса, сыр"));
         Epictask task2 = taskManager.add(new Epictask("сходить на рыбалку", "удочки, черви, водка"));
@@ -93,5 +88,6 @@ public class Main {
         list = taskManager.getAll();
         System.out.println(list);
         System.out.println(taskManager.getHistory());
+    */
     }
 }
