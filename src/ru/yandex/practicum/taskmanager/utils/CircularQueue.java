@@ -41,8 +41,4 @@ public class CircularQueue<T> {
             return list;
         }
     }
-
-    public int getSize() {
-        return size;
-    }
 }
