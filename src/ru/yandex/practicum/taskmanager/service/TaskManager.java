@@ -14,14 +14,14 @@ import java.util.Collections;
 import java.util.List;
 
 //TODO Что возвращать при поступлении ошибочного Id ? Exception, Optional, NULL ?
-public class Manager {
+public class TaskManager {
     private final Repository<Integer, Task> tasks; //хранилище <id задачи, задача>
     private final Repository<Integer, ArrayList<Integer>> subordinates; //хранилище <id эпика, массив id подзадач>
     private final Generator generator; // генератор id
 
-    public Manager(Repository<Integer, Task> tasks,
-                   Repository<Integer, ArrayList<Integer>> subordinates,
-                   Generator generator) {
+    public TaskManager(Repository<Integer, Task> tasks,
+                       Repository<Integer, ArrayList<Integer>> subordinates,
+                       Generator generator) {
         this.tasks = tasks;
         this.subordinates = subordinates;
         this.generator = generator;
