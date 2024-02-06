@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-//TODO Что возвращать при поступлении ошибочного Id ? Exception, Optional, NULL ?
 public class TaskManager {
     private final Repository<Integer, Task> tasks; //хранилище <id задачи, задача>
     private final Repository<Integer, ArrayList<Integer>> subordinates; //хранилище <id эпика, массив id подзадач>

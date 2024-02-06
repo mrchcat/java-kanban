@@ -8,9 +8,9 @@ import java.util.List;
 
 public class CircularQueue<T> {
     private final int size;
-    Repository<Integer, T> arr;
     private int pos;
     private int length;
+    Repository<Integer, T> arr;
 
     public CircularQueue(int size, Repository<Integer, T> arr) {
         this.size = size;
