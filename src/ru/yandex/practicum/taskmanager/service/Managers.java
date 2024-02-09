@@ -2,7 +2,6 @@ package ru.yandex.practicum.taskmanager.service;
 
 import ru.yandex.practicum.taskmanager.repository.InMemoryArray;
 import ru.yandex.practicum.taskmanager.repository.InMemoryMap;
-import ru.yandex.practicum.taskmanager.repository.Repository;
 import ru.yandex.practicum.taskmanager.tasks.Task;
 import ru.yandex.practicum.taskmanager.utils.CircularQueue;
 import ru.yandex.practicum.taskmanager.utils.HistoryManager;
@@ -23,8 +22,8 @@ public class Managers {
     }
 
     public static HistoryManager getDefaultHistory() {
-        Repository repositoryForHistoryManager = new InMemoryArray<Integer, Task>(HISTORY_SIZE);
-        return new CircularQueue<>(HISTORY_SIZE, repositoryForHistoryManager);
+        var repositoryForHistoryManager = new InMemoryArray<Integer, Task>(HISTORY_SIZE);
+        return new CircularQueue(HISTORY_SIZE, repositoryForHistoryManager);
     }
 
 }

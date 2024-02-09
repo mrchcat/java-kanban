@@ -91,16 +91,16 @@ class RegularTaskManagerTest {
             task = taskManager.add(selfTask);
             id = task.getId();
             assertInstanceOf(Selftask.class, task);
-            assertTrue(task.getType() == Type.SELF);
-            assertTrue(task.getName().equals(selfTask.getName()));
-            assertTrue(task.getDescription().equals(selfTask.getDescription()));
+            assertSame(task.getType(), Type.SELF);
+            assertEquals(task.getName(), selfTask.getName());
+            assertEquals(task.getDescription(), selfTask.getDescription());
 
             task = taskManager.get(id);
             assertEquals(id, task.getId());
             assertInstanceOf(Selftask.class, task);
-            assertTrue(task.getType() == Type.SELF);
-            assertTrue(task.getName().equals(selfTask.getName()));
-            assertTrue(task.getDescription().equals(selfTask.getDescription()));
+            assertSame(task.getType(), Type.SELF);
+            assertEquals(task.getName(), selfTask.getName());
+            assertEquals(task.getDescription(), selfTask.getDescription());
         }
     }
 
@@ -119,16 +119,16 @@ class RegularTaskManagerTest {
             task = taskManager.add(epicTask);
             id = task.getId();
             assertInstanceOf(Epictask.class, task);
-            assertTrue(task.getType() == Type.EPIC);
-            assertTrue(task.getName().equals(epicTask.getName()));
-            assertTrue(task.getDescription().equals(epicTask.getDescription()));
+            assertSame(task.getType(), Type.EPIC);
+            assertEquals(task.getName(), epicTask.getName());
+            assertEquals(task.getDescription(), epicTask.getDescription());
 
             task = taskManager.get(id);
             assertEquals(id, task.getId());
             assertInstanceOf(Epictask.class, task);
-            assertTrue(task.getType() == Type.EPIC);
-            assertTrue(task.getName().equals(epicTask.getName()));
-            assertTrue(task.getDescription().equals(epicTask.getDescription()));
+            assertSame(task.getType(), Type.EPIC);
+            assertEquals(task.getName(), epicTask.getName());
+            assertEquals(task.getDescription(), epicTask.getDescription());
         }
     }
 
@@ -198,8 +198,8 @@ class RegularTaskManagerTest {
         newTask.setId(id);
         taskManager.update(newTask);
         Task updated = taskManager.get(id);
-        assertTrue(newTask.getName().equals(updated.getName()));
-        assertTrue(newTask.getDescription().equals(updated.getDescription()));
+        assertEquals(newTask.getName(), updated.getName());
+        assertEquals(newTask.getDescription(), updated.getDescription());
     }
 
     @Test

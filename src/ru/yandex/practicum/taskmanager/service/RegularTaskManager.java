@@ -18,12 +18,12 @@ public class RegularTaskManager implements TaskManager {
     private final Repository<Integer, Task> tasks; //хранилище <id задачи, задача>
     private final Repository<Integer, ArrayList<Integer>> subordinates; //хранилище <id эпика, массив id подзадач>
     private final Generator generator; // генератор id
-    private final HistoryManager<Task> history;
+    private final HistoryManager history;
 
     public RegularTaskManager(Repository<Integer, Task> tasks,
                               Repository<Integer, ArrayList<Integer>> subordinates,
                               Generator generator,
-                              HistoryManager<Task> history) {
+                              HistoryManager history) {
         this.tasks = tasks;
         this.subordinates = subordinates;
         this.generator = generator;

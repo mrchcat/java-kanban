@@ -1,11 +1,13 @@
 package ru.yandex.practicum.taskmanager.utils;
 
+import ru.yandex.practicum.taskmanager.tasks.Task;
+
 import java.util.List;
 
-public interface HistoryManager<T> {
-    void put(T item);
+public interface HistoryManager {
+    void put(Task item);
 
-    List<T> getHistory();
+    List<Task> getHistory();
 
     void clear();
 }
