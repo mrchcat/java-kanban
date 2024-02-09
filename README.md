@@ -1,2 +1,4 @@
 # java-kanban
-Repository for homework project.
+
+## Прототип для таск-менеджера.
+  
