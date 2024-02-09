@@ -2,6 +2,7 @@ package ru.yandex.practicum.taskmanager.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.taskmanager.enums.Status;
 import ru.yandex.practicum.taskmanager.enums.Type;
 import ru.yandex.practicum.taskmanager.repository.InMemoryMap;
 import ru.yandex.practicum.taskmanager.tasks.Epictask;
@@ -226,5 +227,80 @@ class RegularTaskManagerTest {
                 history.get(6), history.get(7), history.get(8), history.get(9)};
         Task[] arr2 = {task1, task2, task3, task4, task5, task6, task7, task8, task9, task10};
         assertArrayEquals(arr1, arr2);
+    }
+
+    @Test
+    void Clear() {
+        addAllSelfTasksToManager();
+        addAddEpicAndSubsToManager();
+        int size = taskManager.getAll().size();
+        taskManager.clear();
+        int empty = taskManager.getAll().size();
+        assertTrue(size > 0);
+        assertEquals(empty, 0);
+    }
+
+    @Test
+    void EpicStatus() {
+        addAllSelfTasksToManager();
+        Epictask epic1 = new Epictask("пойти на рыбалку", "Селигер, в районе оз Волго");
+        epic1 = taskManager.add(epic1);
+        int epic1Id = epic1.getId();
+        Subtask sub11 = new Subtask("купить удочку", "магазин Охотник, проспект Ленина, 20", epic1Id);
+        Subtask sub12 = new Subtask("наловить червей", "200 шт.", epic1Id);
+        Subtask sub13 = new Subtask("купить алкоголь", "батя обещал самогон", epic1Id);
+        Task task1 = taskManager.add(sub11);
+        Task task2 = taskManager.add(sub12);
+        Task task3 = taskManager.add(sub13);
+        assertEquals(epic1.getStatus(), Status.NEW);
+
+        task1.setStatus(Status.DONE);
+        taskManager.update(task1);
+        assertEquals(taskManager.get(epic1Id).getStatus(), Status.IN_PROGRESS);
+
+        task2.setStatus(Status.DONE);
+        taskManager.update(task2);
+        assertEquals(taskManager.get(epic1Id).getStatus(), Status.IN_PROGRESS);
+
+        task3.setStatus(Status.DONE);
+        taskManager.update(task3);
+        assertEquals(taskManager.get(epic1Id).getStatus(), Status.DONE);
+
+        task3.setStatus(Status.IN_PROGRESS);
+        taskManager.update(task3);
+        assertEquals(taskManager.get(epic1Id).getStatus(), Status.IN_PROGRESS);
+
+        taskManager.delete(task1.getId());
+        taskManager.delete(task2.getId());
+        taskManager.delete(task3.getId());
+        assertEquals(taskManager.get(epic1Id).getStatus(), Status.NEW);
+    }
+
+    @Test
+    void deleteEpic() {
+        Epictask epic1 = new Epictask("пойти на рыбалку", "Селигер, в районе оз Волго");
+        epic1 = taskManager.add(epic1);
+        int epic1Id = epic1.getId();
+        Subtask sub11 = new Subtask("купить удочку", "магазин Охотник, проспект Ленина, 20", epic1Id);
+        Subtask sub12 = new Subtask("наловить червей", "200 шт.", epic1Id);
+        Subtask sub13 = new Subtask("купить алкоголь", "батя обещал самогон", epic1Id);
+        Task task1 = taskManager.add(sub11);
+        Task task2 = taskManager.add(sub12);
+        Task task3 = taskManager.add(sub13);
+        taskManager.delete(epic1Id);
+        assertNull(taskManager.get(epic1Id));
+        assertNull(taskManager.get(task1.getId()));
+        assertNull(taskManager.get(task2.getId()));
+        assertNull(taskManager.get(task3.getId()));
+    }
+
+    @Test
+    void deleteSelf() {
+        addAllSelfTasksToManager();
+        List<Task> list = taskManager.getAll();
+        for (Task task : list) {
+            taskManager.delete(task.getId());
+            assertNull(taskManager.get(task.getId()));
+        }
     }
 }

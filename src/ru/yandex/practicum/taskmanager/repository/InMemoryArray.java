@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collection;
 
 public class InMemoryArray<K, V> implements Repository<Integer, V> {
-
     private final V[] arr;
 
     public InMemoryArray(int size) {

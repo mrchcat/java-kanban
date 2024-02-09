@@ -39,4 +39,6 @@ public interface TaskManager {
     Epictask update(Epictask task);
 
     Subtask update(Subtask task);
+
+    Task update(Task task);
 }

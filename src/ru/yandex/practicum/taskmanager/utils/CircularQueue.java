@@ -10,7 +10,7 @@ public class CircularQueue<T> implements HistoryManager<T> {
     private final int size;
     private int pos;
     private int length;
-    Repository<Integer, T> arr;
+    private Repository<Integer, T> arr;
 
     public CircularQueue(int size, Repository<Integer, T> arr) {
         this.size = size;

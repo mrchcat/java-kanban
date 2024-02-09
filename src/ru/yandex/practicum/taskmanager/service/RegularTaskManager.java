@@ -153,29 +153,32 @@ public class RegularTaskManager implements TaskManager {
     }
 
     @Override
-    public Task delete(Integer id) {
-        Task deleted = null;
-        Task task = tasks.get(id);
-        if (task != null) {
-            deleted = tasks.delete(id);
-            switch (task.getType()) {
+    public Task delete(Integer idToDelete) {
+        Task taskToDeleted = tasks.get(idToDelete);
+        if (taskToDeleted != null) {
+            switch (taskToDeleted.getType()) {
+                case SELF -> tasks.delete(idToDelete);
                 case Type.EPIC -> {
-                    for (Integer subId : subordinates.get(id)) {
-                        delete(subId);
+                    for (Integer subId : subordinates.get(idToDelete)) {
+                        tasks.delete(subId);
                     }
+                    subordinates.delete(idToDelete);
+                    tasks.delete(idToDelete);
                 }
                 case Type.SUBTASK -> {
-                    Subtask subtask = (Subtask) task;
-                    Epictask epic = (Epictask) tasks.get(subtask.getEpicId());
-                    Integer epicId = epic.getId();
-                    subordinates.get(epicId).remove(id);
-                    if (subordinates.get(epicId).isEmpty()) {
-                        epic.setStatus(Status.NEW);
+                    Subtask subtaskToDelete = (Subtask) taskToDeleted;
+                    Epictask epicOfDeleted = (Epictask) tasks.get(subtaskToDelete.getEpicId());
+                    if (epicOfDeleted.getType() != Type.EPIC) throw new IllegalArgumentException("Некорректный EpicId");
+                    Integer epicOfDeletedId = epicOfDeleted.getId();
+                    subordinates.get(epicOfDeletedId).remove(idToDelete);
+                    if (subordinates.get(epicOfDeletedId).isEmpty()) {
+                        epicOfDeleted.setStatus(Status.NEW);
                     }
+                    tasks.delete(idToDelete);
                 }
             }
         }
-        return deleted;
+        return taskToDeleted;
     }
 
     @Override
@@ -214,6 +217,25 @@ public class RegularTaskManager implements TaskManager {
 
     // Обновление по образцу, содержащемуся в task.
     // Обновлению подлежат только текстовые поля и статус, остальные поля игнорируются.
+    @Override
+    public Task update(Task task) {
+        if ((task == null) || (task.getId() == null)) return null;
+        switch (task.getType()) {
+            case SELF -> {
+                return update((Selftask) task);
+            }
+            case EPIC -> {
+                return update((Epictask) task);
+            }
+            case SUBTASK -> {
+                return update((Subtask) task);
+            }
+            default -> {
+                return null;
+            }
+        }
+    }
+
     @Override
     public Selftask update(Selftask task) {
         if ((task == null) || (task.getId() == null)) return null;

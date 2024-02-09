@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class InMemoryMap<K, V> implements Repository<K, V> {
-
     private final HashMap<K, V> base;
 
     public InMemoryMap() {
@@ -13,7 +12,7 @@ public class InMemoryMap<K, V> implements Repository<K, V> {
 
     @Override
     public void put(K key, V value) {
-        base.put(key,value);
+        base.put(key, value);
     }
 
     @Override
