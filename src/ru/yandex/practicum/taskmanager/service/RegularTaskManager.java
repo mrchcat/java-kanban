@@ -1,58 +1,74 @@
-package ru.yandex.practicum.taskmanager.utils;
+package ru.yandex.practicum.taskmanager.service;
 
-import ru.yandex.practicum.taskmanager.enums.*;
-import ru.yandex.practicum.taskmanager.tasks.*;
+import ru.yandex.practicum.taskmanager.enums.Status;
+import ru.yandex.practicum.taskmanager.enums.Type;
+import ru.yandex.practicum.taskmanager.repository.Repository;
+import ru.yandex.practicum.taskmanager.tasks.Epictask;
+import ru.yandex.practicum.taskmanager.tasks.Selftask;
+import ru.yandex.practicum.taskmanager.tasks.Subtask;
+import ru.yandex.practicum.taskmanager.tasks.Task;
+import ru.yandex.practicum.taskmanager.utils.Generator;
+import ru.yandex.practicum.taskmanager.utils.HistoryManager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 
+public class RegularTaskManager implements TaskManager {
+    private final Repository<Integer, Task> tasks; //хранилище <id задачи, задача>
+    private final Repository<Integer, ArrayList<Integer>> subordinates; //хранилище <id эпика, массив id подзадач>
+    private final Generator generator; // генератор id
+    private final HistoryManager history;
 
-public class Manager {
-    private final HashMap<Integer, Task> tasks; //коллекция <id задачи, задача>
-    private final HashMap<Integer, ArrayList<Integer>> subordinates; //коллекция <id эпика, массив id подзадач>
-    private static int count; //общее количество задач
-
-    public Manager() {
-        this.tasks = new HashMap<>();
-        this.subordinates = new HashMap<>();
-        this.count = 1;
+    public RegularTaskManager(Repository<Integer, Task> tasks,
+                              Repository<Integer, ArrayList<Integer>> subordinates,
+                              Generator generator,
+                              HistoryManager history) {
+        this.tasks = tasks;
+        this.subordinates = subordinates;
+        this.generator = generator;
+        this.history = history;
     }
 
+    @Override
+    public List<Task> getHistory() {
+        return history.getHistory();
+    }
+
+    @Override
     public void clear() {
         tasks.clear();
         subordinates.clear();
     }
 
-    private Integer generateId() {
-        return count++;
-    }
-
+    @Override
     public Selftask add(Selftask task) {
         if (task == null) return null;
         Selftask copy = new Selftask(task.getName(), task.getDescription());
-        Integer id = generateId();
+        Integer id = generator.getId();
         copy.setId(id);
         tasks.put(id, copy);
         return (Selftask) get(id);
     }
 
+    @Override
     public Epictask add(Epictask task) {
         if (task == null) return null;
         Epictask copy = new Epictask(task.getName(), task.getDescription());
-        Integer id = generateId();
+        Integer id = generator.getId();
         copy.setId(id);
         tasks.put(id, copy);
         subordinates.put(id, new ArrayList<>());
         return (Epictask) get(id);
     }
 
+    @Override
     public Subtask add(Subtask task) {
         Integer epicId = task.getEpicId();
         Task someTask = tasks.get(epicId);
         if ((someTask != null) && (someTask.getType() == Type.EPIC)) {
             Subtask copy = new Subtask(task.getName(), task.getDescription(), epicId);
-            Integer id = generateId();
+            Integer id = generator.getId();
             copy.setId(id);
             tasks.put(id, copy);
             subordinates.get(epicId).add(id);
@@ -60,6 +76,7 @@ public class Manager {
         } else return null;
     }
 
+    @Override
     public Task get(Integer id) {
         Task original = tasks.get(id);
         Task toReturn = null;
@@ -70,8 +87,43 @@ public class Manager {
                 case Type.SUBTASK -> toReturn = copy((Subtask) original);
             }
         }
+        history.put(toReturn);
         return toReturn;
     }
+
+    @Override
+    public Epictask getEpic(Integer id) {
+        Task task = get(id);
+        Epictask epictask = null;
+        if (task.getType() == Type.EPIC) {
+            epictask = (Epictask) task;
+        }
+        history.put(epictask);
+        return epictask;
+    }
+
+    @Override
+    public Selftask getSelftask(Integer id) {
+        Task task = get(id);
+        Selftask selftask = null;
+        if (task.getType() == Type.SELF) {
+            selftask = (Selftask) task;
+        }
+        history.put(selftask);
+        return selftask;
+    }
+
+    @Override
+    public Subtask getSubtask(Integer id) {
+        Task task = get(id);
+        Subtask subtask = null;
+        if (task.getType() == Type.SUBTASK) {
+            subtask = (Subtask) task;
+        }
+        history.put(subtask);
+        return subtask;
+    }
+
 
     private Selftask copy(Selftask original) {
         if (original != null) {
@@ -100,31 +152,36 @@ public class Manager {
         } else return null;
     }
 
-    public Task delete(Integer id) {
-        Task deleted = null;
-        Task task = tasks.get(id);
-        if (task != null) {
-            deleted = tasks.remove(id);
-            switch (task.getType()) {
+    @Override
+    public Task delete(Integer idToDelete) {
+        Task taskToDeleted = tasks.get(idToDelete);
+        if (taskToDeleted != null) {
+            switch (taskToDeleted.getType()) {
+                case SELF -> tasks.delete(idToDelete);
                 case Type.EPIC -> {
-                    for (Integer subId : subordinates.get(id)) {
-                        delete(subId);
+                    for (Integer subId : subordinates.get(idToDelete)) {
+                        tasks.delete(subId);
                     }
+                    subordinates.delete(idToDelete);
+                    tasks.delete(idToDelete);
                 }
                 case Type.SUBTASK -> {
-                    Subtask subtask = (Subtask) task;
-                    Epictask epic = (Epictask) tasks.get(subtask.getEpicId());
-                    Integer epicId = epic.getId();
-                    subordinates.get(epicId).remove(id);
-                    if (subordinates.get(epicId).isEmpty()) {
-                        epic.setStatus(Status.NEW);
+                    Subtask subtaskToDelete = (Subtask) taskToDeleted;
+                    Epictask epicOfDeleted = (Epictask) tasks.get(subtaskToDelete.getEpicId());
+                    if (epicOfDeleted.getType() != Type.EPIC) throw new IllegalArgumentException("Некорректный EpicId");
+                    Integer epicOfDeletedId = epicOfDeleted.getId();
+                    subordinates.get(epicOfDeletedId).remove(idToDelete);
+                    if (subordinates.get(epicOfDeletedId).isEmpty()) {
+                        epicOfDeleted.setStatus(Status.NEW);
                     }
+                    tasks.delete(idToDelete);
                 }
             }
         }
-        return deleted;
+        return taskToDeleted;
     }
 
+    @Override
     public List<Task> getAll() {
         List<Task> copyList = new ArrayList<>();
         for (var task : tasks.values()) {
@@ -134,12 +191,14 @@ public class Manager {
                 case Type.SUBTASK -> copyList.add(copy((Subtask) task));
             }
         }
-        return copyList;
+        if (copyList.isEmpty()) return Collections.emptyList();
+        else return copyList;
     }
 
+    @Override
     public List<Subtask> getAllSubs(int id) {
         Task task = tasks.get(id);
-        List<Subtask> copyList = null;
+        List<Subtask> copyList = Collections.emptyList();
         if ((task != null) && (task.getType() == Type.EPIC)) {
             Epictask epic = (Epictask) task;
             Integer epicId = epic.getId();
@@ -152,11 +211,32 @@ public class Manager {
                 }
             }
         }
-        return copyList;
+        if (copyList.isEmpty()) return Collections.emptyList();
+        else return copyList;
     }
 
-// Обновление по образцу, содержащемуся в task.
-// Обновлению подлежат только текстовые поля и статус, остальные поля игнорируются.
+    // Обновление по образцу, содержащемуся в task.
+    // Обновлению подлежат только текстовые поля и статус, остальные поля игнорируются.
+    @Override
+    public Task update(Task task) {
+        if ((task == null) || (task.getId() == null)) return null;
+        switch (task.getType()) {
+            case SELF -> {
+                return update((Selftask) task);
+            }
+            case EPIC -> {
+                return update((Epictask) task);
+            }
+            case SUBTASK -> {
+                return update((Subtask) task);
+            }
+            default -> {
+                return null;
+            }
+        }
+    }
+
+    @Override
     public Selftask update(Selftask task) {
         if ((task == null) || (task.getId() == null)) return null;
         Integer id = task.getId();
@@ -169,6 +249,7 @@ public class Manager {
         return (Selftask) get(id);
     }
 
+    @Override
     public Epictask update(Epictask task) {
         if ((task == null) || (task.getId() == null)) return null;
         Integer id = task.getId();
@@ -180,6 +261,7 @@ public class Manager {
         return (Epictask) get(id);
     }
 
+    @Override
     public Subtask update(Subtask task) {
         if ((task == null) || (task.getId() == null)) return null;
         Integer id = task.getId();
