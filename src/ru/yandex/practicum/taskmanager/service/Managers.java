@@ -17,6 +17,6 @@ public class Managers {
         var subordinates = new InMemoryMap<Integer, ArrayList<Integer>>();
         var generator = new SerialGenerator(START_ID_BY_DEFAULT);
         var history = new CircularQueue<>(HISTORY_SIZE, new InMemoryArray<Integer, Task>(HISTORY_SIZE));
-        return new TaskManager(tasks, subordinates, generator, history);
+        return new RegularTaskManager(tasks, subordinates, generator, history);
     }
 }
