@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class CircularQueue<T> {
+public class CircularQueue<T> implements HistoryManager<T> {
     private final int size;
     private int pos;
     private int length;
@@ -20,12 +20,14 @@ public class CircularQueue<T> {
         length = 0;
     }
 
+    @Override
     public void put(T item) {
         arr.put(pos, item);
         pos = (pos + 1) % size;
         if (length < size) length++;
     }
 
+    @Override
     public List<T> getAll() {
         if (length == 0) return Collections.emptyList();
         else {
@@ -41,6 +43,7 @@ public class CircularQueue<T> {
         }
     }
 
+    @Override
     public void clear() {
         pos = 0;
         length = 0;

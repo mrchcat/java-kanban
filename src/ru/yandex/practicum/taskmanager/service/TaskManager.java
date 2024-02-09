@@ -7,8 +7,8 @@ import ru.yandex.practicum.taskmanager.tasks.Epictask;
 import ru.yandex.practicum.taskmanager.tasks.Selftask;
 import ru.yandex.practicum.taskmanager.tasks.Subtask;
 import ru.yandex.practicum.taskmanager.tasks.Task;
-import ru.yandex.practicum.taskmanager.utils.CircularQueue;
 import ru.yandex.practicum.taskmanager.utils.Generator;
+import ru.yandex.practicum.taskmanager.utils.HistoryManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,16 +18,16 @@ public class TaskManager {
     private final Repository<Integer, Task> tasks; //хранилище <id задачи, задача>
     private final Repository<Integer, ArrayList<Integer>> subordinates; //хранилище <id эпика, массив id подзадач>
     private final Generator generator; // генератор id
-    private final CircularQueue<Task> history;
+    private final HistoryManager<Task> history;
 
     public TaskManager(Repository<Integer, Task> tasks,
                        Repository<Integer, ArrayList<Integer>> subordinates,
                        Generator generator,
-                       CircularQueue<Task> queue) {
+                       HistoryManager<Task> history) {
         this.tasks = tasks;
         this.subordinates = subordinates;
         this.generator = generator;
-        this.history = queue;
+        this.history = history;
     }
 
     public List<Task> getHistory() {
