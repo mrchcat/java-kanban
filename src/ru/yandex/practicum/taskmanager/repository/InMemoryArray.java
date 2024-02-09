@@ -9,7 +9,7 @@ public class InMemoryArray<K, V> implements Repository<Integer, V> {
 
     public InMemoryArray(int size) {
         if (size > 0) this.arr = (V[]) new Object[size];
-        else throw new IllegalArgumentException("Некорректный размер массива");
+        else throw new IllegalArgumentException("Некорректный размер массива, переданного в InMemoryArray ");
     }
 
     @Override

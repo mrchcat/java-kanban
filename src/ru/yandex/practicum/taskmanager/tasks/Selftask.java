@@ -1,6 +1,6 @@
 package ru.yandex.practicum.taskmanager.tasks;
 
-import ru.yandex.practicum.taskmanager.enums.*;
+import ru.yandex.practicum.taskmanager.enums.Type;
 
 public class Selftask extends Task {
 
