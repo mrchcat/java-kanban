@@ -32,7 +32,7 @@ public class RegularTaskManager implements TaskManager {
 
     @Override
     public List<Task> getHistory() {
-        return history.getAll();
+        return history.getHistory();
     }
 
     @Override

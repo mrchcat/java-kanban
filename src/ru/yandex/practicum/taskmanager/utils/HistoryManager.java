@@ -5,7 +5,7 @@ import java.util.List;
 public interface HistoryManager<T> {
     void put(T item);
 
-    List<T> getAll();
+    List<T> getHistory();
 
     void clear();
 }

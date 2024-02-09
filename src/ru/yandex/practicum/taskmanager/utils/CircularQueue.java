@@ -28,7 +28,7 @@ public class CircularQueue<T> implements HistoryManager<T> {
     }
 
     @Override
-    public List<T> getAll() {
+    public List<T> getHistory() {
         if (length == 0) return Collections.emptyList();
         else {
             int pointer = pos;
