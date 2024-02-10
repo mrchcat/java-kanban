@@ -85,6 +85,7 @@ public class RegularTaskManager implements TaskManager {
                 case Type.SELF -> toReturn = copy((Selftask) original);
                 case Type.EPIC -> toReturn = copy((Epictask) original);
                 case Type.SUBTASK -> toReturn = copy((Subtask) original);
+                default -> throw new IllegalArgumentException("Некорректный статус задачи");
             }
         }
         history.put(toReturn);
@@ -230,9 +231,7 @@ public class RegularTaskManager implements TaskManager {
             case SUBTASK -> {
                 return update((Subtask) task);
             }
-            default -> {
-                return null;
-            }
+            default -> throw new IllegalArgumentException("Некорректный статус задачи");
         }
     }
 
@@ -285,6 +284,7 @@ public class RegularTaskManager implements TaskManager {
                 if (isAllSubsDone(epic)) epic.setStatus(Status.DONE);
                 else epic.setStatus(Status.IN_PROGRESS);
             }
+            default -> throw new IllegalArgumentException("Некорректный статус задачи");
         }
         return (Subtask) get(id);
     }

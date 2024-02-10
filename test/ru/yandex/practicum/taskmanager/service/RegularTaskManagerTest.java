@@ -1,6 +1,7 @@
 package ru.yandex.practicum.taskmanager.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.taskmanager.enums.Status;
 import ru.yandex.practicum.taskmanager.enums.Type;
@@ -83,6 +84,7 @@ class RegularTaskManagerTest {
         }
     }
 
+    @DisplayName("добавляем и считываем задачи типа Selftask")
     @Test
     void addAndGetSelfTaskTest() {
         Task task;
@@ -167,8 +169,6 @@ class RegularTaskManagerTest {
     @Test
     void getSubTaskFromWholeList() {
         addAddEpicAndSubsToManager();
-        Task task;
-        int id;
         List<Task> list = taskManager.getAll();
         int count = 0;
         for (Task t : list) {
@@ -304,5 +304,165 @@ class RegularTaskManagerTest {
         }
     }
 
+    @DisplayName("равенство SelfTask с одинаковыми id")
+    @Test
+    void checkIfEqualSelfTasks() {
+        Task selfTask1 = new Selftask("ss", "ffff");
+        selfTask1.setId(555);
+        Task selfTask2 = new Selftask("arsgfs", "cdb gfv");
+        selfTask2.setId(555);
+        assertEquals(selfTask1, selfTask2);
+    }
 
+    @DisplayName("равенство EpicTask с одинаковыми id")
+    @Test
+    void checkIfEqualEpicTasks() {
+        Epictask epicTask1 = new Epictask("ss", "ffff");
+        epicTask1.setId(555);
+        Epictask epicTask2 = new Epictask("arsgfs", "cdb gfv");
+        epicTask2.setId(555);
+        assertEquals(epicTask1, epicTask2);
+    }
+
+    @DisplayName("равенство SubTask с одинаковыми id")
+    @Test
+    void checkIfEqualSubTasks() {
+        Subtask subTask1 = new Subtask("ss", "ffff", 1);
+        subTask1.setId(555);
+        Subtask subTask2 = new Subtask("arsgfs", "cdb gfv", 3);
+        subTask2.setId(555);
+        assertEquals(subTask1, subTask2);
+    }
+
+    @DisplayName("одиночная задача не может быть эпиком при добавлении подзадачи")
+    @Test
+    void SelfCanNotBeEpic() {
+        Selftask self = new Selftask("sss", "sss");
+        self = taskManager.add(self);
+        int selfId = self.getId();
+        Subtask subTask = new Subtask("ss", "ffff", selfId);
+        assertNull(taskManager.add(subTask));
+    }
+
+    @DisplayName("подзадача не может быть эпиком при добавлении подзадачи")
+    @Test
+    void SubCanNotBeEpic() {
+        Epictask epic = new Epictask("ss", "ffff");
+        epic = taskManager.add(epic);
+        Subtask sub1 = new Subtask("sss", "sss", epic.getId());
+        sub1 = taskManager.add(sub1);
+        Subtask sub2 = new Subtask("sss", "sss", sub1.getId());
+        assertNull(taskManager.add(sub2));
+    }
+
+    @DisplayName("проверка, что id присваивается в менеджере, а не передается с задачей для SelfTask")
+    @Test
+    void isIdGetFromManagerForSelfTask() {
+        int fakeId = -1_000_000;
+        Selftask self = new Selftask("sss", "sss");
+        self.setId(fakeId);
+        self = taskManager.add(self);
+        assertNotEquals(fakeId, self.getId());
+    }
+
+    @DisplayName("проверка, что id присваивается в менеджере, а не передается с задачей для EpicTask")
+    @Test
+    void isIdGetFromManagerForEpicTask() {
+        int fakeId = -1_000_000;
+        Epictask task = new Epictask("sss", "sss");
+        task.setId(fakeId);
+        task = taskManager.add(task);
+        assertNotEquals(fakeId, task.getId());
+    }
+
+    @DisplayName("проверка, что id присваивается в менеджере, а не передается с задачей для SubTask")
+    @Test
+    void isIdGetFromManagerForSubTask() {
+        int fakeId = -1_000_000;
+        Epictask epic = new Epictask("sss", "sss");
+        epic = taskManager.add(epic);
+        Subtask sub = new Subtask("sss", "sss", epic.getId());
+        sub.setId(fakeId);
+        sub = taskManager.add(sub);
+        assertNotEquals(fakeId, sub.getId());
+    }
+
+    @DisplayName("проверка, что при обновлении меняется имя, описание, статус для Selftask")
+    @Test
+    void updateSelfTask() {
+        String oldName = "Иван";
+        String newName = "Петр";
+        String oldDesc = "Иванов";
+        String newDesc = "Петров";
+        Status newStatus = Status.IN_PROGRESS;
+
+        Selftask task = new Selftask(oldName, oldDesc);
+        task = taskManager.add(task);
+        assertEquals(task.getName(), oldName);
+        assertEquals(task.getDescription(), oldDesc);
+        assertEquals(task.getStatus(), Status.NEW);
+
+        task.setName(newName);
+        task.setDescription(newDesc);
+        task.setStatus(newStatus);
+        Task updatedTask = taskManager.update(task);
+        assertEquals(task, updatedTask);
+        assertEquals(updatedTask.getName(), newName);
+        assertEquals(updatedTask.getDescription(), newDesc);
+        assertEquals(updatedTask.getStatus(), newStatus);
+    }
+
+    @DisplayName("проверка, что при обновлении меняется имя, описание, статус для EpicTask")
+    @Test
+    void updateEpicTask() {
+        String oldName = "Иван";
+        String newName = "Петр";
+        String oldDesc = "Иванов";
+        String newDesc = "Петров";
+        Status newStatus = Status.IN_PROGRESS;
+
+        Epictask task = new Epictask(oldName, oldDesc);
+        task = taskManager.add(task);
+        assertEquals(task.getName(), oldName);
+        assertEquals(task.getDescription(), oldDesc);
+        assertEquals(task.getStatus(), Status.NEW);
+
+        task.setName(newName);
+        task.setDescription(newDesc);
+        task.setStatus(newStatus);
+        Task updatedTask = taskManager.update(task);
+        assertEquals(task, updatedTask);
+        assertEquals(updatedTask.getName(), newName);
+        assertEquals(updatedTask.getDescription(), newDesc);
+        assertEquals(updatedTask.getStatus(), Status.NEW);
+    }
+
+    @DisplayName("проверка, что при обновлении меняется имя, описание, статус для SubTask")
+    @Test
+    void updateSubTask() {
+        String oldName = "Иван";
+        String newName = "Петр";
+        String oldDesc = "Иванов";
+        String newDesc = "Петров";
+        Status newStatus = Status.IN_PROGRESS;
+
+        Epictask epic = new Epictask("sss", "sss");
+        epic = taskManager.add(epic);
+        int epicId = epic.getId();
+
+        Subtask task = new Subtask(oldName, oldDesc, epicId);
+        task = taskManager.add(task);
+        assertEquals(task.getName(), oldName);
+        assertEquals(task.getDescription(), oldDesc);
+        assertEquals(task.getStatus(), Status.NEW);
+
+        task.setName(newName);
+        task.setDescription(newDesc);
+        task.setStatus(newStatus);
+        Task updatedTask = taskManager.update(task);
+        assertEquals(task, updatedTask);
+        assertEquals(updatedTask.getName(), newName);
+        assertEquals(updatedTask.getDescription(), newDesc);
+        assertEquals(updatedTask.getStatus(), newStatus);
+    }
 }
