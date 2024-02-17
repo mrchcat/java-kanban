@@ -18,4 +18,12 @@ public class Epictask extends Task {
         return "<Epic: id=" + super.getId() + "; name=" + super.getName() + "; desc=" +
                 super.getDescription() + "; status=" + super.getStatus() + ">";
     }
+
+    @Override
+    public Task copy() {
+        Epictask copy = new Epictask(getName(), getDescription());
+        copy.setId(getId());
+        copy.setStatus(getStatus());
+        return copy;
+    }
 }

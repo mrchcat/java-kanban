@@ -61,4 +61,6 @@ public abstract class Task {
     public int hashCode() {
         return id.hashCode();
     }
+
+    abstract public Task copy();
 }

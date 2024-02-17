@@ -18,4 +18,13 @@ public class Selftask extends Task {
         return "<Standard: id=" + super.getId() + "; name=" + super.getName() + "; desc=" +
                 super.getDescription() + "; status=" + super.getStatus() + ">";
     }
+
+    @Override
+    public Task copy() {
+        Selftask copy = new Selftask(getName(), getDescription());
+        copy.setId(getId());
+        copy.setStatus(getStatus());
+        return copy;
+    }
+
 }

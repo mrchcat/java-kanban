@@ -2,7 +2,10 @@ package ru.yandex.practicum.taskmanager.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import ru.yandex.practicum.taskmanager.enums.Status;
 import ru.yandex.practicum.taskmanager.enums.Type;
 import ru.yandex.practicum.taskmanager.repository.InMemoryMap;
@@ -16,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static ru.yandex.practicum.taskmanager.service.Managers.getDefaultHistory;
@@ -84,27 +88,42 @@ class RegularTaskManagerTest {
         }
     }
 
-    @DisplayName("добавляем и считываем задачи типа Selftask")
-    @Test
-    void addAndGetSelfTaskTest() {
-        Task task;
-        int id;
-        for (var selfTask : selfTasks) {
-            task = taskManager.add(selfTask);
-            id = task.getId();
-            assertInstanceOf(Selftask.class, task);
-            assertSame(task.getType(), Type.SELF);
-            assertEquals(task.getName(), selfTask.getName());
-            assertEquals(task.getDescription(), selfTask.getDescription());
-
-            task = taskManager.get(id);
-            assertEquals(id, task.getId());
-            assertInstanceOf(Selftask.class, task);
-            assertSame(task.getType(), Type.SELF);
-            assertEquals(task.getName(), selfTask.getName());
-            assertEquals(task.getDescription(), selfTask.getDescription());
-        }
+    static Stream<Selftask> getSelfTasks() {
+        return Stream.of(
+                new Selftask("сходить за продуктами", "купить сыр, молоко, творог"),
+                new Selftask("выгулять собаку", "пойти вечером погулять в парк"),
+                new Selftask("скачать сериал", "Игра престолов"),
+                new Selftask("работать", "работу"),
+                new Selftask("смотреть на закат", "и на рассвет")
+        );
     }
+
+    ;
+
+    @DisplayName("добавляем и считываем задачи типа Selftask")
+    @ParameterizedTest
+    @MethodSource("getSelfTasks")
+    void addAndGetSelfTaskTest(Selftask task) {
+        Task addedTask = taskManager.add(task);
+        int id = addedTask.getId();
+
+        assertAll(
+                () -> assertInstanceOf(Selftask.class, addedTask),
+                () -> assertSame(Type.SELF, addedTask.getType()),
+                () -> assertEquals(task.getName(), addedTask.getName()),
+                () -> assertEquals(task.getDescription(), addedTask.getDescription())
+        );
+        Task gettedTask = taskManager.get(id);
+
+        assertAll(
+                () -> assertEquals(id, gettedTask.getId()),
+                () -> assertInstanceOf(Selftask.class, gettedTask),
+                () -> assertSame(Type.SELF, gettedTask.getType()),
+                () -> assertEquals(task.getName(), gettedTask.getName()),
+                () -> assertEquals(task.getDescription(), gettedTask.getDescription())
+        );
+    }
+
 
     @Test
     void getAllSelfTaskTheSamePower() {
@@ -387,6 +406,7 @@ class RegularTaskManagerTest {
         assertNotEquals(fakeId, sub.getId());
     }
 
+    @Tag("update")
     @DisplayName("проверка, что при обновлении меняется имя, описание, статус для Selftask")
     @Test
     void updateSelfTask() {
@@ -412,6 +432,7 @@ class RegularTaskManagerTest {
         assertEquals(updatedTask.getStatus(), newStatus);
     }
 
+    @Tag("update")
     @DisplayName("проверка, что при обновлении меняется имя, описание, статус для EpicTask")
     @Test
     void updateEpicTask() {
@@ -437,6 +458,7 @@ class RegularTaskManagerTest {
         assertEquals(updatedTask.getStatus(), Status.NEW);
     }
 
+    @Tag("update")
     @DisplayName("проверка, что при обновлении меняется имя, описание, статус для SubTask")
     @Test
     void updateSubTask() {
@@ -461,8 +483,10 @@ class RegularTaskManagerTest {
         task.setStatus(newStatus);
         Task updatedTask = taskManager.update(task);
         assertEquals(task, updatedTask);
-        assertEquals(updatedTask.getName(), newName);
-        assertEquals(updatedTask.getDescription(), newDesc);
-        assertEquals(updatedTask.getStatus(), newStatus);
+        assertAll(() -> {
+            assertEquals(updatedTask.getName(), newName);
+            assertEquals(updatedTask.getDescription(), newDesc);
+            assertEquals(updatedTask.getStatus(), newStatus);
+        });
     }
 }

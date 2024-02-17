@@ -81,12 +81,7 @@ public class RegularTaskManager implements TaskManager {
         Task original = tasks.get(id);
         Task toReturn = null;
         if (original != null) {
-            switch (original.getType()) {
-                case Type.SELF -> toReturn = copy((Selftask) original);
-                case Type.EPIC -> toReturn = copy((Epictask) original);
-                case Type.SUBTASK -> toReturn = copy((Subtask) original);
-                default -> throw new IllegalArgumentException("Некорректный статус задачи");
-            }
+            toReturn = original.copy();
         }
         history.put(toReturn);
         return toReturn;
@@ -126,33 +121,6 @@ public class RegularTaskManager implements TaskManager {
     }
 
 
-    private Selftask copy(Selftask original) {
-        if (original != null) {
-            Selftask copy = new Selftask(original.getName(), original.getDescription());
-            copy.setId(original.getId());
-            copy.setStatus(original.getStatus());
-            return copy;
-        } else return null;
-    }
-
-    private Epictask copy(Epictask original) {
-        if (original != null) {
-            Epictask copy = new Epictask(original.getName(), original.getDescription());
-            copy.setId(original.getId());
-            copy.setStatus(original.getStatus());
-            return copy;
-        } else return null;
-    }
-
-    private Subtask copy(Subtask original) {
-        if (original != null) {
-            Subtask copy = new Subtask(original.getName(), original.getDescription(), original.getEpicId());
-            copy.setId(original.getId());
-            copy.setStatus(original.getStatus());
-            return copy;
-        } else return null;
-    }
-
     @Override
     public Task delete(Integer idToDelete) {
         Task taskToDeleted = tasks.get(idToDelete);
@@ -186,11 +154,7 @@ public class RegularTaskManager implements TaskManager {
     public List<Task> getAll() {
         List<Task> copyList = new ArrayList<>();
         for (var task : tasks.values()) {
-            switch (task.getType()) {
-                case Type.SELF -> copyList.add(copy((Selftask) task));
-                case Type.EPIC -> copyList.add(copy((Epictask) task));
-                case Type.SUBTASK -> copyList.add(copy((Subtask) task));
-            }
+            copyList.add(task.copy());
         }
         if (copyList.isEmpty()) return Collections.emptyList();
         else return copyList;
@@ -208,7 +172,7 @@ public class RegularTaskManager implements TaskManager {
                 copyList = new ArrayList<>();
                 for (Integer subId : subList) {
                     Subtask subTask = (Subtask) tasks.get(subId);
-                    copyList.add(copy(subTask));
+                    copyList.add(subTask.copy());
                 }
             }
         }

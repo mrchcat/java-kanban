@@ -26,5 +26,13 @@ public class Subtask extends Task {
                 + "; epicId=" + epicId + ">";
     }
 
+    @Override
+    public Subtask copy() {
+        Subtask copy = new Subtask(getName(), getDescription(), getEpicId());
+        copy.setId(getId());
+        copy.setStatus(getStatus());
+        return copy;
+    }
+
 }
 
