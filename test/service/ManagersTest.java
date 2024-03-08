@@ -1,10 +1,8 @@
-package ru.yandex.practicum.taskmanager.service;
+package service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import service.Managers;
-import service.TaskManager;
 import utils.LinkedHashHistoryManager;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;

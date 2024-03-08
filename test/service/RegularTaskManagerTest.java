@@ -1,4 +1,4 @@
-package ru.yandex.practicum.taskmanager.service;
+package service;
 
 import enums.Status;
 import enums.Type;
@@ -11,8 +11,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import repository.InMemoryMap;
 import repository.Repository;
-import service.RegularTaskManager;
-import service.TaskManager;
 import tasks.Epictask;
 import tasks.Selftask;
 import tasks.Subtask;

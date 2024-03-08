@@ -1,4 +1,4 @@
-package ru.yandex.practicum.taskmanager.utils;
+package utils;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import tasks.Selftask;
 import tasks.Task;
-import utils.LinkedHashHistoryManager;
 
 import java.util.LinkedList;
 import java.util.List;
