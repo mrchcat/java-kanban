@@ -1,4 +1,4 @@
-package ru.yandex.practicum.taskmanager.utils;
+package utils;
 
 public class SerialGenerator implements Generator {
     private static int count;

@@ -1,7 +1,7 @@
-package ru.yandex.practicum.taskmanager.tasks;
+package tasks;
 
-import ru.yandex.practicum.taskmanager.enums.Status;
-import ru.yandex.practicum.taskmanager.enums.Type;
+import enums.Status;
+import enums.Type;
 
 public abstract class Task {
     private Integer id;

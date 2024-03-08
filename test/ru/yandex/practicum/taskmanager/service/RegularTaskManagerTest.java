@@ -1,5 +1,7 @@
 package ru.yandex.practicum.taskmanager.service;
 
+import enums.Status;
+import enums.Type;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -7,17 +9,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
-import ru.yandex.practicum.taskmanager.enums.Status;
-import ru.yandex.practicum.taskmanager.enums.Type;
-import ru.yandex.practicum.taskmanager.repository.InMemoryMap;
-import ru.yandex.practicum.taskmanager.repository.Repository;
-import ru.yandex.practicum.taskmanager.tasks.Epictask;
-import ru.yandex.practicum.taskmanager.tasks.Selftask;
-import ru.yandex.practicum.taskmanager.tasks.Subtask;
-import ru.yandex.practicum.taskmanager.tasks.Task;
-import ru.yandex.practicum.taskmanager.utils.Generator;
-import ru.yandex.practicum.taskmanager.utils.HistoryManager;
-import ru.yandex.practicum.taskmanager.utils.SerialGenerator;
+import repository.InMemoryMap;
+import repository.Repository;
+import service.RegularTaskManager;
+import service.TaskManager;
+import tasks.Epictask;
+import tasks.Selftask;
+import tasks.Subtask;
+import tasks.Task;
+import utils.Generator;
+import utils.HistoryManager;
+import utils.SerialGenerator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,7 +28,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static ru.yandex.practicum.taskmanager.service.Managers.getDefaultHistory;
+import static service.Managers.getDefaultHistory;
 
 class RegularTaskManagerTest {
     TaskManager taskManager;

@@ -1,6 +1,6 @@
-package ru.yandex.practicum.taskmanager.tasks;
+package tasks;
 
-import ru.yandex.practicum.taskmanager.enums.Type;
+import enums.Type;
 
 public class Epictask extends Task {
     public Epictask(String name, String description) {

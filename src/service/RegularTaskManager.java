@@ -1,14 +1,14 @@
-package ru.yandex.practicum.taskmanager.service;
+package service;
 
-import ru.yandex.practicum.taskmanager.enums.Status;
-import ru.yandex.practicum.taskmanager.enums.Type;
-import ru.yandex.practicum.taskmanager.repository.Repository;
-import ru.yandex.practicum.taskmanager.tasks.Epictask;
-import ru.yandex.practicum.taskmanager.tasks.Selftask;
-import ru.yandex.practicum.taskmanager.tasks.Subtask;
-import ru.yandex.practicum.taskmanager.tasks.Task;
-import ru.yandex.practicum.taskmanager.utils.Generator;
-import ru.yandex.practicum.taskmanager.utils.HistoryManager;
+import enums.Status;
+import enums.Type;
+import repository.Repository;
+import tasks.Epictask;
+import tasks.Selftask;
+import tasks.Subtask;
+import tasks.Task;
+import utils.Generator;
+import utils.HistoryManager;
 
 import java.util.ArrayList;
 import java.util.Collections;

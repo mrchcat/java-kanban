@@ -1,6 +1,6 @@
-package ru.yandex.practicum.taskmanager.utils;
+package utils;
 
-import ru.yandex.practicum.taskmanager.tasks.Task;
+import tasks.Task;
 
 import java.util.List;
 

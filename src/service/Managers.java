@@ -1,12 +1,12 @@
-package ru.yandex.practicum.taskmanager.service;
+package service;
 
-import ru.yandex.practicum.taskmanager.repository.InMemoryMap;
-import ru.yandex.practicum.taskmanager.repository.Repository;
-import ru.yandex.practicum.taskmanager.tasks.Task;
-import ru.yandex.practicum.taskmanager.utils.Generator;
-import ru.yandex.practicum.taskmanager.utils.HistoryManager;
-import ru.yandex.practicum.taskmanager.utils.LinkedHashHistoryManager;
-import ru.yandex.practicum.taskmanager.utils.SerialGenerator;
+import repository.InMemoryMap;
+import repository.Repository;
+import tasks.Task;
+import utils.Generator;
+import utils.HistoryManager;
+import utils.LinkedHashHistoryManager;
+import utils.SerialGenerator;
 
 import java.util.ArrayList;
 
