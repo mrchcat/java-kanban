@@ -40,7 +40,7 @@ class LinkedHashHistoryManagerTest {
     @DisplayName("добавляем несколько задач подряд и повторно вызываем первую из них")
     @Tag("add")
     @Test
-    void AddFirsttest() {
+    void AddFirstTest() {
         for (int i = tasks.size() - 1; i >= 0; i--) {
             history.add(tasks.get(i));
         }
@@ -107,7 +107,7 @@ class LinkedHashHistoryManagerTest {
         for (int i = tasks.size() - 1; i >= 0; i--) {
             history.add(tasks.get(i));
         }
-        assertTrue(!history.getHistory().isEmpty());
+        assertFalse(history.getHistory().isEmpty());
         history.clear();
         assertTrue(history.getHistory().isEmpty());
     }
