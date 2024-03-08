@@ -18,7 +18,7 @@ public class RegularTaskManager implements TaskManager {
     private final Repository<Integer, Task> tasks; //хранилище <id задачи, задача>
     private final Repository<Integer, ArrayList<Integer>> subordinates; //хранилище <id эпика, массив id подзадач>
     private final Generator generator; // генератор id
-    private final HistoryManager history;
+    private final HistoryManager history; // хранилище списка просмотренных задач
 
     public RegularTaskManager(Repository<Integer, Task> tasks,
                               Repository<Integer, ArrayList<Integer>> subordinates,
@@ -48,7 +48,7 @@ public class RegularTaskManager implements TaskManager {
         Integer id = generator.getId();
         copy.setId(id);
         tasks.put(id, copy);
-        return (Selftask) get(id);
+        return (Selftask) copy.copy();
     }
 
     @Override
@@ -59,11 +59,12 @@ public class RegularTaskManager implements TaskManager {
         copy.setId(id);
         tasks.put(id, copy);
         subordinates.put(id, new ArrayList<>());
-        return (Epictask) get(id);
+        return (Epictask) copy.copy();
     }
 
     @Override
     public Subtask add(Subtask task) {
+        if (task == null) return null;
         Integer epicId = task.getEpicId();
         Task someTask = tasks.get(epicId);
         if ((someTask != null) && (someTask.getType() == Type.EPIC)) {
@@ -72,51 +73,55 @@ public class RegularTaskManager implements TaskManager {
             copy.setId(id);
             tasks.put(id, copy);
             subordinates.get(epicId).add(id);
-            return (Subtask) get(id);
+            return copy.copy();
         } else return null;
     }
 
     @Override
     public Task get(Integer id) {
+        if (id == null) return null;
         Task original = tasks.get(id);
         Task toReturn = null;
         if (original != null) {
             toReturn = original.copy();
+            history.add(toReturn);
         }
-        history.put(toReturn);
         return toReturn;
     }
 
     @Override
     public Epictask getEpic(Integer id) {
+        if (id == null) return null;
         Task task = get(id);
         Epictask epictask = null;
-        if (task.getType() == Type.EPIC) {
+        if ((task != null) && (task.getType() == Type.EPIC)) {
             epictask = (Epictask) task;
+            history.add(epictask);
         }
-        history.put(epictask);
         return epictask;
     }
 
     @Override
     public Selftask getSelftask(Integer id) {
+        if (id == null) return null;
         Task task = get(id);
         Selftask selftask = null;
-        if (task.getType() == Type.SELF) {
+        if ((task != null) && (task.getType() == Type.SELF)) {
             selftask = (Selftask) task;
+            history.add(selftask);
         }
-        history.put(selftask);
         return selftask;
     }
 
     @Override
     public Subtask getSubtask(Integer id) {
+        if (id == null) return null;
         Task task = get(id);
         Subtask subtask = null;
-        if (task.getType() == Type.SUBTASK) {
+        if ((task != null) && (task.getType() == Type.SUBTASK)) {
             subtask = (Subtask) task;
+            history.add(subtask);
         }
-        history.put(subtask);
         return subtask;
     }
 
@@ -209,7 +214,7 @@ public class RegularTaskManager implements TaskManager {
         oldTask.setName(task.getName());
         oldTask.setDescription(task.getDescription());
         oldTask.setStatus(task.getStatus());
-        return (Selftask) get(id);
+        return (Selftask) oldTask.copy();
     }
 
     @Override
@@ -221,7 +226,7 @@ public class RegularTaskManager implements TaskManager {
 
         oldTask.setName(task.getName());
         oldTask.setDescription(task.getDescription());
-        return (Epictask) get(id);
+        return (Epictask) oldTask.copy();
     }
 
     @Override
@@ -250,7 +255,7 @@ public class RegularTaskManager implements TaskManager {
             }
             default -> throw new IllegalArgumentException("Некорректный статус задачи");
         }
-        return (Subtask) get(id);
+        return (Subtask) oldTask.copy();
     }
 
     private boolean isAllSubsNew(Epictask epic) {

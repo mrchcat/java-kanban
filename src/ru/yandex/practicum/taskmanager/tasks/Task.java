@@ -62,5 +62,5 @@ public abstract class Task {
         return id.hashCode();
     }
 
-    abstract public Task copy();
+    public abstract Task copy();
 }
