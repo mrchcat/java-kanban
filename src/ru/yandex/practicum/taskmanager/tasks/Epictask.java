@@ -1,28 +1,27 @@
-package tasks;
+package ru.yandex.practicum.taskmanager.tasks;
 
-public class Selftask extends Task {
-
-    public Selftask(String name, String description) {
+public class Epictask extends Task {
+    public Epictask(String name, String description) {
         super(name, description);
     }
 
     @Override
     public Subordination getSubordination() {
-        return Subordination.SELF;
+        return Subordination.EPIC;
+
     }
 
     @Override
     public String toString() {
-        return "<Standard: id=" + super.getId() + "; name=" + super.getName() + "; desc=" +
+        return "<Epic: id=" + super.getId() + "; name=" + super.getName() + "; desc=" +
                 super.getDescription() + "; status=" + super.getStatus() + ">";
     }
 
     @Override
     public Task copy() {
-        Selftask copy = new Selftask(getName(), getDescription());
+        Epictask copy = new Epictask(getName(), getDescription());
         copy.setId(getId());
         copy.setStatus(getStatus());
         return copy;
     }
-
 }

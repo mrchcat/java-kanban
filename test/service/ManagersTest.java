@@ -3,7 +3,9 @@ package service;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import utils.LinkedHashHistoryManager;
+import ru.yandex.practicum.taskmanager.service.Managers;
+import ru.yandex.practicum.taskmanager.service.TaskManager;
+import ru.yandex.practicum.taskmanager.utils.LinkedHashHistoryManager;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 

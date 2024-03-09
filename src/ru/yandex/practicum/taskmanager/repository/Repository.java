@@ -1,4 +1,4 @@
-package repository;
+package ru.yandex.practicum.taskmanager.repository;
 
 import java.util.Collection;
 

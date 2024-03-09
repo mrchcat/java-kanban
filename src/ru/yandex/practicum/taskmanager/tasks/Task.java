@@ -1,4 +1,4 @@
-package tasks;
+package ru.yandex.practicum.taskmanager.tasks;
 
 public abstract class Task {
     private Integer id;

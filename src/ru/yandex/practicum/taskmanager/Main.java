@@ -1,5 +1,7 @@
-import service.Managers;
-import service.TaskManager;
+package ru.yandex.practicum.taskmanager;
+
+import ru.yandex.practicum.taskmanager.service.Managers;
+import ru.yandex.practicum.taskmanager.service.TaskManager;
 
 import java.util.ArrayList;
 

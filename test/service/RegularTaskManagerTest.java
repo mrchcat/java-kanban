@@ -7,12 +7,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
-import repository.InMemoryMap;
-import repository.Repository;
-import tasks.*;
-import utils.Generator;
-import utils.HistoryManager;
-import utils.SerialGenerator;
+import ru.yandex.practicum.taskmanager.repository.InMemoryMap;
+import ru.yandex.practicum.taskmanager.repository.Repository;
+import ru.yandex.practicum.taskmanager.service.RegularTaskManager;
+import ru.yandex.practicum.taskmanager.service.TaskManager;
+import ru.yandex.practicum.taskmanager.tasks.*;
+import ru.yandex.practicum.taskmanager.utils.Generator;
+import ru.yandex.practicum.taskmanager.utils.HistoryManager;
+import ru.yandex.practicum.taskmanager.utils.SerialGenerator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,7 +23,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static service.Managers.getDefaultHistory;
+import static ru.yandex.practicum.taskmanager.service.Managers.getDefaultHistory;
 
 class RegularTaskManagerTest {
     TaskManager taskManager;

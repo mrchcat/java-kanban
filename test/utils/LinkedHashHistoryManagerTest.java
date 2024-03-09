@@ -4,8 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import tasks.Selftask;
-import tasks.Task;
+import ru.yandex.practicum.taskmanager.tasks.Selftask;
+import ru.yandex.practicum.taskmanager.tasks.Task;
+import ru.yandex.practicum.taskmanager.utils.LinkedHashHistoryManager;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -1,9 +1,9 @@
-package service;
+package ru.yandex.practicum.taskmanager.service;
 
-import tasks.Epictask;
-import tasks.Selftask;
-import tasks.Subtask;
-import tasks.Task;
+import ru.yandex.practicum.taskmanager.tasks.Epictask;
+import ru.yandex.practicum.taskmanager.tasks.Selftask;
+import ru.yandex.practicum.taskmanager.tasks.Subtask;
+import ru.yandex.practicum.taskmanager.tasks.Task;
 
 import java.util.List;
 

@@ -1,9 +1,9 @@
-package service;
+package ru.yandex.practicum.taskmanager.service;
 
-import repository.Repository;
-import tasks.*;
-import utils.Generator;
-import utils.HistoryManager;
+import ru.yandex.practicum.taskmanager.repository.Repository;
+import ru.yandex.practicum.taskmanager.tasks.*;
+import ru.yandex.practicum.taskmanager.utils.Generator;
+import ru.yandex.practicum.taskmanager.utils.HistoryManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
