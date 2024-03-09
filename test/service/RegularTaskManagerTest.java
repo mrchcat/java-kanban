@@ -613,8 +613,7 @@ class RegularTaskManagerTest {
                 new Selftask("сходить за продуктами", "купить сыр, молоко, творог"));
         Selftask self2 = taskManager.add(
                 new Selftask("выгулять собаку", "пойти вечером погулять в парк"));
-        Selftask self3 = taskManager.add(
-                new Selftask("скачать сериал", "Игра престолов"));
+        taskManager.add(new Selftask("скачать сериал", "Игра престолов"));
         taskManager.get(self1.getId());
         taskManager.get(self2.getId());
         Task[] correctList = {self2, self1};

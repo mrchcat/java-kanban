@@ -56,7 +56,8 @@ public abstract class Task {
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        if (id == null) throw new IllegalArgumentException("Tasks with null ID can't be compared!");
+        else return id.hashCode();
     }
 
     public abstract Task copy();
