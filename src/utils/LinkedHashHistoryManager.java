@@ -9,8 +9,8 @@ import java.util.List;
 
 public class LinkedHashHistoryManager implements HistoryManager {
 
-    final Node head;
-    final HashMap<Integer, Node> nodes;
+    private final Node head;
+    private final HashMap<Integer, Node> nodes;
 
     public LinkedHashHistoryManager() {
         head = new Node(null, null, null);
@@ -64,14 +64,12 @@ public class LinkedHashHistoryManager implements HistoryManager {
     @Override
     public List<Task> getHistory() {
         if (head.next == null) return Collections.emptyList();
-        else {
-            ArrayList<Task> list = new ArrayList<>();
-            Node pos = head;
-            while ((pos = pos.next) != null) {
-                list.add(pos.value);
-            }
-            return list;
+        ArrayList<Task> list = new ArrayList<>();
+        Node pos = head;
+        while ((pos = pos.next) != null) {
+            list.add(pos.value);
         }
+        return list;
     }
 
     @Override

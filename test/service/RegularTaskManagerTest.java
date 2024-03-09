@@ -1,7 +1,5 @@
 package service;
 
-import enums.Status;
-import enums.Type;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -11,10 +9,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import repository.InMemoryMap;
 import repository.Repository;
-import tasks.Epictask;
-import tasks.Selftask;
-import tasks.Subtask;
-import tasks.Task;
+import tasks.*;
 import utils.Generator;
 import utils.HistoryManager;
 import utils.SerialGenerator;
@@ -59,7 +54,7 @@ class RegularTaskManagerTest {
         taskManager = new RegularTaskManager(tasks, subordinates, generator, history);
     }
 
-    @DisplayName("добавляем и считываем задачи типа Selftask")
+    @DisplayName("add and get Selftasks")
     @Tag("add")
     @ParameterizedTest
     @MethodSource("getSelfTasks")
@@ -70,7 +65,7 @@ class RegularTaskManagerTest {
         // проверяем, что метод "add" возвращает корректные таски
         assertAll(
                 () -> assertInstanceOf(Selftask.class, addedTask),
-                () -> assertSame(Type.SELF, addedTask.getType()),
+                () -> assertSame(Subordination.SELF, addedTask.getSubordination()),
                 () -> assertEquals(task.getName(), addedTask.getName()),
                 () -> assertEquals(task.getDescription(), addedTask.getDescription())
         );
@@ -80,13 +75,13 @@ class RegularTaskManagerTest {
         assertAll(
                 () -> assertEquals(id, gettedTask.getId()),
                 () -> assertInstanceOf(Selftask.class, gettedTask),
-                () -> assertSame(Type.SELF, gettedTask.getType()),
+                () -> assertSame(Subordination.SELF, gettedTask.getSubordination()),
                 () -> assertEquals(task.getName(), gettedTask.getName()),
                 () -> assertEquals(task.getDescription(), gettedTask.getDescription())
         );
     }
 
-    @DisplayName("добавляем null Selftask")
+    @DisplayName("add null Selftask")
     @Tag("add")
     @ParameterizedTest
     @NullSource
@@ -94,7 +89,7 @@ class RegularTaskManagerTest {
         assertNull(taskManager.add(task));
     }
 
-    @DisplayName("добавляем null Epictask")
+    @DisplayName("add null Epictask")
     @Tag("add")
     @ParameterizedTest
     @NullSource
@@ -102,7 +97,7 @@ class RegularTaskManagerTest {
         assertNull(taskManager.add(task));
     }
 
-    @DisplayName("добавляем null Subtask")
+    @DisplayName("add null Subtask")
     @Tag("add")
     @ParameterizedTest
     @NullSource
@@ -110,7 +105,7 @@ class RegularTaskManagerTest {
         assertNull(taskManager.add(task));
     }
 
-    @DisplayName("добавляем несколько одиночных задач сразу и проверяем, что они сохранились")
+    @DisplayName("add alone tasks and check that we get correct back from TaskManager")
     @Tag("add")
     @Test
     void getAllSelfTaskTest() {
@@ -136,7 +131,7 @@ class RegularTaskManagerTest {
         );
     }
 
-    @DisplayName("добавляем и считываем эпические задачи (без подзадач)")
+    @DisplayName("add and get epic tasks (without subtasks)")
     @Tag("add")
     @ParameterizedTest
     @MethodSource("getEpicTasks")
@@ -147,7 +142,7 @@ class RegularTaskManagerTest {
         // проверяем, что метод "add" возвращает корректные таски
         assertAll(
                 () -> assertInstanceOf(Epictask.class, addedTask),
-                () -> assertSame(Type.EPIC, addedTask.getType()),
+                () -> assertSame(Subordination.EPIC, addedTask.getSubordination()),
                 () -> assertEquals(task.getName(), addedTask.getName()),
                 () -> assertEquals(task.getDescription(), addedTask.getDescription())
         );
@@ -157,13 +152,13 @@ class RegularTaskManagerTest {
         assertAll(
                 () -> assertEquals(id, gettedTask.getId()),
                 () -> assertInstanceOf(Epictask.class, gettedTask),
-                () -> assertSame(Type.EPIC, gettedTask.getType()),
+                () -> assertSame(Subordination.EPIC, gettedTask.getSubordination()),
                 () -> assertEquals(task.getName(), gettedTask.getName()),
                 () -> assertEquals(task.getDescription(), gettedTask.getDescription())
         );
     }
 
-    @DisplayName("добавляем несколько одиночных эпических задач сразу и проверяем, что они сохранились")
+    @DisplayName("add some alone epic tasks and check that we get correct back from TaskManager")
     @Tag("add")
     @Test
     void getAllEpicTaskTest() {
@@ -185,7 +180,7 @@ class RegularTaskManagerTest {
         );
     }
 
-    @DisplayName("Проверяем возврат списка подзадач эпика")
+    @DisplayName("return the list of epic subtasks")
     @Tag("subList")
     @Test
     void getAllSubsFromEpicFilledTest() {
@@ -206,7 +201,7 @@ class RegularTaskManagerTest {
         );
     }
 
-    @DisplayName("Проверяем возврат списка подзадач эпика при отсутствии подзадач")
+    @DisplayName("return the list of epic subtasks if it has not any subtasks")
     @Tag("subList")
     @Test
     void getAllSubsFromEpicEmptyTest() {
@@ -216,7 +211,7 @@ class RegularTaskManagerTest {
         assertEquals(Collections.emptyList(), list);
     }
 
-    @DisplayName("Добавляем эпик и подзадачи и проверяем возврат полного списка")
+    @DisplayName("add epic and subtasks and check the list of all tasks")
     @Tag("add")
     @Test
     void getSubTaskFromWholeListTest() {
@@ -238,7 +233,7 @@ class RegularTaskManagerTest {
         );
     }
 
-    @DisplayName("Возврат задачи, которой нет в списке")
+    @DisplayName("try to get absent task")
     @Tag("get")
     @Test
     void getNotExistingTaskTest() {
@@ -251,7 +246,7 @@ class RegularTaskManagerTest {
         );
     }
 
-    @DisplayName("Возврат Selftask, которой нет в списке")
+    @DisplayName("get absent Selftask")
     @Tag("get")
     @Test
     void getNotExistingSelfTaskTest() {
@@ -264,7 +259,7 @@ class RegularTaskManagerTest {
         );
     }
 
-    @DisplayName("Возврат Epictask, которой нет в списке")
+    @DisplayName("get absent Epictask")
     @Tag("get")
     @Test
     void getNotExistingEpicTaskTest() {
@@ -277,7 +272,7 @@ class RegularTaskManagerTest {
         );
     }
 
-    @DisplayName("Возврат Subtask, которой нет в списке")
+    @DisplayName("get absent Subtask")
     @Tag("get")
     @Test
     void getNotExistingSubTaskTest() {
@@ -290,7 +285,7 @@ class RegularTaskManagerTest {
         );
     }
 
-    @DisplayName("Удаляем Selftask, проверяем, что оно исчезла из базы")
+    @DisplayName("delete Selftask, try to get")
     @Tag("delete")
     @Test
     void deleteSelfTest() {
@@ -303,7 +298,7 @@ class RegularTaskManagerTest {
         assertNull(taskManager.get(id));
     }
 
-    @DisplayName("Удаляем Epic, проверяем, что из базы пропал и эпик и подзадачи")
+    @DisplayName("delete Epic, check that epic and subtasks deleted")
     @Tag("delete")
     @Test
     void deleteEpicTest() {
@@ -322,7 +317,7 @@ class RegularTaskManagerTest {
         assertNull(taskManager.get(sub3.getId()));
     }
 
-    @DisplayName("Удаляем подзадачу, проверяем, что из базы пропала только подзадача")
+    @DisplayName("delete subtask, check that only subtask deleted")
     @Tag("delete")
     @Test
     void deleteSubTest() {
@@ -358,7 +353,7 @@ class RegularTaskManagerTest {
 
     }
 
-    @DisplayName("Полностью очищаем менеджер")
+    @DisplayName("clear all tasks")
     @Tag("clear")
     @Test
     void Clear() {
@@ -370,7 +365,7 @@ class RegularTaskManagerTest {
         assertEquals(0, taskManager.getAll().size());
     }
 
-    @DisplayName("проверка, что при обновлении меняется имя, описание, статус для Selftask")
+    @DisplayName("update of name, description, status of Selftask")
     @Tag("update")
     @Test
     void updateSelfTask() {
@@ -397,7 +392,7 @@ class RegularTaskManagerTest {
     }
 
     @Tag("update")
-    @DisplayName("проверка, что при обновлении меняется имя, описание, статус для EpicTask")
+    @DisplayName("update of name, description, status of EpicTask")
     @Test
     void updateEpicTaskTest() {
         String oldName = "Иван";
@@ -423,7 +418,7 @@ class RegularTaskManagerTest {
     }
 
     @Tag("update")
-    @DisplayName("проверка, что при обновлении меняется имя, описание, статус для SubTask")
+    @DisplayName("update of name, description, status of  SubTask")
     @Test
     void updateSubTaskTest() {
         String oldName = "Иван";
@@ -454,7 +449,7 @@ class RegularTaskManagerTest {
         });
     }
 
-    @DisplayName("равенство SelfTask с одинаковыми id")
+    @DisplayName("equality SelfTasks with equal id")
     @Tag("equality")
     @Test
     void checkIfEqualSelfTasksTest() {
@@ -465,7 +460,7 @@ class RegularTaskManagerTest {
         assertEquals(selfTask1, selfTask2);
     }
 
-    @DisplayName("равенство EpicTask с одинаковыми id")
+    @DisplayName("equality of EpicTask with equal id")
     @Tag("equality")
     @Test
     void checkIfEqualEpicTasksTest() {
@@ -476,7 +471,7 @@ class RegularTaskManagerTest {
         assertEquals(epicTask1, epicTask2);
     }
 
-    @DisplayName("равенство SubTask с одинаковыми id")
+    @DisplayName("equality SubTask with equal id")
     @Tag("equality")
     @Test
     void checkIfEqualSubTasksTest() {
@@ -487,7 +482,7 @@ class RegularTaskManagerTest {
         assertEquals(subTask1, subTask2);
     }
 
-    @DisplayName("одиночная задача не может быть эпиком при добавлении подзадачи")
+    @DisplayName("Selftask can not be Epic")
     @Tag("equality")
     @Test
     void SelfCanNotBeEpicTest() {
@@ -498,7 +493,7 @@ class RegularTaskManagerTest {
         assertNull(taskManager.add(subTask));
     }
 
-    @DisplayName("подзадача не может быть эпиком при добавлении подзадачи")
+    @DisplayName("Subtask can not be Epic")
     @Tag("SubEpic")
     @Test
     void SubCanNotBeEpicTest() {
@@ -510,7 +505,7 @@ class RegularTaskManagerTest {
         assertNull(taskManager.add(sub2));
     }
 
-    @DisplayName("проверка, что id присваивается в менеджере, а не передается с задачей для SelfTask")
+    @DisplayName("id of SelfTask is assigned in TaskManager, not come from user")
     @Tag("SubEpic")
     @Test
     void isIdGetFromManagerForSelfTaskTest() {
@@ -521,7 +516,7 @@ class RegularTaskManagerTest {
         assertNotEquals(fakeId, self.getId());
     }
 
-    @DisplayName("проверка, что id присваивается в менеджере, а не передается с задачей для EpicTask")
+    @DisplayName("id of EoicTask is assigned in TaskManager, not come from user")
     @Tag("id")
     @Test
     void isIdGetFromManagerForEpicTaskTest() {
@@ -532,7 +527,7 @@ class RegularTaskManagerTest {
         assertNotEquals(fakeId, task.getId());
     }
 
-    @DisplayName("проверка, что id присваивается в менеджере, а не передается с задачей для SubTask")
+    @DisplayName("id of SubTask is assigned in TaskManager, not come from user")
     @Tag("id")
     @Test
     void isIdGetFromManagerForSubTaskTest() {
@@ -545,7 +540,7 @@ class RegularTaskManagerTest {
         assertNotEquals(fakeId, sub.getId());
     }
 
-    @DisplayName("проверка изменения статуса Epic при изменении статуса подзадач")
+    @DisplayName("status of Epic change when we change status of Subtasks")
     @Tag("SUbEpic")
     @Test
     void EpicStatusTest() {
@@ -581,7 +576,7 @@ class RegularTaskManagerTest {
         assertEquals(taskManager.get(epicId).getStatus(), Status.NEW);
     }
 
-    @DisplayName("проверка, что список не обновляется при добавлении, удалении и обновлении задач")
+    @DisplayName("history is not changed when we add, remove and update tasks")
     @Tag("history")
     @Test
     void HistoryNotUpdatedTest() {
@@ -608,7 +603,7 @@ class RegularTaskManagerTest {
         assertTrue(taskManager.getHistory().isEmpty());
     }
 
-    @DisplayName("проверка, что список обновляется при get")
+    @DisplayName("history update when we get Task")
     @Tag("history")
     @Test
     void HistoryUpdatedTest() {

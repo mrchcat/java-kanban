@@ -1,7 +1,5 @@
 package tasks;
 
-import enums.Type;
-
 public class Subtask extends Task {
     private final Integer epicId;
 
@@ -15,8 +13,8 @@ public class Subtask extends Task {
     }
 
     @Override
-    public Type getType() {
-        return Type.SUBTASK;
+    public Subordination getSubordination() {
+        return Subordination.SUBTASK;
     }
 
     @Override

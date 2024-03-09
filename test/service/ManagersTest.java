@@ -8,14 +8,14 @@ import utils.LinkedHashHistoryManager;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 class ManagersTest {
-    @DisplayName("получить класс TaskManager")
+    @DisplayName("get TaskManager class")
     @Tag("instance")
     @Test
     void getDefaultTaskManager() {
         assertInstanceOf(TaskManager.class, Managers.getDefault());
     }
 
-    @DisplayName("получить класс LinkedHashHistoryManager")
+    @DisplayName("get LinkedHashHistoryManager class")
     @Tag("instance")
     @Test
     void getDefaultHistory() {

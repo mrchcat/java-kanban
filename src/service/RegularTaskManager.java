@@ -1,12 +1,7 @@
 package service;
 
-import enums.Status;
-import enums.Type;
 import repository.Repository;
-import tasks.Epictask;
-import tasks.Selftask;
-import tasks.Subtask;
-import tasks.Task;
+import tasks.*;
 import utils.Generator;
 import utils.HistoryManager;
 
@@ -15,10 +10,10 @@ import java.util.Collections;
 import java.util.List;
 
 public class RegularTaskManager implements TaskManager {
-    private final Repository<Integer, Task> tasks; //хранилище <id задачи, задача>
-    private final Repository<Integer, ArrayList<Integer>> subordinates; //хранилище <id эпика, массив id подзадач>
-    private final Generator generator; // генератор id
-    private final HistoryManager history; // хранилище списка просмотренных задач
+    private final Repository<Integer, Task> tasks;
+    private final Repository<Integer, ArrayList<Integer>> subordinates;
+    private final Generator generator;
+    private final HistoryManager history;
 
     public RegularTaskManager(Repository<Integer, Task> tasks,
                               Repository<Integer, ArrayList<Integer>> subordinates,
@@ -67,7 +62,7 @@ public class RegularTaskManager implements TaskManager {
         if (task == null) return null;
         Integer epicId = task.getEpicId();
         Task someTask = tasks.get(epicId);
-        if ((someTask != null) && (someTask.getType() == Type.EPIC)) {
+        if ((someTask != null) && (someTask.getSubordination() == Subordination.EPIC)) {
             Subtask copy = new Subtask(task.getName(), task.getDescription(), epicId);
             Integer id = generator.getId();
             copy.setId(id);
@@ -94,7 +89,7 @@ public class RegularTaskManager implements TaskManager {
         if (id == null) return null;
         Task task = get(id);
         Epictask epictask = null;
-        if ((task != null) && (task.getType() == Type.EPIC)) {
+        if ((task != null) && (task.getSubordination() == Subordination.EPIC)) {
             epictask = (Epictask) task;
             history.add(epictask);
         }
@@ -106,7 +101,7 @@ public class RegularTaskManager implements TaskManager {
         if (id == null) return null;
         Task task = get(id);
         Selftask selftask = null;
-        if ((task != null) && (task.getType() == Type.SELF)) {
+        if ((task != null) && (task.getSubordination() == Subordination.SELF)) {
             selftask = (Selftask) task;
             history.add(selftask);
         }
@@ -118,7 +113,7 @@ public class RegularTaskManager implements TaskManager {
         if (id == null) return null;
         Task task = get(id);
         Subtask subtask = null;
-        if ((task != null) && (task.getType() == Type.SUBTASK)) {
+        if ((task != null) && (task.getSubordination() == Subordination.SUBTASK)) {
             subtask = (Subtask) task;
             history.add(subtask);
         }
@@ -130,19 +125,20 @@ public class RegularTaskManager implements TaskManager {
     public Task delete(Integer idToDelete) {
         Task taskToDeleted = tasks.get(idToDelete);
         if (taskToDeleted != null) {
-            switch (taskToDeleted.getType()) {
+            switch (taskToDeleted.getSubordination()) {
                 case SELF -> tasks.delete(idToDelete);
-                case Type.EPIC -> {
+                case Subordination.EPIC -> {
                     for (Integer subId : subordinates.get(idToDelete)) {
                         tasks.delete(subId);
                     }
                     subordinates.delete(idToDelete);
                     tasks.delete(idToDelete);
                 }
-                case Type.SUBTASK -> {
+                case Subordination.SUBTASK -> {
                     Subtask subtaskToDelete = (Subtask) taskToDeleted;
                     Epictask epicOfDeleted = (Epictask) tasks.get(subtaskToDelete.getEpicId());
-                    if (epicOfDeleted.getType() != Type.EPIC) throw new IllegalArgumentException("Некорректный EpicId");
+                    if (epicOfDeleted.getSubordination() != Subordination.EPIC)
+                        throw new IllegalArgumentException("Некорректный EpicId");
                     Integer epicOfDeletedId = epicOfDeleted.getId();
                     subordinates.get(epicOfDeletedId).remove(idToDelete);
                     if (subordinates.get(epicOfDeletedId).isEmpty()) {
@@ -169,7 +165,7 @@ public class RegularTaskManager implements TaskManager {
     public List<Subtask> getAllSubs(int id) {
         Task task = tasks.get(id);
         List<Subtask> copyList = Collections.emptyList();
-        if ((task != null) && (task.getType() == Type.EPIC)) {
+        if ((task != null) && (task.getSubordination() == Subordination.EPIC)) {
             Epictask epic = (Epictask) task;
             Integer epicId = epic.getId();
             var subList = subordinates.get(epicId);
@@ -190,7 +186,7 @@ public class RegularTaskManager implements TaskManager {
     @Override
     public Task update(Task task) {
         if ((task == null) || (task.getId() == null)) return null;
-        switch (task.getType()) {
+        switch (task.getSubordination()) {
             case SELF -> {
                 return update((Selftask) task);
             }

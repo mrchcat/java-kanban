@@ -27,7 +27,7 @@ class LinkedHashHistoryManagerTest {
         }
     }
 
-    @DisplayName("добавляем несколько задач подряд")
+    @DisplayName("add some tasks one after another")
     @Tag("add")
     @Test
     void simpleAdd() {
@@ -37,7 +37,7 @@ class LinkedHashHistoryManagerTest {
         assertArrayEquals(tasks.toArray(), history.getHistory().toArray());
     }
 
-    @DisplayName("добавляем несколько задач подряд и повторно вызываем первую из них")
+    @DisplayName("add some tasks one after another and add the first one again")
     @Tag("add")
     @Test
     void AddFirstTest() {
@@ -53,7 +53,7 @@ class LinkedHashHistoryManagerTest {
         assertArrayEquals(tasks.toArray(), history.getHistory().toArray());
     }
 
-    @DisplayName("добавляем несколько задач подряд и повторно вызываем последнюю из них")
+    @DisplayName("add some tasks one after another and add the last one again")
     @Tag("add")
     @Test
     void AddLastTest() {
@@ -68,7 +68,7 @@ class LinkedHashHistoryManagerTest {
     }
 
 
-    @DisplayName("добавляем несколько задач подряд и повторно вызываем задачу в середине")
+    @DisplayName("add some tasks one after another and add one in the middle again")
     @Tag("add")
     @Test
     void AddCenterTest() {
@@ -85,7 +85,7 @@ class LinkedHashHistoryManagerTest {
         assertArrayEquals(tasks.toArray(), history.getHistory().toArray());
     }
 
-    @DisplayName("добавляем много элементов")
+    @DisplayName("add 1_000_000 tasks")
     @Tag("add")
     @Test
     void addMany() {
@@ -100,7 +100,7 @@ class LinkedHashHistoryManagerTest {
     }
 
 
-    @DisplayName("очищаем список")
+    @DisplayName("clear list of tasks")
     @Tag("clear")
     @Test
     void CLearTest() {
@@ -112,7 +112,7 @@ class LinkedHashHistoryManagerTest {
         assertTrue(history.getHistory().isEmpty());
     }
 
-    @DisplayName("удаляем в начале")
+    @DisplayName("remove task in the beginning")
     @Tag("delete")
     @Test
     void deleteFirst() {
@@ -125,7 +125,7 @@ class LinkedHashHistoryManagerTest {
         assertArrayEquals(tasks.toArray(), history.getHistory().toArray());
     }
 
-    @DisplayName("удаляем в конце")
+    @DisplayName("remove task at the end")
     @Tag("delete")
     @Test
     void deleteLast() {
@@ -138,7 +138,7 @@ class LinkedHashHistoryManagerTest {
         assertArrayEquals(tasks.toArray(), history.getHistory().toArray());
     }
 
-    @DisplayName("удаляем в середине")
+    @DisplayName("remove task in the middle")
     @Tag("delete")
     @Test
     void deleteCenter() {
@@ -152,7 +152,7 @@ class LinkedHashHistoryManagerTest {
         assertArrayEquals(tasks.toArray(), history.getHistory().toArray());
     }
 
-    @DisplayName("удаляем все элементы по очереди")
+    @DisplayName("remove all tasks one after another")
     @Tag("delete")
     @Test
     void deleteAll() {

@@ -1,8 +1,5 @@
 package tasks;
 
-import enums.Status;
-import enums.Type;
-
 public abstract class Task {
     private Integer id;
     private String name;
@@ -16,7 +13,7 @@ public abstract class Task {
         this.status = Status.NEW;
     }
 
-    public abstract Type getType();
+    public abstract Subordination getSubordination();
 
     public Integer getId() {
         return id;
