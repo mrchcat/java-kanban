@@ -20,45 +20,46 @@ public class LinkedHashHistoryManager implements HistoryManager {
     @Override
     public void add(Task item) {
         if (item == null) return;
+
         int id = item.getId();
         Node oldFirst = head.next;
-        if (nodes.containsKey(id)) {
-            Node cur = nodes.get(id);
-            cur.value = item;
-            if (cur != oldFirst) {
-                Node afterCur = cur.next;
-                Node beforeCur = cur.before;
-                beforeCur.next = afterCur;
-                if (afterCur != null) {
-                    afterCur.before = beforeCur;
-                }
-                head.next = cur;
-                oldFirst.before = cur;
-                cur.next = oldFirst;
-                cur.before = head;
-            }
-        } else {
+        if (!nodes.containsKey(id)) {
             Node cur = new Node(item, head, oldFirst);
             head.next = cur;
             if (oldFirst != null) {
                 oldFirst.before = cur;
             }
             nodes.put(id, cur);
+            return;
         }
+
+        Node cur = nodes.get(id);
+        cur.value = item;
+        if (cur == oldFirst) return;
+
+        Node afterCur = cur.next;
+        Node beforeCur = cur.before;
+        beforeCur.next = afterCur;
+        if (afterCur != null) {
+            afterCur.before = beforeCur;
+        }
+        head.next = cur;
+        oldFirst.before = cur;
+        cur.next = oldFirst;
+        cur.before = head;
     }
 
     @Override
     public void remove(int id) {
-        if (nodes.containsKey(id)) {
-            Node cur = nodes.get(id);
-            Node beforeCur = cur.before;
-            Node afterCur = cur.next;
-            beforeCur.next = afterCur;
-            if (afterCur != null) {
-                afterCur.before = beforeCur;
-            }
-            nodes.remove(id);
+        if (!nodes.containsKey(id)) return;
+        Node cur = nodes.get(id);
+        Node beforeCur = cur.before;
+        Node afterCur = cur.next;
+        beforeCur.next = afterCur;
+        if (afterCur != null) {
+            afterCur.before = beforeCur;
         }
+        nodes.remove(id);
     }
 
     @Override
