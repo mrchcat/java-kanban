@@ -174,8 +174,7 @@ public class RegularTaskManager implements TaskManager {
         }
         if (copyList.isEmpty()) {
             return Collections.emptyList();
-        }
-        else return copyList;
+        } else return copyList;
     }
 
     @Override
@@ -196,8 +195,7 @@ public class RegularTaskManager implements TaskManager {
         }
         if (copyList.isEmpty()) {
             return Collections.emptyList();
-        }
-        else return copyList;
+        } else return copyList;
     }
 
     // Обновление по образцу, содержащемуся в task.
