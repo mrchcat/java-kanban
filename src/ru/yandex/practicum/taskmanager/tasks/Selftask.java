@@ -1,7 +1,5 @@
 package ru.yandex.practicum.taskmanager.tasks;
 
-import ru.yandex.practicum.taskmanager.enums.Type;
-
 public class Selftask extends Task {
 
     public Selftask(String name, String description) {
@@ -9,8 +7,8 @@ public class Selftask extends Task {
     }
 
     @Override
-    public Type getType() {
-        return Type.SELF;
+    public Subordination getSubordination() {
+        return Subordination.SELF;
     }
 
     @Override

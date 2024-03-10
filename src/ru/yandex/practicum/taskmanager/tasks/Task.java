@@ -1,8 +1,5 @@
 package ru.yandex.practicum.taskmanager.tasks;
 
-import ru.yandex.practicum.taskmanager.enums.Status;
-import ru.yandex.practicum.taskmanager.enums.Type;
-
 public abstract class Task {
     private Integer id;
     private String name;
@@ -16,7 +13,7 @@ public abstract class Task {
         this.status = Status.NEW;
     }
 
-    public abstract Type getType();
+    public abstract Subordination getSubordination();
 
     public Integer getId() {
         return id;
@@ -52,15 +49,23 @@ public abstract class Task {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Task task)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Task task)) {
+            return false;
+        }
         return id.equals(task.id);
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        if (id == null) {
+            throw new IllegalArgumentException("Tasks with null ID can't be compared!");
+        } else {
+            return id.hashCode();
+        }
     }
 
-    abstract public Task copy();
+    public abstract Task copy();
 }
