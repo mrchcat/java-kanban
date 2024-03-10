@@ -19,7 +19,9 @@ public class LinkedHashHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task item) {
-        if (item == null) return;
+        if (item == null) {
+            return;
+        }
 
         int id = item.getId();
         Node oldFirst = head.next;
@@ -35,7 +37,9 @@ public class LinkedHashHistoryManager implements HistoryManager {
 
         Node cur = nodes.get(id);
         cur.value = item;
-        if (cur == oldFirst) return;
+        if (cur == oldFirst) {
+            return;
+        }
 
         Node afterCur = cur.next;
         Node beforeCur = cur.before;
@@ -51,7 +55,9 @@ public class LinkedHashHistoryManager implements HistoryManager {
 
     @Override
     public void remove(int id) {
-        if (!nodes.containsKey(id)) return;
+        if (!nodes.containsKey(id)) {
+            return;
+        }
         Node cur = nodes.get(id);
         Node beforeCur = cur.before;
         Node afterCur = cur.next;
@@ -64,7 +70,9 @@ public class LinkedHashHistoryManager implements HistoryManager {
 
     @Override
     public List<Task> getHistory() {
-        if (head.next == null) return Collections.emptyList();
+        if (head.next == null) {
+            return Collections.emptyList();
+        }
         ArrayList<Task> list = new ArrayList<>();
         Node pos = head;
         while ((pos = pos.next) != null) {

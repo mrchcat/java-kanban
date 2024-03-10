@@ -1,4 +1,4 @@
-package service;
+package ru.yandex.practicum.taskmanager.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,8 +9,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import ru.yandex.practicum.taskmanager.repository.InMemoryMap;
 import ru.yandex.practicum.taskmanager.repository.Repository;
-import ru.yandex.practicum.taskmanager.service.RegularTaskManager;
-import ru.yandex.practicum.taskmanager.service.TaskManager;
 import ru.yandex.practicum.taskmanager.tasks.*;
 import ru.yandex.practicum.taskmanager.utils.Generator;
 import ru.yandex.practicum.taskmanager.utils.HistoryManager;
@@ -358,7 +356,7 @@ class RegularTaskManagerTest {
     @DisplayName("clear all tasks")
     @Tag("clear")
     @Test
-    void Clear() {
+    void clearTest() {
         taskManager.add(new Selftask("сходить за продуктами", "купить сыр, молоко, творог"));
         taskManager.add(new Selftask("выгулять собаку", "пойти вечером погулять в парк"));
         taskManager.add(new Selftask("все проходит", "и это пройдет"));
@@ -370,7 +368,7 @@ class RegularTaskManagerTest {
     @DisplayName("update of name, description, status of Selftask")
     @Tag("update")
     @Test
-    void updateSelfTask() {
+    void updateSelfTaskTest() {
         String oldName = "Иван";
         String newName = "Петр";
         String oldDesc = "Иванов";
@@ -487,7 +485,7 @@ class RegularTaskManagerTest {
     @DisplayName("Selftask can not be Epic")
     @Tag("equality")
     @Test
-    void SelfCanNotBeEpicTest() {
+    void selfCanNotBeEpicTest() {
         Selftask self = new Selftask("sss", "sss");
         self = taskManager.add(self);
         int selfId = self.getId();
@@ -498,7 +496,7 @@ class RegularTaskManagerTest {
     @DisplayName("Subtask can not be Epic")
     @Tag("SubEpic")
     @Test
-    void SubCanNotBeEpicTest() {
+    void subCanNotBeEpicTest() {
         Epictask epic = new Epictask("ss", "ffff");
         epic = taskManager.add(epic);
         Subtask sub1 = new Subtask("sss", "sss", epic.getId());
@@ -545,7 +543,7 @@ class RegularTaskManagerTest {
     @DisplayName("status of Epic change when we change status of Subtasks")
     @Tag("SUbEpic")
     @Test
-    void EpicStatusTest() {
+    void epicStatusTest() {
         Epictask epic = taskManager.add(new Epictask("пойти на рыбалку", "Селигер, в районе оз Волго"));
         Subtask sub1 = taskManager.add(
                 new Subtask("купить удочку", "магазин Охотник, проспект Ленина, 20", epic.getId()));
@@ -581,7 +579,7 @@ class RegularTaskManagerTest {
     @DisplayName("history is not changed when we add, remove and update tasks")
     @Tag("history")
     @Test
-    void HistoryNotUpdatedTest() {
+    void historyNotUpdatedTest() {
         Epictask epic = taskManager.add(
                 new Epictask("пойти на рыбалку", "Селигер, в районе оз Волго"));
         taskManager.add(
@@ -608,7 +606,7 @@ class RegularTaskManagerTest {
     @DisplayName("history update when we get Task")
     @Tag("history")
     @Test
-    void HistoryUpdatedTest() {
+    void historyUpdatedTest() {
         Selftask self1 = taskManager.add(
                 new Selftask("сходить за продуктами", "купить сыр, молоко, творог"));
         Selftask self2 = taskManager.add(

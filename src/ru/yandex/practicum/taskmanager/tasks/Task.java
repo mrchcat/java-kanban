@@ -49,15 +49,22 @@ public abstract class Task {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Task task)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Task task)) {
+            return false;
+        }
         return id.equals(task.id);
     }
 
     @Override
     public int hashCode() {
-        if (id == null) throw new IllegalArgumentException("Tasks with null ID can't be compared!");
-        else return id.hashCode();
+        if (id == null) {
+            throw new IllegalArgumentException("Tasks with null ID can't be compared!");
+        } else {
+            return id.hashCode();
+        }
     }
 
     public abstract Task copy();

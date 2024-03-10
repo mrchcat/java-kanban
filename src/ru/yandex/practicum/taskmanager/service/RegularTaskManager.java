@@ -38,7 +38,9 @@ public class RegularTaskManager implements TaskManager {
 
     @Override
     public Selftask add(Selftask task) {
-        if (task == null) return null;
+        if (task == null) {
+            return null;
+        }
         Selftask copy = new Selftask(task.getName(), task.getDescription());
         Integer id = generator.getId();
         copy.setId(id);
@@ -48,7 +50,9 @@ public class RegularTaskManager implements TaskManager {
 
     @Override
     public Epictask add(Epictask task) {
-        if (task == null) return null;
+        if (task == null) {
+            return null;
+        }
         Epictask copy = new Epictask(task.getName(), task.getDescription());
         Integer id = generator.getId();
         copy.setId(id);
@@ -59,7 +63,9 @@ public class RegularTaskManager implements TaskManager {
 
     @Override
     public Subtask add(Subtask task) {
-        if (task == null) return null;
+        if (task == null) {
+            return null;
+        }
         Integer epicId = task.getEpicId();
         Task someTask = tasks.get(epicId);
         if ((someTask != null) && (someTask.getSubordination() == Subordination.EPIC)) {
@@ -69,7 +75,9 @@ public class RegularTaskManager implements TaskManager {
             tasks.put(id, copy);
             subordinates.get(epicId).add(id);
             return copy.copy();
-        } else return null;
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -86,7 +94,9 @@ public class RegularTaskManager implements TaskManager {
 
     @Override
     public Epictask getEpic(Integer id) {
-        if (id == null) return null;
+        if (id == null) {
+            return null;
+        }
         Task task = get(id);
         Epictask epictask = null;
         if ((task != null) && (task.getSubordination() == Subordination.EPIC)) {
@@ -98,7 +108,9 @@ public class RegularTaskManager implements TaskManager {
 
     @Override
     public Selftask getSelftask(Integer id) {
-        if (id == null) return null;
+        if (id == null) {
+            return null;
+        }
         Task task = get(id);
         Selftask selftask = null;
         if ((task != null) && (task.getSubordination() == Subordination.SELF)) {
@@ -110,7 +122,9 @@ public class RegularTaskManager implements TaskManager {
 
     @Override
     public Subtask getSubtask(Integer id) {
-        if (id == null) return null;
+        if (id == null) {
+            return null;
+        }
         Task task = get(id);
         Subtask subtask = null;
         if ((task != null) && (task.getSubordination() == Subordination.SUBTASK)) {
@@ -122,29 +136,30 @@ public class RegularTaskManager implements TaskManager {
 
 
     @Override
-    public Task delete(Integer idToDelete) {
-        Task taskToDeleted = tasks.get(idToDelete);
+    public Task delete(Integer taskId) {
+        Task taskToDeleted = tasks.get(taskId);
         if (taskToDeleted != null) {
             switch (taskToDeleted.getSubordination()) {
-                case SELF -> tasks.delete(idToDelete);
+                case SELF -> tasks.delete(taskId);
                 case Subordination.EPIC -> {
-                    for (Integer subId : subordinates.get(idToDelete)) {
+                    for (Integer subId : subordinates.get(taskId)) {
                         tasks.delete(subId);
                     }
-                    subordinates.delete(idToDelete);
-                    tasks.delete(idToDelete);
+                    subordinates.delete(taskId);
+                    tasks.delete(taskId);
                 }
                 case Subordination.SUBTASK -> {
                     Subtask subtaskToDelete = (Subtask) taskToDeleted;
                     Epictask epicOfDeleted = (Epictask) tasks.get(subtaskToDelete.getEpicId());
-                    if (epicOfDeleted.getSubordination() != Subordination.EPIC)
+                    if (epicOfDeleted.getSubordination() != Subordination.EPIC) {
                         throw new IllegalArgumentException("Некорректный EpicId");
+                    }
                     Integer epicOfDeletedId = epicOfDeleted.getId();
-                    subordinates.get(epicOfDeletedId).remove(idToDelete);
+                    subordinates.get(epicOfDeletedId).remove(taskId);
                     if (subordinates.get(epicOfDeletedId).isEmpty()) {
                         epicOfDeleted.setStatus(Status.NEW);
                     }
-                    tasks.delete(idToDelete);
+                    tasks.delete(taskId);
                 }
             }
         }
@@ -157,7 +172,9 @@ public class RegularTaskManager implements TaskManager {
         for (var task : tasks.values()) {
             copyList.add(task.copy());
         }
-        if (copyList.isEmpty()) return Collections.emptyList();
+        if (copyList.isEmpty()) {
+            return Collections.emptyList();
+        }
         else return copyList;
     }
 
@@ -177,7 +194,9 @@ public class RegularTaskManager implements TaskManager {
                 }
             }
         }
-        if (copyList.isEmpty()) return Collections.emptyList();
+        if (copyList.isEmpty()) {
+            return Collections.emptyList();
+        }
         else return copyList;
     }
 
@@ -185,7 +204,9 @@ public class RegularTaskManager implements TaskManager {
     // Обновлению подлежат только текстовые поля и статус, остальные поля игнорируются.
     @Override
     public Task update(Task task) {
-        if ((task == null) || (task.getId() == null)) return null;
+        if ((task == null) || (task.getId() == null)) {
+            return null;
+        }
         switch (task.getSubordination()) {
             case SELF -> {
                 return update((Selftask) task);
@@ -202,10 +223,14 @@ public class RegularTaskManager implements TaskManager {
 
     @Override
     public Selftask update(Selftask task) {
-        if ((task == null) || (task.getId() == null)) return null;
+        if ((task == null) || (task.getId() == null)) {
+            return null;
+        }
         Integer id = task.getId();
         Task oldTask = tasks.get(id);
-        if (oldTask == null) return null;
+        if (oldTask == null) {
+            return null;
+        }
 
         oldTask.setName(task.getName());
         oldTask.setDescription(task.getDescription());
@@ -215,10 +240,14 @@ public class RegularTaskManager implements TaskManager {
 
     @Override
     public Epictask update(Epictask task) {
-        if ((task == null) || (task.getId() == null)) return null;
+        if ((task == null) || (task.getId() == null)) {
+            return null;
+        }
         Integer id = task.getId();
         Task oldTask = tasks.get(id);
-        if (oldTask == null) return null;
+        if (oldTask == null) {
+            return null;
+        }
 
         oldTask.setName(task.getName());
         oldTask.setDescription(task.getDescription());
@@ -227,10 +256,14 @@ public class RegularTaskManager implements TaskManager {
 
     @Override
     public Subtask update(Subtask task) {
-        if ((task == null) || (task.getId() == null)) return null;
+        if ((task == null) || (task.getId() == null)) {
+            return null;
+        }
         Integer id = task.getId();
         Task oldTask = tasks.get(id);
-        if (oldTask == null) return null;
+        if (oldTask == null) {
+            return null;
+        }
 
         oldTask.setName(task.getName());
         oldTask.setDescription(task.getDescription());
@@ -241,13 +274,19 @@ public class RegularTaskManager implements TaskManager {
         Status status = task.getStatus();
         switch (status) {
             case Status.NEW -> {
-                if (isAllSubsNew(epic)) epic.setStatus(Status.NEW);
-                else epic.setStatus(Status.IN_PROGRESS);
+                if (isAllSubsNew(epic)) {
+                    epic.setStatus(Status.NEW);
+                } else {
+                    epic.setStatus(Status.IN_PROGRESS);
+                }
             }
             case Status.IN_PROGRESS -> epic.setStatus(Status.IN_PROGRESS);
             case Status.DONE -> {
-                if (isAllSubsDone(epic)) epic.setStatus(Status.DONE);
-                else epic.setStatus(Status.IN_PROGRESS);
+                if (isAllSubsDone(epic)) {
+                    epic.setStatus(Status.DONE);
+                } else {
+                    epic.setStatus(Status.IN_PROGRESS);
+                }
             }
             default -> throw new IllegalArgumentException("Некорректный статус задачи");
         }
@@ -257,7 +296,9 @@ public class RegularTaskManager implements TaskManager {
     private boolean isAllSubsNew(Epictask epic) {
         var subList = subordinates.get(epic.getId());
         for (Integer subId : subList) {
-            if (tasks.get(subId).getStatus() != Status.NEW) return false;
+            if (tasks.get(subId).getStatus() != Status.NEW) {
+                return false;
+            }
         }
         return true;
     }
@@ -265,7 +306,9 @@ public class RegularTaskManager implements TaskManager {
     private boolean isAllSubsDone(Epictask epic) {
         var subList = subordinates.get(epic.getId());
         for (Integer subId : subList) {
-            if (tasks.get(subId).getStatus() != Status.DONE) return false;
+            if (tasks.get(subId).getStatus() != Status.DONE) {
+                return false;
+            }
         }
         return true;
     }
