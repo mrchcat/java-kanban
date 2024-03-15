@@ -31,6 +31,11 @@ public class RegularTaskManager implements TaskManager {
     }
 
     @Override
+    public void clearHistory() {
+        history.clear();
+    }
+
+    @Override
     public void clear() {
         tasks.clear();
         subordinates.clear();
