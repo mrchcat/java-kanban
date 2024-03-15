@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class Managers {
     private static final int START_ID_BY_DEFAULT = 1;
     private static final String PATH_HISTORY_BY_DEFAULT = "src/ru/yandex/practicum/taskmanager/repository/history.scv";
-    private static final boolean LOAD_HISTORY_BY_DEFAULT = false;
+    private static final boolean LOAD_HISTORY_BY_DEFAULT = true;
 
     public static TaskManager getDefault() {
         Repository<Integer, Task> tasks = new InMemoryMap<>();

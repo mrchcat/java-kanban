@@ -52,6 +52,7 @@ class RegularTaskManagerTest {
         Generator generator = new SerialGenerator(START_ID_BY_DEFAULT);
         HistoryManager history = getDefaultHistory();
         taskManager = new RegularTaskManager(tasks, subordinates, generator, history);
+        taskManager.clearHistory();
     }
 
     @DisplayName("add and get Selftasks")
