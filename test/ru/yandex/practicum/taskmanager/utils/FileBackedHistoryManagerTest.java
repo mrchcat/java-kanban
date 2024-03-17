@@ -18,29 +18,20 @@ import static java.nio.file.StandardOpenOption.CREATE;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FileBackedHistoryManagerTest {
-
     String filePath;
     Path path;
     String header = "id,subordination,name,status,description,epicId\n";
 
     @BeforeEach
-    void initAndClearBefore() {
+    void initAndClearBefore() throws IOException {
         filePath = "src/ru/yandex/practicum/taskmanager/repository/history.txt";
         path = Path.of(filePath);
-        try {
-            Files.deleteIfExists(path);
-        } catch (IOException e) {
-            System.out.println("Ошибка удаления файла " + filePath);
-        }
+        Files.deleteIfExists(path);
     }
 
     @AfterEach
-    void clearAfter() {
-        try {
-            Files.deleteIfExists(path);
-        } catch (IOException e) {
-            System.out.println("Ошибка удаления файла " + filePath);
-        }
+    void clearAfter() throws IOException {
+        Files.deleteIfExists(path);
     }
 
 
@@ -67,7 +58,7 @@ class FileBackedHistoryManagerTest {
 
     @DisplayName("check content of new file")
     @Test
-    void createAndCheckNewTest() {
+    void createAndCheckNewTest() throws IOException {
         FileBackedHistoryManager historyManager = new FileBackedHistoryManager(filePath, false);
         assertTrue(Files.isRegularFile(path));
         try (BufferedReader reader = Files.newBufferedReader(path)) {
@@ -77,22 +68,18 @@ class FileBackedHistoryManagerTest {
                     () -> assertEquals(header.trim(), line1.trim()),
                     () -> assertNull(line2)
             );
-        } catch (IOException e) {
-            System.out.println("Ошибка при чтении файла " + path);
         }
     }
 
     @DisplayName("create and add Selftasks ")
     @Test
-    void createAndAddSelftasksTest() {
+    void createAndAddSelftasksTest() throws IOException {
         FileBackedHistoryManager historyManager = new FileBackedHistoryManager(filePath, false);
         assertTrue(Files.isRegularFile(path));
         String answer = fillInHistoryManagerBySelftasks(historyManager);
         try (BufferedReader reader = Files.newBufferedReader(path)) {
             String fileData = Files.readString(path);
             assertEquals(answer, fileData);
-        } catch (IOException e) {
-            System.out.println("Ошибка при чтении файла " + path);
         }
     }
 
@@ -114,15 +101,13 @@ class FileBackedHistoryManagerTest {
 
     @DisplayName("create and add Epictasks ")
     @Test
-    void createAndAddEpictasks() {
+    void createAndAddEpictasks() throws IOException {
         FileBackedHistoryManager historyManager = new FileBackedHistoryManager(filePath, false);
         assertTrue(Files.isRegularFile(path));
         String answer = fillInHistoryManagerByEpictasks(historyManager);
         try (BufferedReader reader = Files.newBufferedReader(path)) {
             String fileData = Files.readString(path);
             assertEquals(answer, fileData);
-        } catch (IOException e) {
-            System.out.println("Ошибка при чтении файла " + path);
         }
     }
 
@@ -144,15 +129,13 @@ class FileBackedHistoryManagerTest {
 
     @DisplayName("create and add Epictasks ")
     @Test
-    void createAndAddSubtasksTest() {
+    void createAndAddSubtasksTest() throws IOException {
         FileBackedHistoryManager historyManager = new FileBackedHistoryManager(filePath, false);
         assertTrue(Files.isRegularFile(path));
         String answer = fillInHistoryManagerBySubtasks(historyManager);
         try (BufferedReader reader = Files.newBufferedReader(path)) {
             String fileData = Files.readString(path);
             assertEquals(answer, fileData);
-        } catch (IOException e) {
-            System.out.println("Ошибка при чтении файла " + path);
         }
     }
 
@@ -174,15 +157,13 @@ class FileBackedHistoryManagerTest {
 
     @DisplayName("create and add same tasks  ")
     @Test
-    void createAndAddSameTasksTest() {
+    void createAndAddSameTasksTest() throws IOException {
         FileBackedHistoryManager historyManager = new FileBackedHistoryManager(filePath, false);
         assertTrue(Files.isRegularFile(path));
         String answer = fillInHistoryManagerBySameTasks(historyManager);
         try (BufferedReader reader = Files.newBufferedReader(path)) {
             String fileData = Files.readString(path);
             assertEquals(answer, fileData);
-        } catch (IOException e) {
-            System.out.println("Ошибка при чтении файла " + path);
         }
     }
 
@@ -196,8 +177,6 @@ class FileBackedHistoryManagerTest {
         }
         historyManager.add(list.get(1));
         historyManager.add(list.get(3));
-
-
         String answer = """
                 3,SUBTASK,name3,NEW,desc3,3
                 1,SUBTASK,name1,NEW,desc1,1
@@ -211,7 +190,7 @@ class FileBackedHistoryManagerTest {
 
     @DisplayName("load existing file")
     @Test
-    void loadExistingFileTest() {
+    void loadExistingFileTest() throws IOException {
         String fileContent = header + """
                 9,SUBTASK,name2,NEW,desc2,8
                 8,EPIC,name2,NEW,desc2,null
@@ -223,48 +202,39 @@ class FileBackedHistoryManagerTest {
                 2,SELF,name1,NEW,desc1,null
                 1,SELF,name0,DONE,desc0,null
                 """;
-        try {
-            Files.writeString(path, fileContent, CREATE);
-            FileBackedHistoryManager historyManager = new FileBackedHistoryManager(filePath, true);
-            List<Task> history = historyManager.getHistory();
-            assertEquals(9, history.size());
-            assertAll(
-                    () -> assertEquals(9, history.get(0).getId()),
-                    () -> assertEquals(Subordination.SUBTASK, history.get(0).getSubordination()),
-                    () -> assertEquals("name2", history.get(0).getName()),
-                    () -> assertEquals(Status.NEW, history.get(0).getStatus()),
-                    () -> assertEquals(8, ((Subtask) history.get(0)).getEpicId()),
-                    () -> assertEquals("desc2", history.get(0).getDescription())
-            );
-            assertAll(
-                    () -> assertEquals(6, history.get(3).getId()),
-                    () -> assertEquals(Subordination.EPIC, history.get(3).getSubordination()),
-                    () -> assertEquals("name1", history.get(3).getName()),
-                    () -> assertEquals("desc1", history.get(3).getDescription()),
-                    () -> assertEquals(Status.IN_PROGRESS, history.get(3).getStatus())
-            );
-            assertAll(
-                    () -> assertEquals(1, history.get(8).getId()),
-                    () -> assertEquals(Subordination.SELF, history.get(8).getSubordination()),
-                    () -> assertEquals("name0", history.get(8).getName()),
-                    () -> assertEquals("desc0", history.get(8).getDescription()),
-                    () -> assertEquals(Status.DONE, history.get(8).getStatus())
-            );
-
-        } catch (IOException e) {
-            System.out.println("Ошибка при чтении файла " + path);
-        }
+        Files.writeString(path, fileContent, CREATE);
+        FileBackedHistoryManager historyManager = new FileBackedHistoryManager(filePath, true);
+        List<Task> history = historyManager.getHistory();
+        assertEquals(9, history.size());
+        assertAll(
+                () -> assertEquals(9, history.get(0).getId()),
+                () -> assertEquals(Subordination.SUBTASK, history.get(0).getSubordination()),
+                () -> assertEquals("name2", history.get(0).getName()),
+                () -> assertEquals(Status.NEW, history.get(0).getStatus()),
+                () -> assertEquals(8, ((Subtask) history.get(0)).getEpicId()),
+                () -> assertEquals("desc2", history.get(0).getDescription())
+        );
+        assertAll(
+                () -> assertEquals(6, history.get(3).getId()),
+                () -> assertEquals(Subordination.EPIC, history.get(3).getSubordination()),
+                () -> assertEquals("name1", history.get(3).getName()),
+                () -> assertEquals("desc1", history.get(3).getDescription()),
+                () -> assertEquals(Status.IN_PROGRESS, history.get(3).getStatus())
+        );
+        assertAll(
+                () -> assertEquals(1, history.get(8).getId()),
+                () -> assertEquals(Subordination.SELF, history.get(8).getSubordination()),
+                () -> assertEquals("name0", history.get(8).getName()),
+                () -> assertEquals("desc0", history.get(8).getDescription()),
+                () -> assertEquals(Status.DONE, history.get(8).getStatus())
+        );
     }
 
     @DisplayName("load if header absent")
     @Test
-    void loadIfHeaderAbsentTest() {
-        try {
-            Files.createFile(path);
-            assertThrows(ManagerSaveException.class, () -> new FileBackedHistoryManager(filePath, true));
-        } catch (IOException e) {
-            System.out.println("Ошибка при чтении файла " + path);
-        }
+    void loadIfHeaderAbsentTest() throws IOException {
+        Files.createFile(path);
+        assertThrows(ManagerSaveException.class, () -> new FileBackedHistoryManager(filePath, true));
     }
 
     @DisplayName("load if file is absent")
@@ -276,37 +246,27 @@ class FileBackedHistoryManagerTest {
 
     @DisplayName("load if bad header ")
     @Test
-    void loadIfBadHeaderAbsentTest() {
-        try {
-            String fileContent = "id,subordination,name1,status,description,epicId";
-            Files.writeString(path, fileContent, CREATE);
-            assertThrows(ManagerSaveException.class, () -> new FileBackedHistoryManager(filePath, true));
-        } catch (IOException e) {
-            System.out.println("Ошибка при чтении файла " + path);
-        }
+    void loadIfBadHeaderAbsentTest() throws IOException {
+        String fileContent = "id,subordination,name1,status,description,epicId";
+        Files.writeString(path, fileContent, CREATE);
+        assertThrows(ManagerSaveException.class, () -> new FileBackedHistoryManager(filePath, true));
     }
 
     @DisplayName("load if bad task ")
     @Test
-    void loadIfBadTaskTest() {
-        try {
-            String fileContent = header + """
-                    9,SUBTASK,name2,NEW,desc2,8
-                    8,EЬЗШС,name2,NEW,desc2,null 
-                    7,SUBTASK,name1,NEW,desc1,6
-                    6,EPIC,name1,IN_PROGRESS,desc1,null
-                    5,SUBTASK,name0,NEW,desc0,4
-                    4,EPIC,name0,NEW,desc0,null
-                    3,SELF,name2,NEW,desc2,null
-                    2,SELF,name1,NEW,desc1,null
-                    1,SELF,name0,DONE,desc0,null
-                    """;
-            Files.writeString(path, fileContent, CREATE);
-            assertThrows(ManagerSaveException.class, () -> new FileBackedHistoryManager(filePath, true));
-        } catch (IOException e) {
-            System.out.println("Ошибка при чтении файла " + path);
-        }
+    void loadIfBadTaskTest() throws IOException {
+        String fileContent = header + """
+                9,SUBTASK,name2,NEW,desc2,8
+                8,EЬЗШС,name2,NEW,desc2,null 
+                7,SUBTASK,name1,NEW,desc1,6
+                6,EPIC,name1,IN_PROGRESS,desc1,null
+                5,SUBTASK,name0,NEW,desc0,4
+                4,EPIC,name0,NEW,desc0,null
+                3,SELF,name2,NEW,desc2,null
+                2,SELF,name1,NEW,desc1,null
+                1,SELF,name0,DONE,desc0,null
+                """;
+        Files.writeString(path, fileContent, CREATE);
+        assertThrows(ManagerSaveException.class, () -> new FileBackedHistoryManager(filePath, true));
     }
-
-
 }

@@ -68,4 +68,9 @@ public abstract class Task {
     }
 
     public abstract Task copy();
+
+    public String convertToFileRecord() {
+        return String.join(",",
+                id.toString(), getSubordination().toString(), name, status.toString(), description, "null");
+    }
 }

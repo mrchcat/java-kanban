@@ -32,5 +32,15 @@ public class Subtask extends Task {
         return copy;
     }
 
+    @Override
+    public String convertToFileRecord() {
+        return String.join(",",
+                getId().toString(),
+                getSubordination().toString(),
+                getName(),
+                getStatus().toString(),
+                getDescription(),
+                epicId.toString());
+    }
 }
 
