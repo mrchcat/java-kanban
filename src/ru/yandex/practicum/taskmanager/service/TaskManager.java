@@ -10,6 +10,8 @@ import java.util.List;
 public interface TaskManager {
     List<Task> getHistory();
 
+    void clearHistory();
+
     void clear();
 
     Selftask add(Selftask task);
