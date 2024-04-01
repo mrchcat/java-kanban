@@ -1,3 +1,4 @@
+
 package ru.yandex.practicum.taskmanager.utils;
 
 import ru.yandex.practicum.taskmanager.exceptions.ManagerSaveException;
@@ -9,14 +10,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class FileBackedHistoryManager extends LinkedHashHistoryManager {
 
-    private static final String HEADER = "id,subordination,name,status,description,epicId\n";
-    private static final int NUMBER_OF_FIELDS = 6;
+    private static final String[] FIELDS = {"id", "subordination", "name", "status", "description", "isTimeDefined",
+            "startdate", "starttime", "duration", "epicId"};
+    private static final String HEADER = String.join(Task.DELIMITER, FIELDS).concat("\n");
     private final Path file;
 
     public FileBackedHistoryManager(String path, boolean doLoadFile) {
@@ -48,13 +54,14 @@ public class FileBackedHistoryManager extends LinkedHashHistoryManager {
         try (BufferedReader reader = Files.newBufferedReader(file)) {
             String line = reader.readLine();
             if ((line == null) || (!line.trim().equals(HEADER.trim()))) {
-                throw new ManagerSaveException(String.format("%s is not a task history file or corrupted!", file));
+                throw new ManagerSaveException(
+                        String.format("%s is not a task history file or corrupted! Header is absent", file));
             }
             ArrayList<Task> tasks = new ArrayList<>();
             while ((line = reader.readLine()) != null) {
-                String[] elements = line.split(",");
-                if (elements.length < NUMBER_OF_FIELDS) {
-                    throw new ManagerSaveException(String.format("File %s is corrupted!", file));
+                String[] elements = line.split(Task.DELIMITER);
+                if (elements.length < FIELDS.length) {
+                    throw new ManagerSaveException(String.format("File %s is corrupted! Not enough fields", file));
                 }
                 tasks.add(restoreTask(elements));
                 for (int i = tasks.size() - 1; i >= 0; i--) {
@@ -73,20 +80,29 @@ public class FileBackedHistoryManager extends LinkedHashHistoryManager {
             String name = elements[2];
             Status status = Status.valueOf(elements[3]);
             String description = elements[4];
+            Boolean isTimeDefined = Boolean.parseBoolean(elements[5]);
+            LocalDateTime dateTime = LocalDateTime.MAX;
+            Duration duration = Duration.ZERO;
+            if (isTimeDefined) {
+                LocalDate date = LocalDate.ofEpochDay(Long.parseLong(elements[6]));
+                LocalTime time = LocalTime.ofSecondOfDay(Long.parseLong(elements[7]));
+                dateTime = LocalDateTime.of(date, time);
+                duration = Duration.ofSeconds(Long.parseLong(elements[8]));
+            }
             int epicId;
             Task task = switch (subordination) {
-                case SELF -> new Selftask(name, description);
+                case SELF -> new Selftask(name, description, dateTime, duration);
                 case EPIC -> new Epictask(name, description);
                 case SUBTASK -> {
-                    epicId = Integer.parseInt(elements[5]);
-                    yield new Subtask(name, description, epicId);
+                    epicId = Integer.parseInt(elements[9]);
+                    yield new Subtask(name, description, dateTime, duration, epicId);
                 }
             };
             task.setId(id);
             task.setStatus(status);
             return task;
         } catch (Exception e) {
-            throw new ManagerSaveException(String.format("File %s is corrupted!", file), e);
+            throw new ManagerSaveException(String.format("File %s is corrupted! Error during unpacking", file), e);
         }
     }
 

@@ -5,6 +5,8 @@ import ru.yandex.practicum.taskmanager.tasks.*;
 import ru.yandex.practicum.taskmanager.utils.Generator;
 import ru.yandex.practicum.taskmanager.utils.HistoryManager;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +48,7 @@ public class RegularTaskManager implements TaskManager {
         if (task == null) {
             return null;
         }
-        Selftask copy = new Selftask(task.getName(), task.getDescription());
+        Selftask copy = new Selftask(task.getName(), task.getDescription(), task.getStartTime(), task.getDuration());
         Integer id = generator.getId();
         copy.setId(id);
         tasks.put(id, copy);
@@ -72,17 +74,38 @@ public class RegularTaskManager implements TaskManager {
             return null;
         }
         Integer epicId = task.getEpicId();
-        Task someTask = tasks.get(epicId);
-        if ((someTask != null) && (someTask.getSubordination() == Subordination.EPIC)) {
-            Subtask copy = new Subtask(task.getName(), task.getDescription(), epicId);
+        Task epicTask = tasks.get(epicId);
+        if ((epicTask != null) && (epicTask.getSubordination() == Subordination.EPIC)) {
+            Subtask copy = new Subtask(task.getName(), task.getDescription(), task.getStartTime(), task.getDuration(), epicId);
             Integer id = generator.getId();
             copy.setId(id);
             tasks.put(id, copy);
             subordinates.get(epicId).add(id);
+            updateEpicTimeWhenAddSub((Epictask) epicTask, task.getStartTime(), task.getDuration());
             return copy.copy();
         } else {
             return null;
         }
+    }
+
+    private void updateEpicTimeWhenAddSub(Epictask epic, LocalDateTime subStart, Duration subDuration) {
+        if (!epic.isTimeDefined()) {
+            epic.setTimeDefined(true);
+            epic.setStartTime(subStart);
+            epic.setDuration(subDuration);
+            return;
+        }
+        LocalDateTime epicStart = epic.getStartTime();
+        LocalDateTime epicFinish = epicStart.plus(epic.getDuration());
+        LocalDateTime subFinish = subStart.plus(subDuration);
+        if (epicStart.isAfter(subStart)) {
+            epicStart = subStart;
+        }
+        if (epicFinish.isBefore(subFinish)) {
+            epicFinish = subFinish;
+        }
+        epic.setStartTime(epicStart);
+        epic.setDuration(Duration.between(epicStart, epicFinish));
     }
 
     @Override
@@ -143,32 +166,62 @@ public class RegularTaskManager implements TaskManager {
     @Override
     public Task delete(Integer taskId) {
         Task taskToDeleted = tasks.get(taskId);
-        if (taskToDeleted != null) {
-            switch (taskToDeleted.getSubordination()) {
-                case SELF -> tasks.delete(taskId);
-                case Subordination.EPIC -> {
-                    for (Integer subId : subordinates.get(taskId)) {
-                        tasks.delete(subId);
-                    }
-                    subordinates.delete(taskId);
-                    tasks.delete(taskId);
+        if (taskToDeleted == null) {
+            return null;
+        }
+        switch (taskToDeleted.getSubordination()) {
+            case SELF -> tasks.delete(taskId);
+            case Subordination.EPIC -> {
+                for (Integer subId : subordinates.get(taskId)) {
+                    tasks.delete(subId);
                 }
-                case Subordination.SUBTASK -> {
-                    Subtask subtaskToDelete = (Subtask) taskToDeleted;
-                    Epictask epicOfDeleted = (Epictask) tasks.get(subtaskToDelete.getEpicId());
-                    if (epicOfDeleted.getSubordination() != Subordination.EPIC) {
-                        throw new IllegalArgumentException("Некорректный EpicId");
-                    }
-                    Integer epicOfDeletedId = epicOfDeleted.getId();
-                    subordinates.get(epicOfDeletedId).remove(taskId);
-                    if (subordinates.get(epicOfDeletedId).isEmpty()) {
-                        epicOfDeleted.setStatus(Status.NEW);
-                    }
-                    tasks.delete(taskId);
+                subordinates.delete(taskId);
+                tasks.delete(taskId);
+            }
+            case Subordination.SUBTASK -> {
+                Subtask subtaskToDelete = (Subtask) taskToDeleted;
+                Epictask epic = (Epictask) tasks.get(subtaskToDelete.getEpicId());
+                if (epic.getSubordination() != Subordination.EPIC) {
+                    throw new IllegalArgumentException("Incorrect EpicId");
                 }
+                if (!subordinates.get(epic.getId()).contains(subtaskToDelete.getId())) {
+                    throw new IllegalArgumentException("Subtask is absent in the list of Epic task");
+                }
+                Integer epicId = epic.getId();
+                subordinates.get(epicId).remove(taskId);
+                var listOfSubs = subordinates.get(epicId);
+                if (listOfSubs.isEmpty()) {
+                    epic.setStatus(Status.NEW);
+                    epic.setTimeDefined(false);
+                } else {
+                    updateEpicTimeWhenDeleteOrUpdateSub(epic, listOfSubs);
+                }
+                tasks.delete(taskId);
             }
         }
         return taskToDeleted;
+    }
+
+    private void updateEpicTimeWhenDeleteOrUpdateSub(Epictask epic, ArrayList<Integer> subIds) {
+        LocalDateTime epicStart = epic.getStartTime();
+        LocalDateTime epicFinish = epicStart.plus(epic.getDuration());
+        LocalDateTime subStart, subFinish;
+        Duration subDuration;
+        Task sub;
+        for (int i = 0; i < subIds.size(); i++) {
+            sub = tasks.get(subIds.get(i));
+            subStart = sub.getStartTime();
+            subDuration = sub.getDuration();
+            subFinish = subStart.plus(subDuration);
+            if (subStart.isBefore(epicStart)) {
+                epicStart = subStart;
+            }
+            if (subFinish.isAfter(epicFinish)) {
+                epicFinish = subFinish;
+            }
+            epic.setStartTime(epicStart);
+            epic.setDuration(Duration.between(epicStart, epicFinish));
+        }
     }
 
     @Override
@@ -238,6 +291,8 @@ public class RegularTaskManager implements TaskManager {
         oldTask.setName(task.getName());
         oldTask.setDescription(task.getDescription());
         oldTask.setStatus(task.getStatus());
+        oldTask.setStartTime(task.getStartTime());
+        oldTask.setDuration(task.getDuration());
         return (Selftask) oldTask.copy();
     }
 
@@ -271,9 +326,13 @@ public class RegularTaskManager implements TaskManager {
         oldTask.setName(task.getName());
         oldTask.setDescription(task.getDescription());
         oldTask.setStatus(task.getStatus());
+        oldTask.setStartTime(task.getStartTime());
+        oldTask.setDuration(task.getDuration());
 
         Integer epicId = task.getEpicId();
         Epictask epic = (Epictask) tasks.get(epicId);
+        updateEpicTimeWhenDeleteOrUpdateSub(epic, subordinates.get(epicId));
+
         Status status = task.getStatus();
         switch (status) {
             case Status.NEW -> {

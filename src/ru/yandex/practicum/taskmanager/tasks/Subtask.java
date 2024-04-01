@@ -1,10 +1,13 @@
 package ru.yandex.practicum.taskmanager.tasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Subtask extends Task {
     private final Integer epicId;
 
-    public Subtask(String name, String description, Integer epicId) {
-        super(name, description);
+    public Subtask(String name, String description, LocalDateTime startTime, Duration duration, Integer epicId) {
+        super(name, description, startTime, duration);
         this.epicId = epicId;
     }
 
@@ -26,21 +29,15 @@ public class Subtask extends Task {
 
     @Override
     public Subtask copy() {
-        Subtask copy = new Subtask(getName(), getDescription(), getEpicId());
-        copy.setId(getId());
-        copy.setStatus(getStatus());
+        Subtask copy = new Subtask(name, description, startTime, duration, epicId);
+        copy.setId(id);
+        copy.setStatus(status);
         return copy;
     }
 
     @Override
     public String convertToFileRecord() {
-        return String.join(",",
-                getId().toString(),
-                getSubordination().toString(),
-                getName(),
-                getStatus().toString(),
-                getDescription(),
-                epicId.toString());
+        return String.join(DELIMITER, super.convertToFileRecord(), epicId.toString());
     }
 }
 

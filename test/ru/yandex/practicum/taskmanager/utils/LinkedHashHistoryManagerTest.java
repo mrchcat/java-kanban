@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.taskmanager.tasks.Selftask;
 import ru.yandex.practicum.taskmanager.tasks.Task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,12 +18,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class LinkedHashHistoryManagerTest {
     LinkedHashHistoryManager history = new LinkedHashHistoryManager();
     LinkedList<Task> tasks;
+    static LocalDateTime dateTime = LocalDateTime.of(2024, 04, 01, 13, 20);
+    static Duration duration = Duration.ofDays(3);
 
     @BeforeEach
     void initTasksTest() {
         tasks = new LinkedList<>();
         for (int i = 0; i < 4; i++) {
-            Task task = new Selftask("name " + i, "descr " + i);
+            Task task = new Selftask("name " + i, "descr " + i, dateTime, duration);
             task.setId(i);
             tasks.add(task);
         }
@@ -92,7 +96,7 @@ class LinkedHashHistoryManagerTest {
         int N = 1_000_000;
         Task task = null;
         for (int i = 0; i < N; i++) {
-            task = new Selftask("name " + i, "descr " + i);
+            task = new Selftask("name " + i, "descr " + i, dateTime, duration);
             task.setId(i);
             history.add(task);
         }

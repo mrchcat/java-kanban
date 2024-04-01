@@ -4,25 +4,41 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 public abstract class Task {
-    private Integer id;
-    private String name;
-    private String description;
-    private Status status;
-    Duration duraction;
-    LocalDateTime startTime;
+    public static final String DELIMITER = "~";
+    protected Integer id;
+    protected String name;
+    protected String description;
+    protected Status status;
+    protected Duration duration;
+    protected LocalDateTime startTime;
 
-
-    public Task(String name, String description, LocalDateTime startTime, Duration duraction) {
+    public Task(String name, String description, LocalDateTime startTime, Duration duration) {
         this.id = null;
         this.name = name;
         this.description = description;
         this.status = Status.NEW;
         this.startTime = startTime;
-        this.duraction = duraction;
+        this.duration = duration;
     }
 
     public LocalDateTime getEndTime() {
-        return startTime.plus(duraction);
+        return startTime.plus(duration);
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
     }
 
     public abstract Subordination getSubordination();
@@ -82,7 +98,15 @@ public abstract class Task {
     public abstract Task copy();
 
     public String convertToFileRecord() {
-        return String.join(",",
-                id.toString(), getSubordination().toString(), name, status.toString(), description, "null");
+        return String.join(DELIMITER,
+                id.toString(),
+                getSubordination().toString(),
+                name,
+                status.toString(),
+                description,
+                "true",
+                String.valueOf(startTime.toLocalDate().toEpochDay()),
+                String.valueOf(startTime.toLocalTime().toSecondOfDay()),
+                String.valueOf(duration.toSeconds()));
     }
 }
