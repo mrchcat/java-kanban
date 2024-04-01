@@ -1,16 +1,28 @@
 package ru.yandex.practicum.taskmanager.tasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public abstract class Task {
     private Integer id;
     private String name;
     private String description;
     private Status status;
+    Duration duraction;
+    LocalDateTime startTime;
 
-    public Task(String name, String description) {
+
+    public Task(String name, String description, LocalDateTime startTime, Duration duraction) {
         this.id = null;
         this.name = name;
         this.description = description;
         this.status = Status.NEW;
+        this.startTime = startTime;
+        this.duraction = duraction;
+    }
+
+    public LocalDateTime getEndTime() {
+        return startTime.plus(duraction);
     }
 
     public abstract Subordination getSubordination();
