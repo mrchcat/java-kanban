@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class FileBackedHistoryManager extends LinkedHashHistoryManager {
-
     private static final String HEADER = String.join(Task.DELIMITER, Task.FIELDS).concat("\n");
     private final Path file;
 

@@ -7,7 +7,6 @@ public abstract class Task {
     public static final String DELIMITER = "~";
     public static final String[] FIELDS = {"id", "subordination", "name", "status", "description", "isTimeDefined",
             "startdate", "starttime", "duration", "epicId"};
-
     protected Integer id;
     protected String name;
     protected String description;
