@@ -22,8 +22,8 @@ public class Managers {
         Repository<Integer, ArrayList<Integer>> subordinates = new InMemoryMap<>();
         Generator generator = new SerialGenerator(START_ID_BY_DEFAULT);
         HistoryManager history = getDefaultHistory();
-        Repository<LocalDateTime, Integer> starts = new InMemoryTreeMap<>();
-        Repository<LocalDateTime, Integer> finishes = new InMemoryTreeMap<>();
+        Repository<LocalDateTime, Integer> starts = new InMemoryTreeMap<>(LocalDateTime::compareTo);
+        Repository<LocalDateTime, Integer> finishes = new InMemoryTreeMap<>(LocalDateTime::compareTo);
         return new RegularTaskManager(tasks, subordinates, generator, history, starts, finishes);
     }
 

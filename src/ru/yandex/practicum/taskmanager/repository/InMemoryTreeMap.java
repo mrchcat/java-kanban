@@ -1,14 +1,15 @@
 package ru.yandex.practicum.taskmanager.repository;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class InMemoryTreeMap<K, V> implements Repository<K, V> {
     private final TreeMap<K, V> base;
 
-    public InMemoryTreeMap() {
-        this.base = new TreeMap<>();
+    public InMemoryTreeMap(Comparator<K> comparator) {
+        this.base = new TreeMap<>(comparator);
     }
 
     @Override

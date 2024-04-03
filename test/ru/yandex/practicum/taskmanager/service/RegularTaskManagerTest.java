@@ -56,8 +56,8 @@ class RegularTaskManagerTest {
         Repository<Integer, ArrayList<Integer>> subordinates = new InMemoryMap<>();
         Generator generator = new SerialGenerator(START_ID_BY_DEFAULT);
         HistoryManager history = getDefaultHistory();
-        Repository<LocalDateTime, Integer> starts = new InMemoryTreeMap<>();
-        Repository<LocalDateTime, Integer> finishes = new InMemoryTreeMap<>();
+        Repository<LocalDateTime, Integer> starts = new InMemoryTreeMap<LocalDateTime, Integer>((u, v) -> u.compareTo(v));
+        Repository<LocalDateTime, Integer> finishes = new InMemoryTreeMap<LocalDateTime, Integer>((u, v) -> u.compareTo(v));
         taskManager = new RegularTaskManager(tasks, subordinates, generator, history, starts, finishes);
         taskManager.clearHistory();
     }

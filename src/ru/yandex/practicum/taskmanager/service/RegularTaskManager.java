@@ -65,10 +65,7 @@ public class RegularTaskManager implements TaskManager {
         if (finishAfterTaskStarts.isEmpty()) return false;
 
         HashSet<Integer> set = new HashSet<>(finishAfterTaskStarts.values());
-        if (startBeforeTaskEnds.values().stream().anyMatch(set::contains)) {
-            return true;
-        }
-        return false;
+        return startBeforeTaskEnds.values().stream().anyMatch(set::contains);
     }
 
     @Override
@@ -339,7 +336,7 @@ public class RegularTaskManager implements TaskManager {
         if (oldTask == null) {
             return null;
         }
-        if (!checkTimeLineWhenUpdate(oldTask, task)) {
+        if (!isTaskIntersectedWhenUpdate(oldTask, task)) {
             return null;
         }
         oldTask.setName(task.getName());
@@ -350,7 +347,7 @@ public class RegularTaskManager implements TaskManager {
         return (Selftask) oldTask.copy();
     }
 
-    private boolean checkTimeLineWhenUpdate(Task oldTask, Task task) {
+    private boolean isTaskIntersectedWhenUpdate(Task oldTask, Task task) {
         boolean oldDefined = oldTask.isTimeDefined();
         boolean newDefined = task.isTimeDefined();
         LocalDateTime oldStart = oldTask.getStartTime();
@@ -358,21 +355,25 @@ public class RegularTaskManager implements TaskManager {
         Duration oldDuration = oldTask.getDuration();
         Duration newDuration = task.getDuration();
 
-        if (oldDefined && newDefined) {
-            if ((!oldStart.isEqual(newStart)) || (!oldDuration.equals(newDuration))) {
-                deleteFromTimeline(oldTask);
-                if (isIntersectedByTime(task)) {
-                    addToTimeline(oldTask);
-                    return false;
+        if (oldDefined) {
+            if (newDefined) {
+                if ((!oldStart.isEqual(newStart)) || (!oldDuration.equals(newDuration))) {
+                    deleteFromTimeline(oldTask);
+                    if (isIntersectedByTime(task)) {
+                        addToTimeline(oldTask);
+                        return false;
+                    }
+                    addToTimeline(task);
                 }
-                addToTimeline(task);
+            } else {
+                deleteFromTimeline(oldTask);
             }
-        } else if (oldDefined && !newDefined) {
-            deleteFromTimeline(oldTask);
-        } else if (!oldDefined && newDefined) {
-            if (isIntersectedByTime(task)) {
-                return false;
-            } else addToTimeline(task);
+        } else {
+            if (newDefined) {
+                if (isIntersectedByTime(task)) {
+                    return false;
+                } else addToTimeline(task);
+            }
         }
         return true;
     }
@@ -403,7 +404,7 @@ public class RegularTaskManager implements TaskManager {
         if (oldTask == null) {
             return null;
         }
-        if (!checkTimeLineWhenUpdate(oldTask, task)) {
+        if (!isTaskIntersectedWhenUpdate(oldTask, task)) {
             return null;
         }
 
