@@ -9,6 +9,10 @@ public class Selftask extends Task {
         super(name, description, startTime, duration);
     }
 
+    public Selftask(String name, String description, Duration duration) {
+        super(name, description, duration);
+    }
+
     @Override
     public Subordination getSubordination() {
         return Subordination.SELF;
@@ -21,8 +25,13 @@ public class Selftask extends Task {
     }
 
     @Override
-    public Task copy() {
-        Selftask copy = new Selftask(name, description, startTime, duration);
+    public Selftask copy() {
+        Selftask copy;
+        if (isTimeDefined) {
+            copy = new Selftask(name, description, startTime, duration);
+        } else {
+            copy = new Selftask(name, description, duration);
+        }
         copy.setId(id);
         copy.setStatus(status);
         return copy;

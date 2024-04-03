@@ -5,10 +5,14 @@ import java.time.LocalDateTime;
 
 public abstract class Task {
     public static final String DELIMITER = "~";
+    public static final String[] FIELDS = {"id", "subordination", "name", "status", "description", "isTimeDefined",
+            "startdate", "starttime", "duration", "epicId"};
+
     protected Integer id;
     protected String name;
     protected String description;
     protected Status status;
+    protected boolean isTimeDefined;
     protected Duration duration;
     protected LocalDateTime startTime;
 
@@ -17,8 +21,27 @@ public abstract class Task {
         this.name = name;
         this.description = description;
         this.status = Status.NEW;
+        this.isTimeDefined = true;
         this.startTime = startTime;
         this.duration = duration;
+    }
+
+    public Task(String name, String description, Duration duration) {
+        this.id = null;
+        this.name = name;
+        this.description = description;
+        this.status = Status.NEW;
+        this.isTimeDefined = false;
+        this.startTime = LocalDateTime.MAX;
+        this.duration = duration;
+    }
+
+    public boolean isTimeDefined() {
+        return isTimeDefined;
+    }
+
+    public void setTimeDefined(boolean timeDefined) {
+        isTimeDefined = timeDefined;
     }
 
     public LocalDateTime getEndTime() {
@@ -104,7 +127,7 @@ public abstract class Task {
                 name,
                 status.toString(),
                 description,
-                "true",
+                String.valueOf(isTimeDefined),
                 String.valueOf(startTime.toLocalDate().toEpochDay()),
                 String.valueOf(startTime.toLocalTime().toSecondOfDay()),
                 String.valueOf(duration.toSeconds()));

@@ -4,25 +4,15 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class Epictask extends Task {
-    private boolean isTimeDefined;
 
     public Epictask(String name, String description) {
-        super(name, description, LocalDateTime.MAX, Duration.ZERO);
-        this.isTimeDefined = false;
+        super(name, description, Duration.ZERO);
     }
 
     public void switchOffTime() {
         setTimeDefined(false);
         setStartTime(LocalDateTime.MAX);
         setDuration(Duration.ZERO);
-    }
-
-    public boolean isTimeDefined() {
-        return isTimeDefined;
-    }
-
-    public void setTimeDefined(boolean timeDefined) {
-        isTimeDefined = timeDefined;
     }
 
     @Override
@@ -37,7 +27,7 @@ public class Epictask extends Task {
     }
 
     @Override
-    public Task copy() {
+    public Epictask copy() {
         Epictask copy = new Epictask(name, description);
         copy.setId(id);
         copy.setStatus(status);

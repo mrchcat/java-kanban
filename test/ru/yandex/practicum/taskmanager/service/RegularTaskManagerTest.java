@@ -1163,5 +1163,111 @@ class RegularTaskManagerTest {
         assertEquals(1, list.get(3).getId());
     }
 
+    @DisplayName("add Selftask without start")
+    @Tag("add")
+    @Test
+    void addTSelfTaskWithoutStart() {
+        Duration duration1 = Duration.ofDays(1);
+        Selftask task1 = taskManager.add(new Selftask("name", "descript", duration1));
+        int id1 = task1.getId();
+        assertAll(
+                () -> assertFalse(taskManager.get(id1).isTimeDefined()),
+                () -> assertEquals(duration1, taskManager.get(id1).getDuration())
+        );
+    }
+
+    @DisplayName("add Subtask without start")
+    @Tag("add")
+    @Test
+    void addSubTaskWithoutStart() {
+        Epictask epic = taskManager.add(new Epictask("пойти на рыбалку", "Селигер, в районе оз Волго"));
+        Duration duration1 = Duration.ofDays(1);
+        Subtask task1 = taskManager.add(new Subtask("name", "descript", duration1, epic.getId()));
+        int id1 = task1.getId();
+        assertAll(
+                () -> assertFalse(taskManager.get(id1).isTimeDefined()),
+                () -> assertEquals(duration1, taskManager.get(id1).getDuration())
+        );
+    }
+
+    @DisplayName("add Selftask with and without start and check timeline")
+    @Tag("timeline")
+    @Test
+    void addSelfTaskWithWithoutStart() {
+        LocalDateTime time1 = LocalDateTime.of(1, 1, 1, 1, 1, 1);
+        Duration duration1 = Duration.ofDays(1);
+        Selftask task1 = taskManager.add(new Selftask("name", "descript", time1, duration1));
+
+        Duration duration2 = Duration.ofDays(3);
+        Selftask task2 = taskManager.add(new Selftask("name", "descript", duration2));
+
+        LocalDateTime time3 = LocalDateTime.of(2, 1, 1, 1, 1, 1);
+        Duration duration3 = Duration.ofDays(10);
+        Selftask task3 = taskManager.add(new Selftask("name", "descript", time3, duration3));
+
+        List<Task> list = taskManager.getPrioritizedTasks();
+
+        assertAll(
+                () -> assertEquals(1, list.get(0).getId()),
+                () -> assertEquals(3, list.get(1).getId())
+        );
+    }
+
+    @DisplayName("add SubTask with and without start and check timeline")
+    @Tag("timeline")
+    @Test
+    void addSubTaskWithWithoutStart() {
+        Epictask epic = taskManager.add(new Epictask("пойти на рыбалку", "Селигер, в районе оз Волго"));
+        int epicId = epic.getId();
+        LocalDateTime time1 = LocalDateTime.of(1, 1, 1, 1, 1, 1);
+        Duration duration1 = Duration.ofDays(1);
+        Subtask task1 = taskManager.add(new Subtask("name", "descript", time1, duration1, epicId));
+
+        Duration duration2 = Duration.ofDays(3);
+        Subtask task2 = taskManager.add(new Subtask("name", "descript", duration2, epicId));
+
+        LocalDateTime time3 = LocalDateTime.of(2, 1, 1, 1, 1, 1);
+        Duration duration3 = Duration.ofDays(10);
+        Subtask task3 = taskManager.add(new Subtask("name", "descript", time3, duration3, epicId));
+
+        List<Task> list = taskManager.getPrioritizedTasks();
+
+        assertAll(
+                () -> assertEquals(2, list.get(0).getId()),
+                () -> assertEquals(4, list.get(1).getId())
+        );
+    }
+
+
+    @DisplayName("add Selftask with start, update and check timeline")
+    @Tag("timeline")
+    @Test
+    void addSelfTaskWithStartUpdateTest() {
+        LocalDateTime time1 = LocalDateTime.of(1, 1, 1, 1, 1, 1);
+        Duration duration1 = Duration.ofDays(1);
+        Selftask task1 = taskManager.add(new Selftask("name", "descript", time1, duration1));
+
+        Duration duration2 = Duration.ofDays(3);
+        Selftask task2 = taskManager.add(new Selftask("name", "descript", duration2));
+
+        LocalDateTime time3 = LocalDateTime.of(2, 1, 1, 1, 1, 1);
+        Duration duration3 = Duration.ofDays(10);
+        Selftask task3 = taskManager.add(new Selftask("name", "descript", time3, duration3));
+        List<Task> list = taskManager.getPrioritizedTasks();
+        assertAll(
+                () -> assertEquals(1, list.get(0).getId()),
+                () -> assertEquals(3, list.get(1).getId())
+        );
+
+        Selftask task3Update = new Selftask("name", "descript", duration3);
+        task3Update.setId(task3.getId());
+        taskManager.update(task3Update);
+        List<Task> updatedList = taskManager.getPrioritizedTasks();
+        assertAll(
+                () -> assertEquals(1, updatedList.size()),
+                () -> assertEquals(1, list.get(0).getId())
+        );
+    }
+
 
 }

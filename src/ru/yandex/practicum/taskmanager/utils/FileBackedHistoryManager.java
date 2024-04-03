@@ -20,9 +20,7 @@ import java.util.List;
 
 public class FileBackedHistoryManager extends LinkedHashHistoryManager {
 
-    private static final String[] FIELDS = {"id", "subordination", "name", "status", "description", "isTimeDefined",
-            "startdate", "starttime", "duration", "epicId"};
-    private static final String HEADER = String.join(Task.DELIMITER, FIELDS).concat("\n");
+    private static final String HEADER = String.join(Task.DELIMITER, Task.FIELDS).concat("\n");
     private final Path file;
 
     public FileBackedHistoryManager(String path, boolean doLoadFile) {
@@ -60,7 +58,7 @@ public class FileBackedHistoryManager extends LinkedHashHistoryManager {
             ArrayList<Task> tasks = new ArrayList<>();
             while ((line = reader.readLine()) != null) {
                 String[] elements = line.split(Task.DELIMITER);
-                if (elements.length < FIELDS.length) {
+                if (elements.length < Task.FIELDS.length) {
                     throw new ManagerSaveException(String.format("File %s is corrupted! Not enough fields", file));
                 }
                 tasks.add(restoreTask(elements));
@@ -80,7 +78,7 @@ public class FileBackedHistoryManager extends LinkedHashHistoryManager {
             String name = elements[2];
             Status status = Status.valueOf(elements[3]);
             String description = elements[4];
-            Boolean isTimeDefined = Boolean.parseBoolean(elements[5]);
+            boolean isTimeDefined = Boolean.parseBoolean(elements[5]);
             LocalDateTime dateTime = LocalDateTime.of(LocalDate.ofEpochDay(Long.parseLong(elements[6])),
                     LocalTime.ofSecondOfDay(Long.parseLong(elements[7])));
             Duration duration = Duration.ofSeconds(Long.parseLong(elements[8]));
@@ -88,7 +86,6 @@ public class FileBackedHistoryManager extends LinkedHashHistoryManager {
                 case SELF -> new Selftask(name, description, dateTime, duration);
                 case EPIC -> {
                     Epictask epic = new Epictask(name, description);
-                    epic.setTimeDefined(isTimeDefined);
                     epic.setStartTime(dateTime);
                     epic.setDuration(duration);
                     yield epic;
@@ -98,6 +95,7 @@ public class FileBackedHistoryManager extends LinkedHashHistoryManager {
                     yield new Subtask(name, description, dateTime, duration, epicId);
                 }
             };
+            task.setTimeDefined(isTimeDefined);
             task.setId(id);
             task.setStatus(status);
             return task;
