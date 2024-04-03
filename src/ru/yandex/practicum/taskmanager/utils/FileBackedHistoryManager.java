@@ -81,20 +81,20 @@ public class FileBackedHistoryManager extends LinkedHashHistoryManager {
             Status status = Status.valueOf(elements[3]);
             String description = elements[4];
             Boolean isTimeDefined = Boolean.parseBoolean(elements[5]);
-            LocalDateTime dateTime = LocalDateTime.MAX;
-            Duration duration = Duration.ZERO;
-            if (isTimeDefined) {
-                LocalDate date = LocalDate.ofEpochDay(Long.parseLong(elements[6]));
-                LocalTime time = LocalTime.ofSecondOfDay(Long.parseLong(elements[7]));
-                dateTime = LocalDateTime.of(date, time);
-                duration = Duration.ofSeconds(Long.parseLong(elements[8]));
-            }
-            int epicId;
+            LocalDateTime dateTime = LocalDateTime.of(LocalDate.ofEpochDay(Long.parseLong(elements[6])),
+                    LocalTime.ofSecondOfDay(Long.parseLong(elements[7])));
+            Duration duration = Duration.ofSeconds(Long.parseLong(elements[8]));
             Task task = switch (subordination) {
                 case SELF -> new Selftask(name, description, dateTime, duration);
-                case EPIC -> new Epictask(name, description);
+                case EPIC -> {
+                    Epictask epic = new Epictask(name, description);
+                    epic.setTimeDefined(isTimeDefined);
+                    epic.setStartTime(dateTime);
+                    epic.setDuration(duration);
+                    yield epic;
+                }
                 case SUBTASK -> {
-                    epicId = Integer.parseInt(elements[9]);
+                    int epicId = Integer.parseInt(elements[9]);
                     yield new Subtask(name, description, dateTime, duration, epicId);
                 }
             };

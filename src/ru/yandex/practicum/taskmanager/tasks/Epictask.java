@@ -11,6 +11,12 @@ public class Epictask extends Task {
         this.isTimeDefined = false;
     }
 
+    public void switchOffTime() {
+        setTimeDefined(false);
+        setStartTime(LocalDateTime.MAX);
+        setDuration(Duration.ZERO);
+    }
+
     public boolean isTimeDefined() {
         return isTimeDefined;
     }

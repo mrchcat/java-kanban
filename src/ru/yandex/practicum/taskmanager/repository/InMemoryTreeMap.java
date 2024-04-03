@@ -1,14 +1,14 @@
 package ru.yandex.practicum.taskmanager.repository;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.SortedMap;
+import java.util.TreeMap;
 
-public class InMemoryMap<K, V> implements Repository<K, V> {
-    private final HashMap<K, V> base;
+public class InMemoryTreeMap<K, V> implements Repository<K, V> {
+    private final TreeMap<K, V> base;
 
-    public InMemoryMap() {
-        this.base = new HashMap<>();
+    public InMemoryTreeMap() {
+        this.base = new TreeMap<>();
     }
 
     @Override
@@ -43,11 +43,11 @@ public class InMemoryMap<K, V> implements Repository<K, V> {
 
     @Override
     public SortedMap<K, V> headMap(K key) {
-        throw new UnsupportedOperationException();
+        return base.headMap(key);
     }
 
     @Override
     public SortedMap<K, V> tailMap(K key, boolean param) {
-        throw new UnsupportedOperationException();
+        return base.tailMap(key, param);
     }
 }
