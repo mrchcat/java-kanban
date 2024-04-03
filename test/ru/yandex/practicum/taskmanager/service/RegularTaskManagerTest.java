@@ -28,7 +28,7 @@ import static ru.yandex.practicum.taskmanager.service.Managers.getDefaultHistory
 
 class RegularTaskManagerTest {
     TaskManager taskManager;
-    static LocalDateTime startDateTime = LocalDateTime.of(2024, 04, 01, 13, 20);
+    static LocalDateTime startDateTime = LocalDateTime.of(2024, 4, 1, 13, 20);
     static Duration duration = Duration.ofDays(3);
 
     static Stream<Selftask> getSelfTasks() {
@@ -56,8 +56,8 @@ class RegularTaskManagerTest {
         Repository<Integer, ArrayList<Integer>> subordinates = new InMemoryMap<>();
         Generator generator = new SerialGenerator(START_ID_BY_DEFAULT);
         HistoryManager history = getDefaultHistory();
-        Repository<LocalDateTime, Integer> starts = new InMemoryTreeMap<LocalDateTime, Integer>((u, v) -> u.compareTo(v));
-        Repository<LocalDateTime, Integer> finishes = new InMemoryTreeMap<LocalDateTime, Integer>((u, v) -> u.compareTo(v));
+        Repository<LocalDateTime, Integer> starts = new InMemoryTreeMap<>(LocalDateTime::compareTo);
+        Repository<LocalDateTime, Integer> finishes = new InMemoryTreeMap<>(LocalDateTime::compareTo);
         taskManager = new RegularTaskManager(tasks, subordinates, generator, history, starts, finishes);
         taskManager.clearHistory();
     }
@@ -163,7 +163,7 @@ class RegularTaskManagerTest {
                 () -> assertSame(Subordination.EPIC, addedTask.getSubordination()),
                 () -> assertEquals(task.getName(), addedTask.getName()),
                 () -> assertEquals(task.getDescription(), addedTask.getDescription()),
-                () -> assertFalse(((Epictask) addedTask).isTimeDefined())
+                () -> assertFalse(addedTask.isTimeDefined())
         );
         Task gettedTask = taskManager.get(id);
 
@@ -174,7 +174,7 @@ class RegularTaskManagerTest {
                 () -> assertSame(Subordination.EPIC, gettedTask.getSubordination()),
                 () -> assertEquals(task.getName(), gettedTask.getName()),
                 () -> assertEquals(task.getDescription(), gettedTask.getDescription()),
-                () -> assertFalse(((Epictask) addedTask).isTimeDefined())
+                () -> assertFalse(addedTask.isTimeDefined())
         );
     }
 
@@ -249,17 +249,17 @@ class RegularTaskManagerTest {
         int epicId = epic.getId();
         Subtask sub1 = taskManager.add(
                 new Subtask("купить удочку", "магазин Охотник, проспект Ленина, 20",
-                        LocalDateTime.of(3024, 1, 10, 12, 00),
+                        LocalDateTime.of(3024, 1, 10, 12, 0),
                         Duration.ofDays(2),
                         epicId));
         Subtask sub2 = taskManager.add(
                 new Subtask("наловить червей", "200 шт.",
-                        LocalDateTime.of(5024, 1, 1, 12, 00),
+                        LocalDateTime.of(5024, 1, 1, 12, 0),
                         Duration.ofDays(20),
                         epicId));
         Subtask sub3 = taskManager.add(
                 new Subtask("купить алкоголь", "батя обещал самогон",
-                        LocalDateTime.of(6022, 1, 1, 12, 00),
+                        LocalDateTime.of(6022, 1, 1, 12, 0),
                         Duration.ofDays(10),
                         epicId));
         List<Task> getAllList = taskManager.getAll();
@@ -766,7 +766,7 @@ class RegularTaskManagerTest {
     @Test
     void addEpicTaskWithoutTimeTest() {
         Epictask epictask = taskManager.add(new Epictask("задача1", "описание1"));
-        assertFalse(((Epictask) taskManager.get(epictask.getId())).isTimeDefined());
+        assertFalse(taskManager.get(epictask.getId()).isTimeDefined());
     }
 
     @DisplayName("add Subtask with time")
@@ -790,14 +790,14 @@ class RegularTaskManagerTest {
     @Test
     void addEpicAndSubTaskWithTimeTest() {
         Epictask epictask = taskManager.add(new Epictask("задача1", "описание1"));
-        assertFalse(((Epictask) taskManager.get(epictask.getId())).isTimeDefined());
+        assertFalse(taskManager.get(epictask.getId()).isTimeDefined());
 
         LocalDateTime localDateTime = LocalDateTime.of(2025, 12, 12, 3, 5);
         Duration duration = Duration.ofDays(10);
         Subtask subtask = taskManager.add(new Subtask("задача1", "описание1",
                 localDateTime, duration, epictask.getId()));
         assertAll(
-                () -> assertTrue(((Epictask) taskManager.get(epictask.getId())).isTimeDefined()),
+                () -> assertTrue(taskManager.get(epictask.getId()).isTimeDefined()),
                 () -> assertEquals(localDateTime,
                         taskManager.get(epictask.getId()).getStartTime()),
                 () -> assertEquals(duration, taskManager.get(epictask.getId()).getDuration())
@@ -815,13 +815,13 @@ class RegularTaskManagerTest {
         Subtask subtask = taskManager.add(new Subtask("задача1", "описание1",
                 localDateTime, duration, epictask.getId()));
         assertAll(
-                () -> assertTrue(((Epictask) taskManager.get(epictask.getId())).isTimeDefined()),
+                () -> assertTrue(taskManager.get(epictask.getId()).isTimeDefined()),
                 () -> assertEquals(localDateTime,
                         taskManager.get(epictask.getId()).getStartTime()),
                 () -> assertEquals(duration, taskManager.get(epictask.getId()).getDuration())
         );
         taskManager.delete(subtask.getId());
-        assertFalse(((Epictask) taskManager.get(epictask.getId())).isTimeDefined());
+        assertFalse(taskManager.get(epictask.getId()).isTimeDefined());
     }
 
     @DisplayName("add Epic and several Subtasks. Check time change of Epic ")
@@ -829,38 +829,37 @@ class RegularTaskManagerTest {
     @Test
     void changeSubtasksTimeAndCheckEpicTest() {
         Epictask epictask = taskManager.add(new Epictask("задача1", "описание1"));
-        assertFalse(((Epictask) taskManager.get(epictask.getId())).isTimeDefined());
+        assertFalse(taskManager.get(epictask.getId()).isTimeDefined());
 
-        LocalDateTime localDateTime1 = LocalDateTime.of(2024, 04, 04, 00, 00);
+        LocalDateTime localDateTime1 = LocalDateTime.of(2024, 4, 4, 0, 0);
         Duration duration1 = Duration.ofDays(1);
         Subtask subtask1 = taskManager.add(new Subtask("задача1", "описание1",
                 localDateTime1, duration1, epictask.getId()));
         assertAll(
-                () -> assertTrue(((Epictask) taskManager.get(epictask.getId())).isTimeDefined()),
+                () -> assertTrue(taskManager.get(epictask.getId()).isTimeDefined()),
                 () -> assertEquals(localDateTime1,
                         taskManager.get(epictask.getId()).getStartTime()),
                 () -> assertEquals(duration1, taskManager.get(epictask.getId()).getDuration())
         );
 
-        LocalDateTime localDateTime2 = LocalDateTime.of(2025, 04, 04, 00, 00);
-        ;
+        LocalDateTime localDateTime2 = LocalDateTime.of(2025, 4, 4, 0, 0);
         Duration duration2 = Duration.ofDays(10);
         LocalDateTime endLocalDateTime2 = localDateTime2.plus(duration2);
         Subtask subtask2 = taskManager.add(new Subtask("задача1", "описание1",
                 localDateTime2, duration2, epictask.getId()));
         assertAll(
-                () -> assertTrue(((Epictask) taskManager.get(epictask.getId())).isTimeDefined()),
+                () -> assertTrue(taskManager.get(epictask.getId()).isTimeDefined()),
                 () -> assertEquals(localDateTime1,
                         taskManager.get(epictask.getId()).getStartTime()),
                 () -> assertEquals(Duration.between(localDateTime1, endLocalDateTime2), taskManager.get(epictask.getId()).getDuration())
         );
 
-        LocalDateTime localDateTime3 = LocalDateTime.of(2020, 02, 01, 10, 30);
+        LocalDateTime localDateTime3 = LocalDateTime.of(2020, 2, 1, 10, 30);
         Duration duration3 = Duration.ofDays(11);
         Subtask subtask3 = taskManager.add(new Subtask("задача1", "описание1",
                 localDateTime3, duration3, epictask.getId()));
         assertAll(
-                () -> assertTrue(((Epictask) taskManager.get(epictask.getId())).isTimeDefined()),
+                () -> assertTrue(taskManager.get(epictask.getId()).isTimeDefined()),
                 () -> assertEquals(localDateTime3,
                         taskManager.get(epictask.getId()).getStartTime()),
                 () -> assertEquals(Duration.between(localDateTime3, endLocalDateTime2),
@@ -876,49 +875,49 @@ class RegularTaskManagerTest {
         Epictask epictask = taskManager.add(new Epictask("задача1", "описание1"));
         int epicId = epictask.getId();
 
-        LocalDateTime time1 = LocalDateTime.of(2000, 1, 1, 00, 00);
+        LocalDateTime time1 = LocalDateTime.of(2000, 1, 1, 0, 0);
         Duration duration1 = Duration.ofDays(1);
         Subtask subtask1 = taskManager.add(new Subtask("задача1", "описание1", time1, duration1, epicId));
 
-        LocalDateTime time2 = LocalDateTime.of(1999, 1, 1, 00, 00);
+        LocalDateTime time2 = LocalDateTime.of(1999, 1, 1, 0, 0);
         Duration duration2 = Duration.ofDays(1);
         Subtask subtask2 = taskManager.add(new Subtask("задача1", "описание1", time2, duration2, epicId));
 
-        LocalDateTime time3 = LocalDateTime.of(2001, 11, 1, 00, 00);
+        LocalDateTime time3 = LocalDateTime.of(2001, 11, 1, 0, 0);
         Duration duration3 = Duration.ofDays(2);
         Subtask subtask3 = taskManager.add(new Subtask("задача1", "описание1", time3, duration3, epicId));
 
-        LocalDateTime time4 = LocalDateTime.of(1998, 1, 1, 00, 00);
+        LocalDateTime time4 = LocalDateTime.of(1998, 1, 1, 0, 0);
         Duration duration4 = Duration.ofDays(1);
         Subtask subtask4 = taskManager.add(new Subtask("задача1", "описание1", time4, duration4, epicId));
 
         Duration epicDuration = Duration.between(time4, time3.plus(duration3));
         assertAll(
-                () -> assertTrue(((Epictask) taskManager.get(epicId)).isTimeDefined()),
+                () -> assertTrue(taskManager.get(epicId).isTimeDefined()),
                 () -> assertEquals(time4, taskManager.get(epicId).getStartTime()),
                 () -> assertEquals(epicDuration, taskManager.get(epicId).getDuration())
         );
 
         taskManager.delete(subtask4.getId());
         assertAll(
-                () -> assertTrue(((Epictask) taskManager.get(epicId)).isTimeDefined()),
+                () -> assertTrue(taskManager.get(epicId).isTimeDefined()),
                 () -> assertEquals(time2, taskManager.get(epicId).getStartTime()),
                 () -> assertEquals(Duration.between(time2, time3.plus(duration3)), taskManager.get(epicId).getDuration())
         );
         taskManager.delete(subtask3.getId());
         assertAll(
-                () -> assertTrue(((Epictask) taskManager.get(epicId)).isTimeDefined()),
+                () -> assertTrue(taskManager.get(epicId).isTimeDefined()),
                 () -> assertEquals(time2, taskManager.get(epicId).getStartTime()),
                 () -> assertEquals(Duration.between(time2, time1.plus(duration1)), taskManager.get(epicId).getDuration())
         );
         taskManager.delete(subtask2.getId());
         assertAll(
-                () -> assertTrue(((Epictask) taskManager.get(epicId)).isTimeDefined()),
+                () -> assertTrue(taskManager.get(epicId).isTimeDefined()),
                 () -> assertEquals(time1, taskManager.get(epicId).getStartTime()),
                 () -> assertEquals(duration1, taskManager.get(epicId).getDuration())
         );
         taskManager.delete(subtask1.getId());
-        assertFalse(((Epictask) taskManager.get(epicId)).isTimeDefined());
+        assertFalse(taskManager.get(epicId).isTimeDefined());
     }
 
     @DisplayName("add Epic and Subtasks and update it. Check time change of Epic ")
@@ -928,12 +927,12 @@ class RegularTaskManagerTest {
         Epictask epictask = taskManager.add(new Epictask("задача1", "описание1"));
         int epicId = epictask.getId();
 
-        LocalDateTime time = LocalDateTime.of(2000, 1, 1, 00, 00);
+        LocalDateTime time = LocalDateTime.of(2000, 1, 1, 0, 0);
         Duration duration = Duration.ofDays(1);
         Subtask subtask = taskManager.add(new Subtask("задача1", "описание1", time, duration, epicId));
         int subId = subtask.getId();
         assertAll(
-                () -> assertTrue(((Epictask) taskManager.get(epicId)).isTimeDefined()),
+                () -> assertTrue(taskManager.get(epicId).isTimeDefined()),
                 () -> assertEquals(time, taskManager.get(epicId).getStartTime()),
                 () -> assertEquals(duration, taskManager.get(epicId).getDuration())
         );
@@ -943,18 +942,18 @@ class RegularTaskManagerTest {
         updatedSub.setId(subId);
         taskManager.update(updatedSub);
         assertAll(
-                () -> assertTrue(((Epictask) taskManager.get(epicId)).isTimeDefined()),
+                () -> assertTrue(taskManager.get(epicId).isTimeDefined()),
                 () -> assertEquals(time, taskManager.get(epicId).getStartTime()),
                 () -> assertEquals(duration1, taskManager.get(epicId).getDuration())
         );
 
-        LocalDateTime time2 = LocalDateTime.of(1000, 1, 1, 00, 00);
+        LocalDateTime time2 = LocalDateTime.of(1000, 1, 1, 0, 0);
         Duration duration2 = Duration.ofDays(100);
         updatedSub = new Subtask("задача1", "описание1", time2, duration2, epicId);
         updatedSub.setId(subId);
         taskManager.update(updatedSub);
         assertAll(
-                () -> assertTrue(((Epictask) taskManager.get(epicId)).isTimeDefined()),
+                () -> assertTrue(taskManager.get(epicId).isTimeDefined()),
                 () -> assertEquals(time2, taskManager.get(epicId).getStartTime()),
                 () -> assertEquals(duration2, taskManager.get(epicId).getDuration())
         );
@@ -964,27 +963,27 @@ class RegularTaskManagerTest {
     @Tag("timeline")
     @Test
     void addSelfTimelineTest() {
-        LocalDateTime time1 = LocalDateTime.of(2000, 1, 1, 00, 00);
+        LocalDateTime time1 = LocalDateTime.of(2000, 1, 1, 0, 0);
         Duration duration1 = Duration.ofDays(1);
         Selftask task1 = taskManager.add(new Selftask("name", "descript", time1, duration1));
         assertNotNull(task1);
 
-        LocalDateTime time2 = LocalDateTime.of(1000, 1, 1, 00, 00);
+        LocalDateTime time2 = LocalDateTime.of(1000, 1, 1, 0, 0);
         Duration duration2 = Duration.ofDays(365);
         Selftask task2 = taskManager.add(new Selftask("name", "descript", time2, duration2));
         assertNotNull(task2);
 
-        LocalDateTime time3 = LocalDateTime.of(1000, 2, 1, 00, 00);
+        LocalDateTime time3 = LocalDateTime.of(1000, 2, 1, 0, 0);
         Duration duration3 = Duration.ofDays(1);
         Selftask task3 = taskManager.add(new Selftask("name", "descript", time3, duration3));
         assertNull(task3);
 
-        LocalDateTime time4 = LocalDateTime.of(999, 12, 31, 00, 00);
+        LocalDateTime time4 = LocalDateTime.of(999, 12, 31, 0, 0);
         Duration duration4 = Duration.ofDays(10);
         Selftask task4 = taskManager.add(new Selftask("name", "descript", time4, duration4));
         assertNull(task4);
 
-        LocalDateTime time5 = LocalDateTime.of(1000, 12, 30, 00, 00);
+        LocalDateTime time5 = LocalDateTime.of(1000, 12, 30, 0, 0);
         Duration duration5 = Duration.ofDays(10);
         Selftask task5 = taskManager.add(new Selftask("name", "descript", time5, duration5));
         assertNull(task5);
@@ -997,27 +996,27 @@ class RegularTaskManagerTest {
         Epictask epic = taskManager.add(new Epictask("a", "s"));
         int epicId = epic.getId();
 
-        LocalDateTime time1 = LocalDateTime.of(2000, 1, 1, 00, 00);
+        LocalDateTime time1 = LocalDateTime.of(2000, 1, 1, 0, 0);
         Duration duration1 = Duration.ofDays(1);
         Subtask task1 = taskManager.add(new Subtask("name", "descript", time1, duration1, epicId));
         assertNotNull(task1);
 
-        LocalDateTime time2 = LocalDateTime.of(1000, 1, 1, 00, 00);
+        LocalDateTime time2 = LocalDateTime.of(1000, 1, 1, 0, 0);
         Duration duration2 = Duration.ofDays(365);
         Subtask task2 = taskManager.add(new Subtask("name", "descript", time2, duration2, epicId));
         assertNotNull(task2);
 
-        LocalDateTime time3 = LocalDateTime.of(1000, 2, 1, 00, 00);
+        LocalDateTime time3 = LocalDateTime.of(1000, 2, 1, 0, 0);
         Duration duration3 = Duration.ofDays(1);
         Subtask task3 = taskManager.add(new Subtask("name", "descript", time3, duration3, epicId));
         assertNull(task3);
 
-        LocalDateTime time4 = LocalDateTime.of(999, 12, 31, 00, 00);
+        LocalDateTime time4 = LocalDateTime.of(999, 12, 31, 0, 0);
         Duration duration4 = Duration.ofDays(10);
         Subtask task4 = taskManager.add(new Subtask("name", "descript", time4, duration4, epicId));
         assertNull(task4);
 
-        LocalDateTime time5 = LocalDateTime.of(1000, 12, 30, 00, 00);
+        LocalDateTime time5 = LocalDateTime.of(1000, 12, 30, 0, 0);
         Duration duration5 = Duration.ofDays(10);
         Subtask task5 = taskManager.add(new Subtask("name", "descript", time5, duration5, epicId));
         assertNull(task5);
@@ -1062,23 +1061,23 @@ class RegularTaskManagerTest {
     @Tag("timeline")
     @Test
     void getPrioritizedTasks() {
-        LocalDateTime time1 = LocalDateTime.of(10, 1, 1, 00, 00);
+        LocalDateTime time1 = LocalDateTime.of(10, 1, 1, 0, 0);
         Duration duration1 = Duration.ofDays(1);
         Selftask task1 = taskManager.add(new Selftask("name", "descript", time1, duration1));
 
-        LocalDateTime time2 = LocalDateTime.of(1, 1, 1, 00, 00);
+        LocalDateTime time2 = LocalDateTime.of(1, 1, 1, 0, 0);
         Duration duration2 = Duration.ofDays(1);
         Selftask task2 = taskManager.add(new Selftask("name", "descript", time2, duration2));
 
-        LocalDateTime time3 = LocalDateTime.of(2, 1, 1, 00, 00);
+        LocalDateTime time3 = LocalDateTime.of(2, 1, 1, 0, 0);
         Duration duration3 = Duration.ofDays(1);
         Selftask task3 = taskManager.add(new Selftask("name", "descript", time3, duration3));
 
-        LocalDateTime time4 = LocalDateTime.of(6, 1, 1, 00, 00);
+        LocalDateTime time4 = LocalDateTime.of(6, 1, 1, 0, 0);
         Duration duration4 = Duration.ofDays(1);
         Selftask task4 = taskManager.add(new Selftask("name", "descript", time4, duration4));
 
-        LocalDateTime time5 = LocalDateTime.of(5, 1, 1, 00, 00);
+        LocalDateTime time5 = LocalDateTime.of(5, 1, 1, 0, 0);
         Duration duration5 = Duration.ofDays(1);
         Selftask task5 = taskManager.add(new Selftask("name", "descript", time5, duration5));
 
@@ -1095,11 +1094,11 @@ class RegularTaskManagerTest {
     @Tag("timeline")
     @Test
     void updateAndGetPrioritizedTasks() {
-        LocalDateTime time1 = LocalDateTime.of(10, 1, 1, 00, 00);
+        LocalDateTime time1 = LocalDateTime.of(10, 1, 1, 0, 0);
         Duration duration1 = Duration.ofDays(1);
         Selftask task1 = taskManager.add(new Selftask("name", "descript", time1, duration1));
 
-        LocalDateTime time2 = LocalDateTime.of(1, 1, 1, 00, 00);
+        LocalDateTime time2 = LocalDateTime.of(1, 1, 1, 0, 0);
         Duration duration2 = Duration.ofDays(1);
         Selftask task2 = taskManager.add(new Selftask("name", "descript", time2, duration2));
 
@@ -1108,7 +1107,7 @@ class RegularTaskManagerTest {
         assertEquals(1, list.get(1).getId());
 
 
-        LocalDateTime newTime = LocalDateTime.of(0, 1, 1, 00, 00);
+        LocalDateTime newTime = LocalDateTime.of(0, 1, 1, 0, 0);
         task1.setStartTime(newTime);
         taskManager.update(task1);
         list = taskManager.getPrioritizedTasks();
@@ -1128,23 +1127,23 @@ class RegularTaskManagerTest {
     @Tag("timeline")
     @Test
     void deleteAndGetPrioritizedTasks() {
-        LocalDateTime time1 = LocalDateTime.of(10, 1, 1, 00, 00);
+        LocalDateTime time1 = LocalDateTime.of(10, 1, 1, 0, 0);
         Duration duration1 = Duration.ofDays(1);
         Selftask task1 = taskManager.add(new Selftask("name", "descript", time1, duration1));
 
-        LocalDateTime time2 = LocalDateTime.of(1, 1, 1, 00, 00);
+        LocalDateTime time2 = LocalDateTime.of(1, 1, 1, 0, 0);
         Duration duration2 = Duration.ofDays(1);
         Selftask task2 = taskManager.add(new Selftask("name", "descript", time2, duration2));
 
-        LocalDateTime time3 = LocalDateTime.of(2, 1, 1, 00, 00);
+        LocalDateTime time3 = LocalDateTime.of(2, 1, 1, 0, 0);
         Duration duration3 = Duration.ofDays(1);
         Selftask task3 = taskManager.add(new Selftask("name", "descript", time3, duration3));
 
-        LocalDateTime time4 = LocalDateTime.of(6, 1, 1, 00, 00);
+        LocalDateTime time4 = LocalDateTime.of(6, 1, 1, 0, 0);
         Duration duration4 = Duration.ofDays(1);
         Selftask task4 = taskManager.add(new Selftask("name", "descript", time4, duration4));
 
-        LocalDateTime time5 = LocalDateTime.of(5, 1, 1, 00, 00);
+        LocalDateTime time5 = LocalDateTime.of(5, 1, 1, 0, 0);
         Duration duration5 = Duration.ofDays(1);
         Selftask task5 = taskManager.add(new Selftask("name", "descript", time5, duration5));
 
