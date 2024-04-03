@@ -1034,22 +1034,22 @@ class RegularTaskManagerTest {
     @Tag("timeline")
     @Test
     void updateSelfTaskTimelineTest() {
-        LocalDateTime time1 = LocalDateTime.of(2000, 1, 1, 00, 00);
+        LocalDateTime time1 = LocalDateTime.of(2000, 1, 1, 0, 0);
         Duration duration1 = Duration.ofDays(1);
         Selftask task1 = taskManager.add(new Selftask("name", "descript", time1, duration1));
         assertNotNull(task1);
 
-        LocalDateTime time2 = LocalDateTime.of(2000, 1, 10, 00, 00);
+        LocalDateTime time2 = LocalDateTime.of(2000, 1, 10, 0, 0);
         Duration duration2 = Duration.ofDays(1);
         Selftask task2 = taskManager.add(new Selftask("name", "descript", time2, duration2));
         assertNotNull(task2);
 
-        LocalDateTime time3 = LocalDateTime.of(2001, 1, 10, 00, 00);
+        LocalDateTime time3 = LocalDateTime.of(2001, 1, 10, 0, 0);
         task2.setStartTime(time3);
         task2 = taskManager.update(task2);
         assertNotNull(task2);
 
-        LocalDateTime time4 = LocalDateTime.of(1999, 1, 12, 00, 00);
+        LocalDateTime time4 = LocalDateTime.of(1999, 1, 12, 0, 0);
         Duration duration4 = Duration.ofDays(365);
         task2.setStartTime(time4);
         task2.setDuration(duration4);
