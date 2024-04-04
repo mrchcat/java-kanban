@@ -303,7 +303,10 @@ public class RegularTaskManager implements TaskManager {
         if ((epic == null) || (epic.getSubordination() != Subordination.EPIC)) {
             return Collections.emptyList();
         }
-        return subordinates.get(epic.getId()).stream().map(u -> (Subtask) tasks.get(u)).map(Subtask::copy).toList();
+        return subordinates.get(epic.getId()).stream()
+                .map(u -> (Subtask) tasks.get(u))
+                .map(Subtask::copy)
+                .toList();
     }
 
     // Обновление по образцу, содержащемуся в task.

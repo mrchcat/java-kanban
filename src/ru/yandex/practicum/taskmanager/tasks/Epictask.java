@@ -36,19 +36,4 @@ public class Epictask extends Task {
         copy.setDuration(duration);
         return copy;
     }
-
-    @Override
-    public String convertToFileRecord() {
-        return String.join(DELIMITER,
-                id.toString(),
-                getSubordination().toString(),
-                name,
-                status.toString(),
-                description,
-                String.valueOf(isTimeDefined),
-                String.valueOf(startTime.toLocalDate().toEpochDay()),
-                String.valueOf(startTime.toLocalTime().toSecondOfDay()),
-                String.valueOf(duration.toSeconds()),
-                "null");
-    }
 }

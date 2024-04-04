@@ -26,7 +26,9 @@ class FileBackedHistoryManagerTest {
     static Duration duration = Duration.ofDays(3);
     String[] FIELDS = {"id", "subordination", "name", "status", "description", "isTimeDefined",
             "startdate", "starttime", "duration", "epicId"};
-    String HEADER = String.join(Task.DELIMITER, FIELDS).concat("\n");
+    private static final String DELIMITER = "~";
+
+    String HEADER = String.join(DELIMITER, FIELDS).concat("\n");
 
     @BeforeEach
     void initAndClearBefore() throws IOException {

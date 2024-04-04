@@ -36,10 +36,4 @@ public class Selftask extends Task {
         copy.setStatus(status);
         return copy;
     }
-
-    @Override
-    public String convertToFileRecord() {
-        return String.join(DELIMITER, super.convertToFileRecord(), "null");
-    }
-
 }

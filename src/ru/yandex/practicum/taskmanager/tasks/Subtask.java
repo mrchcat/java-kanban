@@ -47,8 +47,10 @@ public class Subtask extends Task {
     }
 
     @Override
-    public String convertToFileRecord() {
-        return String.join(DELIMITER, super.convertToFileRecord(), epicId.toString());
+    public String[] convertToStringArray() {
+        String[] fields = super.convertToStringArray();
+        fields[fields.length - 1] = epicId.toString();
+        return fields;
     }
 }
 

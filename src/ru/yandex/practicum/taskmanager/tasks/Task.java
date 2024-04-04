@@ -4,8 +4,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 public abstract class Task {
-    public static final String DELIMITER = "~";
-    public static final String[] FIELDS = {"id", "subordination", "name", "status", "description", "isTimeDefined",
+    public static final String[] FIELDS_NAMES = {"id", "subordination", "name", "status", "description", "isTimeDefined",
             "startdate", "starttime", "duration", "epicId"};
     protected Integer id;
     protected String name;
@@ -119,8 +118,8 @@ public abstract class Task {
 
     public abstract Task copy();
 
-    public String convertToFileRecord() {
-        return String.join(DELIMITER,
+    public String[] convertToStringArray() {
+        return new String[]{
                 id.toString(),
                 getSubordination().toString(),
                 name,
@@ -129,6 +128,8 @@ public abstract class Task {
                 String.valueOf(isTimeDefined),
                 String.valueOf(startTime.toLocalDate().toEpochDay()),
                 String.valueOf(startTime.toLocalTime().toSecondOfDay()),
-                String.valueOf(duration.toSeconds()));
+                String.valueOf(duration.toSeconds()),
+                "null"
+        };
     }
 }

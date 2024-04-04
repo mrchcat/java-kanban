@@ -19,7 +19,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class FileBackedHistoryManager extends LinkedHashHistoryManager {
-    private static final String HEADER = String.join(Task.DELIMITER, Task.FIELDS).concat("\n");
+    private static final String DELIMITER = "~";
+    private static final String HEADER = String.join(DELIMITER, Task.FIELDS_NAMES).concat("\n");
     private final Path file;
 
     public FileBackedHistoryManager(String path, boolean doLoadFile) {
@@ -56,8 +57,8 @@ public class FileBackedHistoryManager extends LinkedHashHistoryManager {
             }
             ArrayList<Task> tasks = new ArrayList<>();
             while ((line = reader.readLine()) != null) {
-                String[] elements = line.split(Task.DELIMITER);
-                if (elements.length < Task.FIELDS.length) {
+                String[] elements = line.split(DELIMITER);
+                if (elements.length < Task.FIELDS_NAMES.length) {
                     throw new ManagerSaveException(String.format("File %s is corrupted! Not enough fields", file));
                 }
                 tasks.add(restoreTask(elements));
@@ -125,7 +126,7 @@ public class FileBackedHistoryManager extends LinkedHashHistoryManager {
         try (BufferedWriter writer = Files.newBufferedWriter(file, StandardOpenOption.TRUNCATE_EXISTING)) {
             writer.write(HEADER);
             for (Task task : tasks) {
-                writer.write(task.convertToFileRecord() + "\n");
+                writer.write(String.join(DELIMITER, task.convertToStringArray()).concat("\n"));
             }
         } catch (IOException e) {
             throw new ManagerSaveException(String.format("Error writing the task history file %s!", file), e);
