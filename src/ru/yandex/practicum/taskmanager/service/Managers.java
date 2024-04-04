@@ -9,12 +9,14 @@ import ru.yandex.practicum.taskmanager.utils.Generator;
 import ru.yandex.practicum.taskmanager.utils.HistoryManager;
 import ru.yandex.practicum.taskmanager.utils.SerialGenerator;
 
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Managers {
     private static final int START_ID_BY_DEFAULT = 1;
-    private static final String PATH_HISTORY_BY_DEFAULT = "src/ru/yandex/practicum/taskmanager/repository/history.scv";
+    private static final Path PATH_HISTORY_BY_DEFAULT =
+            Path.of("src/ru/yandex/practicum/taskmanager/repository/history.csv");
     private static final boolean LOAD_HISTORY_BY_DEFAULT = true;
 
     public static TaskManager getDefault() {

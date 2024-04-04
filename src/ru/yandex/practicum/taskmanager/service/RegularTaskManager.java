@@ -145,7 +145,6 @@ public class RegularTaskManager implements TaskManager {
 
     private void updateEpicTimeWhenAddSub(Epictask epic, LocalDateTime subStart, Duration subDuration) {
         if (!epic.isTimeDefined()) {
-            epic.setTimeDefined(true);
             epic.setStartTime(subStart);
             epic.setDuration(subDuration);
             return;

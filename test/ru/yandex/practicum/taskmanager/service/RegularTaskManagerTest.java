@@ -1167,7 +1167,7 @@ class RegularTaskManagerTest {
     @Test
     void addTSelfTaskWithoutStart() {
         Duration duration1 = Duration.ofDays(1);
-        Selftask task1 = taskManager.add(new Selftask("name", "descript", duration1));
+        Selftask task1 = taskManager.add(new Selftask("name", "descript", null, duration1));
         int id1 = task1.getId();
         assertAll(
                 () -> assertFalse(taskManager.get(id1).isTimeDefined()),
@@ -1181,7 +1181,7 @@ class RegularTaskManagerTest {
     void addSubTaskWithoutStart() {
         Epictask epic = taskManager.add(new Epictask("пойти на рыбалку", "Селигер, в районе оз Волго"));
         Duration duration1 = Duration.ofDays(1);
-        Subtask task1 = taskManager.add(new Subtask("name", "descript", duration1, epic.getId()));
+        Subtask task1 = taskManager.add(new Subtask("name", "descript", null, duration1, epic.getId()));
         int id1 = task1.getId();
         assertAll(
                 () -> assertFalse(taskManager.get(id1).isTimeDefined()),
@@ -1198,7 +1198,7 @@ class RegularTaskManagerTest {
         Selftask task1 = taskManager.add(new Selftask("name", "descript", time1, duration1));
 
         Duration duration2 = Duration.ofDays(3);
-        Selftask task2 = taskManager.add(new Selftask("name", "descript", duration2));
+        Selftask task2 = taskManager.add(new Selftask("name", "descript", null, duration2));
 
         LocalDateTime time3 = LocalDateTime.of(2, 1, 1, 1, 1, 1);
         Duration duration3 = Duration.ofDays(10);
@@ -1223,7 +1223,7 @@ class RegularTaskManagerTest {
         Subtask task1 = taskManager.add(new Subtask("name", "descript", time1, duration1, epicId));
 
         Duration duration2 = Duration.ofDays(3);
-        Subtask task2 = taskManager.add(new Subtask("name", "descript", duration2, epicId));
+        Subtask task2 = taskManager.add(new Subtask("name", "descript", null, duration2, epicId));
 
         LocalDateTime time3 = LocalDateTime.of(2, 1, 1, 1, 1, 1);
         Duration duration3 = Duration.ofDays(10);
@@ -1247,7 +1247,7 @@ class RegularTaskManagerTest {
         Selftask task1 = taskManager.add(new Selftask("name", "descript", time1, duration1));
 
         Duration duration2 = Duration.ofDays(3);
-        Selftask task2 = taskManager.add(new Selftask("name", "descript", duration2));
+        Selftask task2 = taskManager.add(new Selftask("name", "descript", null, duration2));
 
         LocalDateTime time3 = LocalDateTime.of(2, 1, 1, 1, 1, 1);
         Duration duration3 = Duration.ofDays(10);
@@ -1258,7 +1258,7 @@ class RegularTaskManagerTest {
                 () -> assertEquals(3, list.get(1).getId())
         );
 
-        Selftask task3Update = new Selftask("name", "descript", duration3);
+        Selftask task3Update = new Selftask("name", "descript", null, duration3);
         task3Update.setId(task3.getId());
         taskManager.update(task3Update);
         List<Task> updatedList = taskManager.getPrioritizedTasks();

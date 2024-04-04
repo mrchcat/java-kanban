@@ -20,20 +20,14 @@ import static java.nio.file.StandardOpenOption.CREATE;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FileBackedHistoryManagerTest {
-    String filePath;
-    Path path;
-    static LocalDateTime dateTime = LocalDateTime.of(2024, 4, 1, 13, 20);
-    static Duration duration = Duration.ofDays(3);
-    String[] FIELDS = {"id", "subordination", "name", "status", "description", "isTimeDefined",
-            "startdate", "starttime", "duration", "epicId"};
+    Path path = Path.of("src/ru/yandex/practicum/taskmanager/repository/history.csv");
+    String[] FIELDS = Task.FIELDS_NAMES;
     private static final String DELIMITER = "~";
 
     String HEADER = String.join(DELIMITER, FIELDS).concat("\n");
 
     @BeforeEach
     void initAndClearBefore() throws IOException {
-        filePath = "src/ru/yandex/practicum/taskmanager/repository/history.txt";
-        path = Path.of(filePath);
         Files.deleteIfExists(path);
     }
 
@@ -46,28 +40,28 @@ class FileBackedHistoryManagerTest {
     @DisplayName("create new file")
     @Test
     void createNewFileTest() {
-        FileBackedHistoryManager historyManager = new FileBackedHistoryManager(filePath, false);
+        FileBackedHistoryManager historyManager = new FileBackedHistoryManager(path, false);
         assertTrue(Files.isRegularFile(path));
     }
 
     @DisplayName("create the same file twice")
     @Test
     void createNewFileTwiceTest() {
-        FileBackedHistoryManager historyManager1 = new FileBackedHistoryManager(filePath, false);
+        FileBackedHistoryManager historyManager1 = new FileBackedHistoryManager(path, false);
         assertTrue(Files.isRegularFile(path));
     }
 
     @DisplayName("try to create file with bad name")
     @Test
     void createBadFileTest() {
-        String badFileName = "src/ru/yandex/practicum/taskmanager/repository/noSuchDirectory/noSuchFIle";
+        Path badFileName = Path.of("src/ru/yandex/practicum/taskmanager/repository/noSuchDirectory/noSuchFIle");
         assertThrows(ManagerSaveException.class, () -> new FileBackedHistoryManager(badFileName, false));
     }
 
     @DisplayName("check content of new file")
     @Test
     void createAndCheckNewTest() throws IOException {
-        FileBackedHistoryManager historyManager = new FileBackedHistoryManager(filePath, false);
+        FileBackedHistoryManager historyManager = new FileBackedHistoryManager(path, false);
         assertTrue(Files.isRegularFile(path));
         try (BufferedReader reader = Files.newBufferedReader(path)) {
             String line1 = reader.readLine();
@@ -82,7 +76,7 @@ class FileBackedHistoryManagerTest {
     @DisplayName("create and add Selftasks ")
     @Test
     void createAndAddSelftasksTest() throws IOException {
-        FileBackedHistoryManager historyManager = new FileBackedHistoryManager(filePath, false);
+        FileBackedHistoryManager historyManager = new FileBackedHistoryManager(path, false);
         assertTrue(Files.isRegularFile(path));
         String answer = fillInHistoryManagerBySelftasks(historyManager);
         try (BufferedReader reader = Files.newBufferedReader(path)) {
@@ -109,9 +103,9 @@ class FileBackedHistoryManagerTest {
         historyManager.add(task3);
 
         String answer = """
-                3~SELF~name3~NEW~desc3~true~-718371~10980~259200~null
-                2~SELF~name2~NEW~desc2~true~-718765~7320~172800~null
-                1~SELF~name1~NEW~desc1~true~-719162~3660~86400~null
+                3~SELF~name3~NEW~desc3~-718371~10980~259200~null
+                2~SELF~name2~NEW~desc2~-718765~7320~172800~null
+                1~SELF~name1~NEW~desc1~-719162~3660~86400~null
                 """;
         return HEADER + answer;
     }
@@ -119,7 +113,7 @@ class FileBackedHistoryManagerTest {
     @DisplayName("create and add Epictasks ")
     @Test
     void createAndAddEpictasks() throws IOException {
-        FileBackedHistoryManager historyManager = new FileBackedHistoryManager(filePath, false);
+        FileBackedHistoryManager historyManager = new FileBackedHistoryManager(path, false);
         assertTrue(Files.isRegularFile(path));
         String answer = fillInHistoryManagerByEpictasks(historyManager);
         try (BufferedReader reader = Files.newBufferedReader(path)) {
@@ -140,9 +134,9 @@ class FileBackedHistoryManagerTest {
         historyManager.add(task3);
 
         String answer = """
-                3~EPIC~name3~NEW~desc3~false~365241780471~86399~0~null
-                2~EPIC~name2~NEW~desc2~false~365241780471~86399~0~null
-                1~EPIC~name1~NEW~desc1~false~365241780471~86399~0~null
+                3~EPIC~name3~NEW~desc3~null~null~null~null
+                2~EPIC~name2~NEW~desc2~null~null~null~null
+                1~EPIC~name1~NEW~desc1~null~null~null~null
                 """;
         return HEADER + answer;
     }
@@ -150,7 +144,7 @@ class FileBackedHistoryManagerTest {
     @DisplayName("create and add Subtasks ")
     @Test
     void createAndAddSubtasksTest() throws IOException {
-        FileBackedHistoryManager historyManager = new FileBackedHistoryManager(filePath, false);
+        FileBackedHistoryManager historyManager = new FileBackedHistoryManager(path, false);
         assertTrue(Files.isRegularFile(path));
         String answer = fillInHistoryManagerBySubtasks(historyManager);
         try (BufferedReader reader = Files.newBufferedReader(path)) {
@@ -176,9 +170,9 @@ class FileBackedHistoryManagerTest {
         historyManager.add(task2);
         historyManager.add(task3);
         String answer = """
-                3~SUBTASK~name3~NEW~desc3~true~-718371~10980~259200~3
-                2~SUBTASK~name2~NEW~desc2~true~-718765~7320~172800~2
-                1~SUBTASK~name1~NEW~desc1~true~-719162~3660~86400~1
+                3~SUBTASK~name3~NEW~desc3~-718371~10980~259200~3
+                2~SUBTASK~name2~NEW~desc2~-718765~7320~172800~2
+                1~SUBTASK~name1~NEW~desc1~-719162~3660~86400~1
                 """;
         return HEADER + answer;
     }
@@ -186,7 +180,7 @@ class FileBackedHistoryManagerTest {
     @DisplayName("create and add same tasks  ")
     @Test
     void createAndAddSameTasksTest() throws IOException {
-        FileBackedHistoryManager historyManager = new FileBackedHistoryManager(filePath, false);
+        FileBackedHistoryManager historyManager = new FileBackedHistoryManager(path, false);
         assertTrue(Files.isRegularFile(path));
         String answer = fillInHistoryManagerBySameTasks(historyManager);
         try (BufferedReader reader = Files.newBufferedReader(path)) {
@@ -196,6 +190,8 @@ class FileBackedHistoryManagerTest {
     }
 
     String fillInHistoryManagerBySameTasks(HistoryManager historyManager) {
+        LocalDateTime dateTime = LocalDateTime.of(2024, 04, 01, 13, 20);
+        Duration duration = Duration.ofDays(3);
         ArrayList<Task> list = new ArrayList<>();
         for (int i = 0; i <= 5; i++) {
             Task task = new Subtask("name" + i, "desc" + i, dateTime, duration, i);
@@ -206,12 +202,12 @@ class FileBackedHistoryManagerTest {
         historyManager.add(list.get(1));
         historyManager.add(list.get(3));
         String answer = """
-                3~SUBTASK~name3~NEW~desc3~true~19814~48000~259200~3
-                1~SUBTASK~name1~NEW~desc1~true~19814~48000~259200~1
-                5~SUBTASK~name5~NEW~desc5~true~19814~48000~259200~5
-                4~SUBTASK~name4~NEW~desc4~true~19814~48000~259200~4
-                2~SUBTASK~name2~NEW~desc2~true~19814~48000~259200~2
-                0~SUBTASK~name0~NEW~desc0~true~19814~48000~259200~0
+                3~SUBTASK~name3~NEW~desc3~19814~48000~259200~3
+                1~SUBTASK~name1~NEW~desc1~19814~48000~259200~1
+                5~SUBTASK~name5~NEW~desc5~19814~48000~259200~5
+                4~SUBTASK~name4~NEW~desc4~19814~48000~259200~4
+                2~SUBTASK~name2~NEW~desc2~19814~48000~259200~2
+                0~SUBTASK~name0~NEW~desc0~19814~48000~259200~0
                 """;
         return HEADER + answer;
     }
@@ -220,18 +216,18 @@ class FileBackedHistoryManagerTest {
     @Test
     void loadExistingFileTest() throws IOException {
         String fileContent = HEADER + """
-                9~SUBTASK~name2~NEW~desc2~true~19814~48000~259200~8
-                8~EPIC~name2~NEW~desc2~false~19814~48000~259200~null
-                7~SUBTASK~name1~NEW~desc1~true~19814~48000~259200~6
-                6~EPIC~name1~IN_PROGRESS~desc1~true~19814~48000~259200~null
-                5~SUBTASK~name9~NEW~desc9~true~19814~48000~259200~4
-                4~EPIC~name0~NEW~desc0~false~19814~48000~259200~null
-                3~SELF~name2~NEW~desc2~true~19814~48000~259200~null
-                2~SELF~name1~NEW~desc1~true~19814~48000~259200~null
-                1~SELF~name0~DONE~desc0~true~19814~48000~259200~null
+                9~SUBTASK~name2~NEW~desc2~19814~48000~259200~8
+                8~EPIC~name2~NEW~desc2~null~null~null~null
+                7~SUBTASK~name1~NEW~desc1~19814~48000~259200~6
+                6~EPIC~name1~IN_PROGRESS~desc1~19814~48000~259200~null
+                5~SUBTASK~name9~NEW~desc9~19814~48000~259200~4
+                4~EPIC~name0~NEW~desc0~null~null~null~null
+                3~SELF~name2~NEW~desc2~19814~48000~259200~null
+                2~SELF~name1~NEW~desc1~19814~48000~259200~null
+                1~SELF~name0~DONE~desc0~19814~48000~259200~null
                 """;
         Files.writeString(path, fileContent, CREATE);
-        FileBackedHistoryManager historyManager = new FileBackedHistoryManager(filePath, true);
+        FileBackedHistoryManager historyManager = new FileBackedHistoryManager(path, true);
         List<Task> history = historyManager.getHistory();
         assertEquals(9, history.size());
         assertAll(
@@ -260,8 +256,8 @@ class FileBackedHistoryManagerTest {
                 () -> assertEquals("name0", history.get(8).getName()),
                 () -> assertEquals("desc0", history.get(8).getDescription()),
                 () -> assertEquals(Status.DONE, history.get(8).getStatus()),
-                () -> assertEquals(LocalDateTime.of(2024, 4, 1, 13, 20), history.get(1).getStartTime()),
-                () -> assertEquals(Duration.ofDays(3), history.get(1).getDuration())
+                () -> assertEquals(LocalDateTime.of(2024, 4, 1, 13, 20), history.get(8).getStartTime()),
+                () -> assertEquals(Duration.ofDays(3), history.get(8).getDuration())
         );
     }
 
@@ -269,13 +265,13 @@ class FileBackedHistoryManagerTest {
     @Test
     void loadIfHeaderAbsentTest() throws IOException {
         Files.createFile(path);
-        assertThrows(ManagerSaveException.class, () -> new FileBackedHistoryManager(filePath, true));
+        assertThrows(ManagerSaveException.class, () -> new FileBackedHistoryManager(path, true));
     }
 
     @DisplayName("load if file is absent")
     @Test
     void loadIfFileAbsentTest() {
-        HistoryManager historyManager = new FileBackedHistoryManager(filePath, true);
+        HistoryManager historyManager = new FileBackedHistoryManager(path, true);
         assertTrue(historyManager.getHistory().isEmpty());
     }
 
@@ -284,7 +280,7 @@ class FileBackedHistoryManagerTest {
     void loadIfBadHeaderAbsentTest() throws IOException {
         String fileContent = "id,subordination,name1,status,description,epicId";
         Files.writeString(path, fileContent, CREATE);
-        assertThrows(ManagerSaveException.class, () -> new FileBackedHistoryManager(filePath, true));
+        assertThrows(ManagerSaveException.class, () -> new FileBackedHistoryManager(path, true));
     }
 
     @DisplayName("load if bad task ")
@@ -302,6 +298,6 @@ class FileBackedHistoryManagerTest {
                 1,SELF,name0,DONE,desc0,null
                 """;
         Files.writeString(path, fileContent, CREATE);
-        assertThrows(ManagerSaveException.class, () -> new FileBackedHistoryManager(filePath, true));
+        assertThrows(ManagerSaveException.class, () -> new FileBackedHistoryManager(path, true));
     }
 }

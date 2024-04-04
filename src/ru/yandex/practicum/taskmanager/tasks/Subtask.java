@@ -11,12 +11,6 @@ public class Subtask extends Task {
         this.epicId = epicId;
     }
 
-    public Subtask(String name, String description, Duration duration, Integer epicId) {
-        super(name, description, duration);
-        this.epicId = epicId;
-    }
-
-
     public Integer getEpicId() {
         return epicId;
     }
@@ -27,20 +21,8 @@ public class Subtask extends Task {
     }
 
     @Override
-    public String toString() {
-        return "<Subtask: id=" + super.getId() + "; name=" + super.getName()
-                + "; desc=" + super.getDescription() + "; status=" + super.getStatus()
-                + "; epicId=" + epicId + ">";
-    }
-
-    @Override
     public Subtask copy() {
-        Subtask copy;
-        if (isTimeDefined) {
-            copy = new Subtask(name, description, startTime, duration, epicId);
-        } else {
-            copy = new Subtask(name, description, duration, epicId);
-        }
+        Subtask copy = new Subtask(name, description, startTime, duration, epicId);
         copy.setId(id);
         copy.setStatus(status);
         return copy;

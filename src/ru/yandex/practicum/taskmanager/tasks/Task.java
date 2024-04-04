@@ -2,44 +2,32 @@ package ru.yandex.practicum.taskmanager.tasks;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Objects;
+
+import static java.util.Objects.nonNull;
 
 public abstract class Task {
-    public static final String[] FIELDS_NAMES = {"id", "subordination", "name", "status", "description", "isTimeDefined",
+    public static final String[] FIELDS_NAMES = {"id", "subordination", "name", "status", "description",
             "startdate", "starttime", "duration", "epicId"};
     protected Integer id;
     protected String name;
     protected String description;
     protected Status status;
-    protected boolean isTimeDefined;
-    protected Duration duration;
     protected LocalDateTime startTime;
+    protected Duration duration;
 
     public Task(String name, String description, LocalDateTime startTime, Duration duration) {
         this.id = null;
         this.name = name;
         this.description = description;
         this.status = Status.NEW;
-        this.isTimeDefined = true;
         this.startTime = startTime;
         this.duration = duration;
     }
 
-    public Task(String name, String description, Duration duration) {
-        this.id = null;
-        this.name = name;
-        this.description = description;
-        this.status = Status.NEW;
-        this.isTimeDefined = false;
-        this.startTime = LocalDateTime.MAX;
-        this.duration = duration;
-    }
-
     public boolean isTimeDefined() {
-        return isTimeDefined;
-    }
-
-    public void setTimeDefined(boolean timeDefined) {
-        isTimeDefined = timeDefined;
+        if (Objects.isNull(startTime)) return false;
+        else return true;
     }
 
     public LocalDateTime getEndTime() {
@@ -119,17 +107,37 @@ public abstract class Task {
     public abstract Task copy();
 
     public String[] convertToStringArray() {
+        String startDateStr, startTimeStr;
+        if (nonNull(startTime)) {
+            startDateStr = String.valueOf(startTime.toLocalDate().toEpochDay());
+            startTimeStr = String.valueOf(startTime.toLocalTime().toSecondOfDay());
+        } else {
+            startDateStr = "null";
+            startTimeStr = "null";
+        }
+        String durationStr = nonNull(duration) ? String.valueOf(duration.toSeconds()) : "null";
         return new String[]{
                 id.toString(),
                 getSubordination().toString(),
                 name,
                 status.toString(),
                 description,
-                String.valueOf(isTimeDefined),
-                String.valueOf(startTime.toLocalDate().toEpochDay()),
-                String.valueOf(startTime.toLocalTime().toSecondOfDay()),
-                String.valueOf(duration.toSeconds()),
+                startDateStr,
+                startTimeStr,
+                durationStr,
                 "null"
         };
+    }
+
+    @Override
+    public String toString() {
+        return getSubordination().toString() +
+                ": id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                ", startTime=" + startTime +
+                ", duration=" + duration +
+                '}';
     }
 }

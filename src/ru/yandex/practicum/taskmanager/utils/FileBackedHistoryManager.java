@@ -23,8 +23,8 @@ public class FileBackedHistoryManager extends LinkedHashHistoryManager {
     private static final String HEADER = String.join(DELIMITER, Task.FIELDS_NAMES).concat("\n");
     private final Path file;
 
-    public FileBackedHistoryManager(String path, boolean doLoadFile) {
-        file = Path.of(path);
+    public FileBackedHistoryManager(Path file, boolean doLoadFile) {
+        this.file = file;
         if (doLoadFile) {
             loadFile();
         } else {
@@ -78,10 +78,19 @@ public class FileBackedHistoryManager extends LinkedHashHistoryManager {
             String name = elements[2];
             Status status = Status.valueOf(elements[3]);
             String description = elements[4];
-            boolean isTimeDefined = Boolean.parseBoolean(elements[5]);
-            LocalDateTime dateTime = LocalDateTime.of(LocalDate.ofEpochDay(Long.parseLong(elements[6])),
-                    LocalTime.ofSecondOfDay(Long.parseLong(elements[7])));
-            Duration duration = Duration.ofSeconds(Long.parseLong(elements[8]));
+            LocalDateTime dateTime;
+            if (!"null".equals(elements[5])) {
+                dateTime = LocalDateTime.of(LocalDate.ofEpochDay(Long.parseLong(elements[5])),
+                        LocalTime.ofSecondOfDay(Long.parseLong(elements[6])));
+            } else {
+                dateTime = null;
+            }
+            Duration duration;
+            if (!"null".equals(elements[7])) {
+                duration = Duration.ofSeconds(Long.parseLong(elements[7]));
+            } else {
+                duration = null;
+            }
             Task task = switch (subordination) {
                 case SELF -> new Selftask(name, description, dateTime, duration);
                 case EPIC -> {
@@ -91,11 +100,10 @@ public class FileBackedHistoryManager extends LinkedHashHistoryManager {
                     yield epic;
                 }
                 case SUBTASK -> {
-                    int epicId = Integer.parseInt(elements[9]);
+                    int epicId = Integer.parseInt(elements[8]);
                     yield new Subtask(name, description, dateTime, duration, epicId);
                 }
             };
-            task.setTimeDefined(isTimeDefined);
             task.setId(id);
             task.setStatus(status);
             return task;
