@@ -23,8 +23,8 @@ public class FileBackedHistoryManager extends LinkedHashHistoryManager {
     private static final String HEADER = String.join(DELIMITER, Task.FIELDS_NAMES).concat("\n");
     private final Path file;
 
-    public FileBackedHistoryManager(String path, boolean doLoadFile) {
-        file = Path.of(path);
+    public FileBackedHistoryManager(Path path, boolean doLoadFile) {
+        this.file = path;
         if (doLoadFile) {
             loadFile();
         } else {

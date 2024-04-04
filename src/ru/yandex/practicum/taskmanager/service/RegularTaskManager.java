@@ -381,7 +381,6 @@ public class RegularTaskManager implements TaskManager {
         return true;
     }
 
-
     @Override
     public Epictask update(Epictask task) {
         if ((task == null) || (task.getId() == null)) {

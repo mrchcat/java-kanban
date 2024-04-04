@@ -15,6 +15,7 @@ import ru.yandex.practicum.taskmanager.utils.Generator;
 import ru.yandex.practicum.taskmanager.utils.HistoryManager;
 import ru.yandex.practicum.taskmanager.utils.SerialGenerator;
 
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,12 +25,14 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static ru.yandex.practicum.taskmanager.service.Managers.getDefaultHistory;
+import static ru.yandex.practicum.taskmanager.service.Managers.getHistory;
 
 class RegularTaskManagerTest {
     TaskManager taskManager;
     static LocalDateTime startDateTime = LocalDateTime.of(2024, 4, 1, 13, 20);
     static Duration duration = Duration.ofDays(3);
+    private static final String PATH_HISTORY_BY_DEFAULT = "src/ru/yandex/practicum/taskmanager/repository/history.scv";
+    private static final boolean LOAD_HISTORY_BY_DEFAULT = true;
 
     static Stream<Selftask> getSelfTasks() {
         return Stream.of(
@@ -55,7 +58,7 @@ class RegularTaskManagerTest {
         Repository<Integer, Task> tasks = new InMemoryMap<>();
         Repository<Integer, ArrayList<Integer>> subordinates = new InMemoryMap<>();
         Generator generator = new SerialGenerator(START_ID_BY_DEFAULT);
-        HistoryManager history = getDefaultHistory();
+        HistoryManager history = getHistory(Path.of(PATH_HISTORY_BY_DEFAULT), LOAD_HISTORY_BY_DEFAULT);
         Repository<LocalDateTime, Integer> starts = new InMemoryTreeMap<>(LocalDateTime::compareTo);
         Repository<LocalDateTime, Integer> finishes = new InMemoryTreeMap<>(LocalDateTime::compareTo);
         taskManager = new RegularTaskManager(tasks, subordinates, generator, history, starts, finishes);
