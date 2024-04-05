@@ -183,7 +183,7 @@ class FileBackedHistoryManagerTest {
     }
 
     String fillInHistoryManagerBySameTasks(HistoryManager historyManager) {
-        LocalDateTime dateTime = LocalDateTime.of(2024, 04, 01, 13, 20);
+        LocalDateTime dateTime = LocalDateTime.of(2024, 4, 1, 13, 20);
         Duration duration = Duration.ofDays(3);
         ArrayList<Task> list = new ArrayList<>();
         for (int i = 0; i <= 5; i++) {
@@ -237,7 +237,7 @@ class FileBackedHistoryManagerTest {
                 () -> assertEquals("name1", history.get(3).getName()),
                 () -> assertEquals("desc1", history.get(3).getDescription()),
                 () -> assertEquals(Status.IN_PROGRESS, history.get(3).getStatus()),
-                () -> assertTrue(((Epictask) history.get(3)).isTimeDefined()),
+                () -> assertTrue(history.get(3).isTimeDefined()),
                 () -> assertEquals(LocalDateTime.of(2024, 4, 1, 13, 20)
                         , history.get(3).getStartTime()),
                 () -> assertEquals(Duration.ofDays(3), history.get(3).getDuration())
