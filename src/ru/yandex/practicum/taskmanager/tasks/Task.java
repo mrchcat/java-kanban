@@ -1,16 +1,49 @@
 package ru.yandex.practicum.taskmanager.tasks;
 
-public abstract class Task {
-    private Integer id;
-    private String name;
-    private String description;
-    private Status status;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
-    public Task(String name, String description) {
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
+
+public abstract class Task {
+    public static final String[] FIELDS_NAMES = {"id", "subordination", "name", "status", "description",
+            "startdate", "starttime", "duration", "epicId"};
+    protected Integer id;
+    protected String name;
+    protected String description;
+    protected Status status;
+    protected LocalDateTime startTime;
+    protected Duration duration;
+
+    public Task(String name, String description, LocalDateTime startTime, Duration duration) {
         this.id = null;
         this.name = name;
         this.description = description;
         this.status = Status.NEW;
+        this.startTime = startTime;
+        this.duration = duration;
+    }
+
+    public boolean isTimeDefined() {
+        return !isNull(startTime);
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
     }
 
     public abstract Subordination getSubordination();
@@ -69,8 +102,36 @@ public abstract class Task {
 
     public abstract Task copy();
 
-    public String convertToFileRecord() {
-        return String.join(",",
-                id.toString(), getSubordination().toString(), name, status.toString(), description, "null");
+    public String[] convertToStringArray() {
+        String startDateStr = "null";
+        String startTimeStr = "null";
+        if (nonNull(startTime)) {
+            startDateStr = String.valueOf(startTime.toLocalDate().toEpochDay());
+            startTimeStr = String.valueOf(startTime.toLocalTime().toSecondOfDay());
+        }
+        String durationStr = nonNull(duration) ? String.valueOf(duration.toSeconds()) : "null";
+        return new String[]{
+                id.toString(),
+                getSubordination().toString(),
+                name,
+                status.toString(),
+                description,
+                startDateStr,
+                startTimeStr,
+                durationStr,
+                "null"
+        };
+    }
+
+    @Override
+    public String toString() {
+        return getSubordination().toString() +
+                ": id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                ", startTime=" + startTime +
+                ", duration=" + duration +
+                '}';
     }
 }

@@ -1,6 +1,7 @@
 package ru.yandex.practicum.taskmanager.repository;
 
 import java.util.Collection;
+import java.util.SortedMap;
 
 public interface Repository<K, V> {
     void put(K key, V value);
@@ -13,6 +14,9 @@ public interface Repository<K, V> {
 
     Collection<V> values();
 
-    default void close() {
-    }
+    boolean isEmpty();
+
+    SortedMap<K, V> headMap(K key);
+
+    SortedMap<K, V> tailMap(K key, boolean param);
 }

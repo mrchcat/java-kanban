@@ -1,9 +1,12 @@
 package ru.yandex.practicum.taskmanager.tasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Selftask extends Task {
 
-    public Selftask(String name, String description) {
-        super(name, description);
+    public Selftask(String name, String description, LocalDateTime startTime, Duration duration) {
+        super(name, description, startTime, duration);
     }
 
     @Override
@@ -12,17 +15,10 @@ public class Selftask extends Task {
     }
 
     @Override
-    public String toString() {
-        return "<Standard: id=" + super.getId() + "; name=" + super.getName() + "; desc=" +
-                super.getDescription() + "; status=" + super.getStatus() + ">";
-    }
-
-    @Override
-    public Task copy() {
-        Selftask copy = new Selftask(getName(), getDescription());
-        copy.setId(getId());
-        copy.setStatus(getStatus());
+    public Selftask copy() {
+        Selftask copy = new Selftask(name, description, startTime, duration);
+        copy.setId(id);
+        copy.setStatus(status);
         return copy;
     }
-
 }

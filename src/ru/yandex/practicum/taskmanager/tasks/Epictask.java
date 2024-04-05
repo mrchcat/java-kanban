@@ -1,27 +1,28 @@
 package ru.yandex.practicum.taskmanager.tasks;
 
 public class Epictask extends Task {
+
     public Epictask(String name, String description) {
-        super(name, description);
+        super(name, description, null, null);
+    }
+
+    public void switchOffTime() {
+        setStartTime(null);
+        setDuration(null);
     }
 
     @Override
     public Subordination getSubordination() {
         return Subordination.EPIC;
-
     }
 
     @Override
-    public String toString() {
-        return "<Epic: id=" + super.getId() + "; name=" + super.getName() + "; desc=" +
-                super.getDescription() + "; status=" + super.getStatus() + ">";
-    }
-
-    @Override
-    public Task copy() {
-        Epictask copy = new Epictask(getName(), getDescription());
-        copy.setId(getId());
-        copy.setStatus(getStatus());
+    public Epictask copy() {
+        Epictask copy = new Epictask(name, description);
+        copy.setId(id);
+        copy.setStatus(status);
+        copy.setStartTime(startTime);
+        copy.setDuration(duration);
         return copy;
     }
 }
