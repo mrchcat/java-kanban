@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class FileBackedHistoryManagerTest {
     Path path = Path.of("src/ru/yandex/practicum/taskmanager/repository/history.csv");
     String[] FIELDS = Task.FIELDS_NAMES;
-    private static final String DELIMITER = "~";
+    private static final String DELIMITER = ",";
 
     String HEADER = String.join(DELIMITER, FIELDS).concat("\n");
 
@@ -103,9 +103,9 @@ class FileBackedHistoryManagerTest {
         historyManager.add(task3);
 
         String answer = """
-                3~SELF~name3~NEW~desc3~-718371~10980~259200~null
-                2~SELF~name2~NEW~desc2~-718765~7320~172800~null
-                1~SELF~name1~NEW~desc1~-719162~3660~86400~null
+                3,SELF,name3,NEW,desc3,-718371,10980,259200,null
+                2,SELF,name2,NEW,desc2,-718765,7320,172800,null
+                1,SELF,name1,NEW,desc1,-719162,3660,86400,null
                 """;
         return HEADER + answer;
     }
@@ -134,9 +134,9 @@ class FileBackedHistoryManagerTest {
         historyManager.add(task3);
 
         String answer = """
-                3~EPIC~name3~NEW~desc3~null~null~null~null
-                2~EPIC~name2~NEW~desc2~null~null~null~null
-                1~EPIC~name1~NEW~desc1~null~null~null~null
+                3,EPIC,name3,NEW,desc3,null,null,null,null
+                2,EPIC,name2,NEW,desc2,null,null,null,null
+                1,EPIC,name1,NEW,desc1,null,null,null,null
                 """;
         return HEADER + answer;
     }
@@ -170,9 +170,9 @@ class FileBackedHistoryManagerTest {
         historyManager.add(task2);
         historyManager.add(task3);
         String answer = """
-                3~SUBTASK~name3~NEW~desc3~-718371~10980~259200~3
-                2~SUBTASK~name2~NEW~desc2~-718765~7320~172800~2
-                1~SUBTASK~name1~NEW~desc1~-719162~3660~86400~1
+                3,SUBTASK,name3,NEW,desc3,-718371,10980,259200,3
+                2,SUBTASK,name2,NEW,desc2,-718765,7320,172800,2
+                1,SUBTASK,name1,NEW,desc1,-719162,3660,86400,1
                 """;
         return HEADER + answer;
     }
@@ -202,12 +202,12 @@ class FileBackedHistoryManagerTest {
         historyManager.add(list.get(1));
         historyManager.add(list.get(3));
         String answer = """
-                3~SUBTASK~name3~NEW~desc3~19814~48000~259200~3
-                1~SUBTASK~name1~NEW~desc1~19814~48000~259200~1
-                5~SUBTASK~name5~NEW~desc5~19814~48000~259200~5
-                4~SUBTASK~name4~NEW~desc4~19814~48000~259200~4
-                2~SUBTASK~name2~NEW~desc2~19814~48000~259200~2
-                0~SUBTASK~name0~NEW~desc0~19814~48000~259200~0
+                3,SUBTASK,name3,NEW,desc3,19814,48000,259200,3
+                1,SUBTASK,name1,NEW,desc1,19814,48000,259200,1
+                5,SUBTASK,name5,NEW,desc5,19814,48000,259200,5
+                4,SUBTASK,name4,NEW,desc4,19814,48000,259200,4
+                2,SUBTASK,name2,NEW,desc2,19814,48000,259200,2
+                0,SUBTASK,name0,NEW,desc0,19814,48000,259200,0
                 """;
         return HEADER + answer;
     }
@@ -216,15 +216,15 @@ class FileBackedHistoryManagerTest {
     @Test
     void loadExistingFileTest() throws IOException {
         String fileContent = HEADER + """
-                9~SUBTASK~name2~NEW~desc2~19814~48000~259200~8
-                8~EPIC~name2~NEW~desc2~null~null~null~null
-                7~SUBTASK~name1~NEW~desc1~19814~48000~259200~6
-                6~EPIC~name1~IN_PROGRESS~desc1~19814~48000~259200~null
-                5~SUBTASK~name9~NEW~desc9~19814~48000~259200~4
-                4~EPIC~name0~NEW~desc0~null~null~null~null
-                3~SELF~name2~NEW~desc2~19814~48000~259200~null
-                2~SELF~name1~NEW~desc1~19814~48000~259200~null
-                1~SELF~name0~DONE~desc0~19814~48000~259200~null
+                9,SUBTASK,name2,NEW,desc2,19814,48000,259200,8
+                8,EPIC,name2,NEW,desc2,null,null,null,null
+                7,SUBTASK,name1,NEW,desc1,19814,48000,259200,6
+                6,EPIC,name1,IN_PROGRESS,desc1,19814,48000,259200,null
+                5,SUBTASK,name9,NEW,desc9,19814,48000,259200,4
+                4,EPIC,name0,NEW,desc0,null,null,null,null
+                3,SELF,name2,NEW,desc2,19814,48000,259200,null
+                2,SELF,name1,NEW,desc1,19814,48000,259200,null
+                1,SELF,name0,DONE,desc0,19814,48000,259200,null
                 """;
         Files.writeString(path, fileContent, CREATE);
         FileBackedHistoryManager historyManager = new FileBackedHistoryManager(path, true);
@@ -237,7 +237,8 @@ class FileBackedHistoryManagerTest {
                 () -> assertEquals(Status.NEW, history.get(0).getStatus()),
                 () -> assertEquals(8, ((Subtask) history.get(0)).getEpicId()),
                 () -> assertEquals("desc2", history.get(0).getDescription()),
-                () -> assertEquals(LocalDateTime.of(2024, 4, 1, 13, 20), history.get(0).getStartTime()),
+                () -> assertEquals(LocalDateTime.of(2024, 4, 1, 13, 20),
+                        history.get(0).getStartTime()),
                 () -> assertEquals(Duration.ofDays(3), history.get(0).getDuration())
         );
         assertAll(
@@ -247,7 +248,8 @@ class FileBackedHistoryManagerTest {
                 () -> assertEquals("desc1", history.get(3).getDescription()),
                 () -> assertEquals(Status.IN_PROGRESS, history.get(3).getStatus()),
                 () -> assertTrue(((Epictask) history.get(3)).isTimeDefined()),
-                () -> assertEquals(LocalDateTime.of(2024, 4, 1, 13, 20), history.get(3).getStartTime()),
+                () -> assertEquals(LocalDateTime.of(2024, 4, 1, 13, 20),
+                        history.get(3).getStartTime()),
                 () -> assertEquals(Duration.ofDays(3), history.get(3).getDuration())
         );
         assertAll(
@@ -256,7 +258,8 @@ class FileBackedHistoryManagerTest {
                 () -> assertEquals("name0", history.get(8).getName()),
                 () -> assertEquals("desc0", history.get(8).getDescription()),
                 () -> assertEquals(Status.DONE, history.get(8).getStatus()),
-                () -> assertEquals(LocalDateTime.of(2024, 4, 1, 13, 20), history.get(8).getStartTime()),
+                () -> assertEquals(LocalDateTime.of(2024, 4, 1, 13, 20),
+                        history.get(8).getStartTime()),
                 () -> assertEquals(Duration.ofDays(3), history.get(8).getDuration())
         );
     }
@@ -287,7 +290,7 @@ class FileBackedHistoryManagerTest {
     @Test
     void loadIfBadTaskTest() throws IOException {
         String fileContent = HEADER + """
-                9,SUBTASK,name2,NEW,desc2,8
+                9SUBTASK,name2,NEW,desc2,8
                 8,EЬЗШС,name2,NEW,desc2,null 
                 7,SUBTASK,name1,NEW,desc1,6
                 6,EPIC,name1,IN_PROGRESS,desc1,null

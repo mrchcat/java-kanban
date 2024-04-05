@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class FileBackedHistoryManager extends LinkedHashHistoryManager {
-    private static final String DELIMITER = "~";
+    private static final String DELIMITER = ",";
     private static final String HEADER = String.join(DELIMITER, Task.FIELDS_NAMES).concat("\n");
     private final Path file;
 
