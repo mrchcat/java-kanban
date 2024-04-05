@@ -29,9 +29,9 @@ public class Subtask extends Task {
     }
 
     @Override
-    public String[] convertToStringArray() {
-        String[] fields = super.convertToStringArray();
-        fields[fields.length - 1] = epicId.toString();
+    public Object[] convertToObjectArray() {
+        Object[] fields = super.convertToObjectArray();
+        fields[fields.length - 1] = epicId;
         return fields;
     }
 }

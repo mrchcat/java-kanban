@@ -33,8 +33,10 @@ class RegularTaskManagerTest {
 
     static Stream<Selftask> getSelfTasks() {
         return Stream.of(
-                new Selftask("сходить за продуктами", "купить сыр, молоко, творог", startDateTime, duration),
-                new Selftask("выгулять собаку", "пойти вечером погулять в парк", startDateTime, duration),
+                new Selftask("сходить за продуктами", "купить сыр, молоко, творог"
+                        , startDateTime, duration),
+                new Selftask("выгулять собаку", "пойти вечером погулять в парк"
+                        , startDateTime, duration),
                 new Selftask("скачать сериал", "Игра престолов", startDateTime, duration),
                 new Selftask("работать", "работу", startDateTime, duration),
                 new Selftask("смотреть на закат", "и на рассвет", startDateTime, duration)
@@ -129,8 +131,10 @@ class RegularTaskManagerTest {
 
         HashSet<Task> set = new HashSet<>();
         List<Selftask> taskList = List.of(
-                new Selftask("сходить за продуктами", "купить сыр, молоко, творог", startDateTime1, duration),
-                new Selftask("выгулять собаку", "пойти вечером погулять в парк", startDateTime2, duration),
+                new Selftask("сходить за продуктами", "купить сыр, молоко, творог"
+                        , startDateTime1, duration),
+                new Selftask("выгулять собаку", "пойти вечером погулять в парк"
+                        , startDateTime2, duration),
                 new Selftask("скачать сериал", "Игра престолов", startDateTime3, duration),
                 new Selftask("работать", "работу", startDateTime4, duration),
                 new Selftask("смотреть на закат", "и на рассвет", startDateTime5, duration)
@@ -209,15 +213,18 @@ class RegularTaskManagerTest {
 
         LocalDateTime startDateTime1 = LocalDateTime.of(2019, 1, 1, 1, 1);
         Duration duration1 = Duration.ofDays(2);
-        Subtask sub1 = new Subtask("купить удочку", "магазин Охотник, проспект Ленина, 20", startDateTime1, duration1, epic.getId());
+        Subtask sub1 = new Subtask("купить удочку", "магазин Охотник, проспект Ленина, 20"
+                , startDateTime1, duration1, epic.getId());
 
         LocalDateTime startDateTime2 = LocalDateTime.of(2020, 1, 1, 1, 1);
         Duration duration2 = Duration.ofDays(2);
-        Subtask sub2 = new Subtask("наловить червей", "200 шт.", startDateTime2, duration2, epic.getId());
+        Subtask sub2 = new Subtask("наловить червей", "200 шт.", startDateTime2
+                , duration2, epic.getId());
 
         LocalDateTime startDateTime3 = LocalDateTime.of(2021, 1, 1, 1, 1);
         Duration duration3 = Duration.ofDays(2);
-        Subtask sub3 = new Subtask("купить алкоголь", "батя обещал самогон", startDateTime, duration, epic.getId());
+        Subtask sub3 = new Subtask("купить алкоголь", "батя обещал самогон"
+                , startDateTime, duration, epic.getId());
         Task task1 = taskManager.add(sub1);
         Task task2 = taskManager.add(sub2);
         Task task3 = taskManager.add(sub3);
@@ -285,9 +292,12 @@ class RegularTaskManagerTest {
     @Tag("get")
     @Test
     void getNotExistingTaskTest() {
-        taskManager.add(new Selftask("сходить за продуктами", "купить сыр, молоко, творог", startDateTime, duration));
-        taskManager.add(new Selftask("выгулять собаку", "пойти вечером погулять в парк", startDateTime, duration));
-        taskManager.add(new Selftask("выгулять собаку", "пойти вечером погулять в парк", startDateTime, duration));
+        taskManager.add(new Selftask("сходить за продуктами", "купить сыр, молоко, творог"
+                , startDateTime, duration));
+        taskManager.add(new Selftask("выгулять собаку", "пойти вечером погулять в парк"
+                , startDateTime, duration));
+        taskManager.add(new Selftask("выгулять собаку", "пойти вечером погулять в парк"
+                , startDateTime, duration));
         assertAll(
                 () -> assertNull(taskManager.get(600)),
                 () -> assertNull(taskManager.get(null))
@@ -298,9 +308,12 @@ class RegularTaskManagerTest {
     @Tag("get")
     @Test
     void getNotExistingSelfTaskTest() {
-        taskManager.add(new Selftask("сходить за продуктами", "купить сыр, молоко, творог", startDateTime, duration));
-        taskManager.add(new Selftask("выгулять собаку", "пойти вечером погулять в парк", startDateTime, duration));
-        taskManager.add(new Selftask("выгулять собаку", "пойти вечером погулять в парк", startDateTime, duration));
+        taskManager.add(new Selftask("сходить за продуктами", "купить сыр, молоко, творог"
+                , startDateTime, duration));
+        taskManager.add(new Selftask("выгулять собаку", "пойти вечером погулять в парк"
+                , startDateTime, duration));
+        taskManager.add(new Selftask("выгулять собаку", "пойти вечером погулять в парк"
+                , startDateTime, duration));
         assertAll(
                 () -> assertNull(taskManager.getSelftask(600)),
                 () -> assertNull(taskManager.getSelftask(null))
@@ -311,9 +324,12 @@ class RegularTaskManagerTest {
     @Tag("get")
     @Test
     void getNotExistingEpicTaskTest() {
-        taskManager.add(new Selftask("сходить за продуктами", "купить сыр, молоко, творог", startDateTime, duration));
-        taskManager.add(new Selftask("выгулять собаку", "пойти вечером погулять в парк", startDateTime, duration));
-        taskManager.add(new Selftask("выгулять собаку", "пойти вечером погулять в парк", startDateTime, duration));
+        taskManager.add(new Selftask("сходить за продуктами", "купить сыр, молоко, творог"
+                , startDateTime, duration));
+        taskManager.add(new Selftask("выгулять собаку", "пойти вечером погулять в парк"
+                , startDateTime, duration));
+        taskManager.add(new Selftask("выгулять собаку", "пойти вечером погулять в парк"
+                , startDateTime, duration));
         assertAll(
                 () -> assertNull(taskManager.getEpic(600)),
                 () -> assertNull(taskManager.getEpic(null))
@@ -324,9 +340,12 @@ class RegularTaskManagerTest {
     @Tag("get")
     @Test
     void getNotExistingSubTaskTest() {
-        taskManager.add(new Selftask("сходить за продуктами", "купить сыр, молоко, творог", startDateTime, duration));
-        taskManager.add(new Selftask("выгулять собаку", "пойти вечером погулять в парк", startDateTime, duration));
-        taskManager.add(new Selftask("выгулять собаку", "пойти вечером погулять в парк", startDateTime, duration));
+        taskManager.add(new Selftask("сходить за продуктами", "купить сыр, молоко, творог"
+                , startDateTime, duration));
+        taskManager.add(new Selftask("выгулять собаку", "пойти вечером погулять в парк"
+                , startDateTime, duration));
+        taskManager.add(new Selftask("выгулять собаку", "пойти вечером погулять в парк"
+                , startDateTime, duration));
         assertAll(
                 () -> assertNull(taskManager.getSubtask(600)),
                 () -> assertNull(taskManager.getSubtask(null))
@@ -339,15 +358,18 @@ class RegularTaskManagerTest {
     void deleteSelfTest() {
         LocalDateTime startDateTime1 = LocalDateTime.of(2014, 1, 1, 1, 1);
         Duration duration1 = Duration.ofDays(2);
-        taskManager.add(new Selftask("сходить за продуктами", "купить сыр, молоко, творог", startDateTime1, duration1));
+        taskManager.add(new Selftask("сходить за продуктами", "купить сыр, молоко, творог"
+                , startDateTime1, duration1));
 
         LocalDateTime startDateTime2 = LocalDateTime.of(2015, 1, 1, 1, 1);
         Duration duration2 = Duration.ofDays(2);
-        taskManager.add(new Selftask("выгулять собаку", "пойти вечером погулять в парк", startDateTime2, duration2));
+        taskManager.add(new Selftask("выгулять собаку", "пойти вечером погулять в парк"
+                , startDateTime2, duration2));
 
         LocalDateTime startDateTime3 = LocalDateTime.of(2016, 1, 1, 1, 1);
         Duration duration3 = Duration.ofDays(2);
-        Selftask task = taskManager.add(new Selftask("все проходит", "и это пройдет", startDateTime3, duration3));
+        Selftask task = taskManager.add(new Selftask("все проходит", "и это пройдет"
+                , startDateTime3, duration3));
         int id = task.getId();
         assertEquals(task, taskManager.get(id));
         taskManager.delete(id);
@@ -364,7 +386,8 @@ class RegularTaskManagerTest {
         LocalDateTime startDateTime1 = LocalDateTime.of(2014, 1, 1, 1, 1);
         Duration duration1 = Duration.ofDays(2);
         Subtask sub1 = taskManager.add(
-                new Subtask("купить удочку", "магазин Охотник, проспект Ленина, 20", startDateTime1, duration1, epic.getId()));
+                new Subtask("купить удочку", "магазин Охотник, проспект Ленина, 20", startDateTime1
+                        , duration1, epic.getId()));
 
         LocalDateTime startDateTime2 = LocalDateTime.of(2015, 1, 1, 1, 1);
         Duration duration2 = Duration.ofDays(2);
@@ -374,7 +397,8 @@ class RegularTaskManagerTest {
         LocalDateTime startDateTime3 = LocalDateTime.of(2016, 1, 1, 1, 1);
         Duration duration3 = Duration.ofDays(2);
         Subtask sub3 = taskManager.add(
-                new Subtask("купить алкоголь", "батя обещал самогон", startDateTime3, duration3, epic.getId()));
+                new Subtask("купить алкоголь", "батя обещал самогон", startDateTime3, duration3
+                        , epic.getId()));
 
         taskManager.delete(epic.getId());
         assertNull(taskManager.get(epic.getId()));
@@ -393,7 +417,8 @@ class RegularTaskManagerTest {
         LocalDateTime startDateTime1 = LocalDateTime.of(2014, 1, 1, 1, 1);
         Duration duration1 = Duration.ofDays(2);
         Subtask sub1 = taskManager.add(
-                new Subtask("купить удочку", "магазин Охотник, проспект Ленина, 20", startDateTime1, duration1, epic.getId()));
+                new Subtask("купить удочку", "магазин Охотник, проспект Ленина, 20", startDateTime1
+                        , duration1, epic.getId()));
 
         LocalDateTime startDateTime2 = LocalDateTime.of(2015, 1, 1, 1, 1);
         Duration duration2 = Duration.ofDays(2);
@@ -403,7 +428,8 @@ class RegularTaskManagerTest {
         LocalDateTime startDateTime3 = LocalDateTime.of(2016, 1, 1, 1, 1);
         Duration duration3 = Duration.ofDays(2);
         Subtask sub3 = taskManager.add(
-                new Subtask("купить алкоголь", "батя обещал самогон", startDateTime3, duration3, epic.getId()));
+                new Subtask("купить алкоголь", "батя обещал самогон", startDateTime3, duration3
+                        , epic.getId()));
         taskManager.delete(sub1.getId());
         taskManager.getEpic(epic.getId());
         assertAll(
@@ -435,11 +461,13 @@ class RegularTaskManagerTest {
     void clearTest() {
         LocalDateTime startDateTime1 = LocalDateTime.of(2014, 1, 1, 1, 1);
         Duration duration1 = Duration.ofDays(2);
-        taskManager.add(new Selftask("сходить за продуктами", "купить сыр, молоко, творог", startDateTime1, duration1));
+        taskManager.add(new Selftask("сходить за продуктами", "купить сыр, молоко, творог"
+                , startDateTime1, duration1));
 
         LocalDateTime startDateTime2 = LocalDateTime.of(2015, 1, 1, 1, 1);
         Duration duration2 = Duration.ofDays(2);
-        taskManager.add(new Selftask("выгулять собаку", "пойти вечером погулять в парк", startDateTime2, duration2));
+        taskManager.add(new Selftask("выгулять собаку", "пойти вечером погулять в парк"
+                , startDateTime2, duration2));
 
         LocalDateTime startDateTime3 = LocalDateTime.of(2016, 1, 1, 1, 1);
         Duration duration3 = Duration.ofDays(2);
@@ -644,7 +672,8 @@ class RegularTaskManagerTest {
         LocalDateTime startDateTime1 = LocalDateTime.of(2014, 1, 1, 1, 1);
         Duration duration1 = Duration.ofDays(2);
         Subtask sub1 = taskManager.add(
-                new Subtask("купить удочку", "магазин Охотник, проспект Ленина, 20", startDateTime1, duration1, epic.getId()));
+                new Subtask("купить удочку", "магазин Охотник, проспект Ленина, 20", startDateTime1
+                        , duration1, epic.getId()));
 
         LocalDateTime startDateTime2 = LocalDateTime.of(2015, 1, 1, 1, 1);
         Duration duration2 = Duration.ofDays(2);
@@ -654,7 +683,8 @@ class RegularTaskManagerTest {
         LocalDateTime startDateTime3 = LocalDateTime.of(2016, 1, 1, 1, 1);
         Duration duration3 = Duration.ofDays(2);
         Subtask sub3 = taskManager.add(
-                new Subtask("купить алкоголь", "батя обещал самогон", startDateTime, duration, epic.getId()));
+                new Subtask("купить алкоголь", "батя обещал самогон", startDateTime, duration
+                        , epic.getId()));
         int epicId = epic.getId();
         assertEquals(Status.NEW, epic.getStatus());
 
@@ -694,24 +724,29 @@ class RegularTaskManagerTest {
 
         LocalDateTime startDateTime2 = LocalDateTime.of(2015, 1, 1, 1, 1);
         Duration duration2 = Duration.ofDays(2);
-        Subtask sub2 = taskManager.add(new Subtask("наловить червей", "200 шт.", startDateTime2, duration2, epic.getId()));
+        Subtask sub2 = taskManager.add(new Subtask("наловить червей", "200 шт.", startDateTime2
+                , duration2, epic.getId()));
 
         LocalDateTime startDateTime3 = LocalDateTime.of(2016, 1, 1, 1, 1);
         Duration duration3 = Duration.ofDays(2);
-        taskManager.add(new Subtask("купить алкоголь", "батя обещал самогон", startDateTime3, duration3, epic.getId()));
+        taskManager.add(new Subtask("купить алкоголь", "батя обещал самогон", startDateTime3
+                , duration3, epic.getId()));
 
         LocalDateTime startDateTime4 = LocalDateTime.of(2017, 1, 1, 1, 1);
         Duration duration4 = Duration.ofDays(2);
         Selftask self1 = taskManager.add(
-                new Selftask("сходить за продуктами", "купить сыр, молоко, творог", startDateTime4, duration4));
+                new Selftask("сходить за продуктами", "купить сыр, молоко, творог", startDateTime4
+                        , duration4));
 
         LocalDateTime startDateTime5 = LocalDateTime.of(2018, 1, 1, 1, 1);
         Duration duration5 = Duration.ofDays(2);
-        taskManager.add(new Selftask("выгулять собаку", "пойти вечером погулять в парк", startDateTime5, duration5));
+        taskManager.add(new Selftask("выгулять собаку", "пойти вечером погулять в парк", startDateTime5
+                , duration5));
 
         LocalDateTime startDateTime6 = LocalDateTime.of(2019, 1, 1, 1, 1);
         Duration duration6 = Duration.ofDays(2);
-        Selftask self3 = taskManager.add(new Selftask("скачать сериал", "Игра престолов", startDateTime6, duration6));
+        Selftask self3 = taskManager.add(new Selftask("скачать сериал", "Игра престолов", startDateTime6
+                , duration6));
         assertTrue(taskManager.getHistory().isEmpty());
 
         taskManager.delete(self3.getId());
@@ -734,12 +769,14 @@ class RegularTaskManagerTest {
         LocalDateTime startDateTime1 = LocalDateTime.of(2019, 1, 1, 1, 1);
         Duration duration1 = Duration.ofDays(2);
         Selftask self1 = taskManager.add(
-                new Selftask("сходить за продуктами", "купить сыр, молоко, творог", startDateTime1, duration1));
+                new Selftask("сходить за продуктами", "купить сыр, молоко, творог", startDateTime1
+                        , duration1));
 
         LocalDateTime startDateTime2 = LocalDateTime.of(2020, 1, 1, 1, 1);
         Duration duration2 = Duration.ofDays(2);
         Selftask self2 = taskManager.add(
-                new Selftask("выгулять собаку", "пойти вечером погулять в парк", startDateTime2, duration2));
+                new Selftask("выгулять собаку", "пойти вечером погулять в парк", startDateTime2
+                        , duration2));
 
         taskManager.add(new Selftask("скачать сериал", "Игра престолов", startDateTime, duration));
         taskManager.get(self1.getId());
@@ -754,7 +791,8 @@ class RegularTaskManagerTest {
     void addSelfTaskWithTimeTest() {
         LocalDateTime localDateTime = LocalDateTime.of(1, 2, 3, 4, 5);
         Duration duration = Duration.ofDays(1);
-        Selftask selftask = taskManager.add(new Selftask("задача1", "описание1", localDateTime, duration));
+        Selftask selftask = taskManager.add(new Selftask("задача1", "описание1", localDateTime
+                , duration));
         assertAll(
                 () -> assertEquals(localDateTime, taskManager.get(selftask.getId()).getStartTime()),
                 () -> assertEquals(duration, taskManager.get(selftask.getId()).getDuration())
@@ -851,7 +889,8 @@ class RegularTaskManagerTest {
                 () -> assertTrue(taskManager.get(epictask.getId()).isTimeDefined()),
                 () -> assertEquals(localDateTime1,
                         taskManager.get(epictask.getId()).getStartTime()),
-                () -> assertEquals(Duration.between(localDateTime1, endLocalDateTime2), taskManager.get(epictask.getId()).getDuration())
+                () -> assertEquals(Duration.between(localDateTime1, endLocalDateTime2)
+                        , taskManager.get(epictask.getId()).getDuration())
         );
 
         LocalDateTime localDateTime3 = LocalDateTime.of(2020, 2, 1, 10, 30);
@@ -877,19 +916,23 @@ class RegularTaskManagerTest {
 
         LocalDateTime time1 = LocalDateTime.of(2000, 1, 1, 0, 0);
         Duration duration1 = Duration.ofDays(1);
-        Subtask subtask1 = taskManager.add(new Subtask("задача1", "описание1", time1, duration1, epicId));
+        Subtask subtask1 = taskManager.add(new Subtask("задача1", "описание1", time1
+                , duration1, epicId));
 
         LocalDateTime time2 = LocalDateTime.of(1999, 1, 1, 0, 0);
         Duration duration2 = Duration.ofDays(1);
-        Subtask subtask2 = taskManager.add(new Subtask("задача1", "описание1", time2, duration2, epicId));
+        Subtask subtask2 = taskManager.add(new Subtask("задача1", "описание1", time2
+                , duration2, epicId));
 
         LocalDateTime time3 = LocalDateTime.of(2001, 11, 1, 0, 0);
         Duration duration3 = Duration.ofDays(2);
-        Subtask subtask3 = taskManager.add(new Subtask("задача1", "описание1", time3, duration3, epicId));
+        Subtask subtask3 = taskManager.add(new Subtask("задача1", "описание1", time3
+                , duration3, epicId));
 
         LocalDateTime time4 = LocalDateTime.of(1998, 1, 1, 0, 0);
         Duration duration4 = Duration.ofDays(1);
-        Subtask subtask4 = taskManager.add(new Subtask("задача1", "описание1", time4, duration4, epicId));
+        Subtask subtask4 = taskManager.add(new Subtask("задача1", "описание1", time4
+                , duration4, epicId));
 
         Duration epicDuration = Duration.between(time4, time3.plus(duration3));
         assertAll(
@@ -902,13 +945,15 @@ class RegularTaskManagerTest {
         assertAll(
                 () -> assertTrue(taskManager.get(epicId).isTimeDefined()),
                 () -> assertEquals(time2, taskManager.get(epicId).getStartTime()),
-                () -> assertEquals(Duration.between(time2, time3.plus(duration3)), taskManager.get(epicId).getDuration())
+                () -> assertEquals(Duration.between(time2, time3.plus(duration3))
+                        , taskManager.get(epicId).getDuration())
         );
         taskManager.delete(subtask3.getId());
         assertAll(
                 () -> assertTrue(taskManager.get(epicId).isTimeDefined()),
                 () -> assertEquals(time2, taskManager.get(epicId).getStartTime()),
-                () -> assertEquals(Duration.between(time2, time1.plus(duration1)), taskManager.get(epicId).getDuration())
+                () -> assertEquals(Duration.between(time2, time1.plus(duration1))
+                        , taskManager.get(epicId).getDuration())
         );
         taskManager.delete(subtask2.getId());
         assertAll(
@@ -1181,7 +1226,8 @@ class RegularTaskManagerTest {
     void addSubTaskWithoutStart() {
         Epictask epic = taskManager.add(new Epictask("пойти на рыбалку", "Селигер, в районе оз Волго"));
         Duration duration1 = Duration.ofDays(1);
-        Subtask task1 = taskManager.add(new Subtask("name", "descript", null, duration1, epic.getId()));
+        Subtask task1 = taskManager.add(new Subtask("name", "descript", null, duration1
+                , epic.getId()));
         int id1 = task1.getId();
         assertAll(
                 () -> assertFalse(taskManager.get(id1).isTimeDefined()),
@@ -1223,7 +1269,8 @@ class RegularTaskManagerTest {
         Subtask task1 = taskManager.add(new Subtask("name", "descript", time1, duration1, epicId));
 
         Duration duration2 = Duration.ofDays(3);
-        Subtask task2 = taskManager.add(new Subtask("name", "descript", null, duration2, epicId));
+        Subtask task2 = taskManager.add(new Subtask("name", "descript", null, duration2
+                , epicId));
 
         LocalDateTime time3 = LocalDateTime.of(2, 1, 1, 1, 1, 1);
         Duration duration3 = Duration.ofDays(10);

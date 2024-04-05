@@ -2,8 +2,8 @@ package ru.yandex.practicum.taskmanager.tasks;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 public abstract class Task {
@@ -26,8 +26,7 @@ public abstract class Task {
     }
 
     public boolean isTimeDefined() {
-        if (Objects.isNull(startTime)) return false;
-        else return true;
+        return !isNull(startTime);
     }
 
     public LocalDateTime getEndTime() {
@@ -106,26 +105,28 @@ public abstract class Task {
 
     public abstract Task copy();
 
-    public String[] convertToStringArray() {
-        String startDateStr, startTimeStr;
+    public Object[] convertToObjectArray() {
+        Long startDateLong = null;
+        Integer startTimeInt = null;
         if (nonNull(startTime)) {
-            startDateStr = String.valueOf(startTime.toLocalDate().toEpochDay());
-            startTimeStr = String.valueOf(startTime.toLocalTime().toSecondOfDay());
-        } else {
-            startDateStr = "null";
-            startTimeStr = "null";
+            startDateLong = startTime.toLocalDate().toEpochDay();
+            startTimeInt = startTime.toLocalTime().toSecondOfDay();
         }
-        String durationStr = nonNull(duration) ? String.valueOf(duration.toSeconds()) : "null";
-        return new String[]{
-                id.toString(),
-                getSubordination().toString(),
+        Long durationLong = null;
+        if (nonNull(duration)) {
+            durationLong = duration.toSeconds();
+        }
+
+        return new Object[]{
+                id,
+                getSubordination(),
                 name,
-                status.toString(),
+                status,
                 description,
-                startDateStr,
-                startTimeStr,
-                durationStr,
-                "null"
+                startDateLong,
+                startTimeInt,
+                durationLong,
+                null
         };
     }
 

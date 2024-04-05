@@ -1,6 +1,10 @@
 
 package ru.yandex.practicum.taskmanager.utils;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.CSVRecord;
 import ru.yandex.practicum.taskmanager.exceptions.ManagerSaveException;
 import ru.yandex.practicum.taskmanager.tasks.*;
 
@@ -19,9 +23,10 @@ import java.util.Collections;
 import java.util.List;
 
 public class FileBackedHistoryManager extends LinkedHashHistoryManager {
-    private static final String DELIMITER = "~";
-    private static final String HEADER = String.join(DELIMITER, Task.FIELDS_NAMES).concat("\n");
     private final Path file;
+    private final CSVFormat csvFormat = CSVFormat.DEFAULT.builder()
+            .setHeader(Task.FIELDS_NAMES)
+            .setSkipHeaderRecord(false).build();
 
     public FileBackedHistoryManager(Path file, boolean doLoadFile) {
         this.file = file;
@@ -44,53 +49,63 @@ public class FileBackedHistoryManager extends LinkedHashHistoryManager {
         }
     }
 
+    private boolean isHeaderCorrupted(CSVRecord record) {
+        int size = record.size();
+        if (size != Task.FIELDS_NAMES.length) {
+            return true;
+        }
+        for (int i = 0; i < size; i++) {
+            if (!record.get(i).trim().equals(Task.FIELDS_NAMES[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void loadFile() {
         if (!Files.exists(file)) {
             createNewFile();
             return;
         }
         try (BufferedReader reader = Files.newBufferedReader(file)) {
-            String line = reader.readLine();
-            if ((line == null) || (!line.trim().equals(HEADER.trim()))) {
+            ArrayList<Task> tasks = new ArrayList<>();
+            CSVParser parser = new CSVParser(reader, csvFormat);
+            List<CSVRecord> records = parser.getRecords();
+            if (records.isEmpty() || isHeaderCorrupted(records.getFirst())) {
                 throw new ManagerSaveException(
                         String.format("%s is not a task history file or corrupted! Header is absent", file));
             }
-            ArrayList<Task> tasks = new ArrayList<>();
-            while ((line = reader.readLine()) != null) {
-                String[] elements = line.split(DELIMITER);
-                if (elements.length < Task.FIELDS_NAMES.length) {
-                    throw new ManagerSaveException(String.format("File %s is corrupted! Not enough fields", file));
+            for (int i = 1; i < records.size(); i++) {
+                CSVRecord record = records.get(i);
+                if (!record.isConsistent()) {
+                    throw new ManagerSaveException(
+                            String.format("File %s is corrupted! Number of fields differ from origin", file));
                 }
-                tasks.add(restoreTask(elements));
-                for (int i = tasks.size() - 1; i >= 0; i--) {
-                    super.add(tasks.get(i));
-                }
+                tasks.add(restoreTask(record));
+            }
+            for (int i = tasks.size() - 1; i >= 0; i--) {
+                super.add(tasks.get(i));
             }
         } catch (IOException e) {
             throw new ManagerSaveException(String.format("File access error for task history %s!", file), e);
         }
     }
 
-    private Task restoreTask(String[] elements) {
+    private Task restoreTask(CSVRecord record) {
         try {
-            Integer id = Integer.parseInt(elements[0]);
-            Subordination subordination = Subordination.valueOf(elements[1]);
-            String name = elements[2];
-            Status status = Status.valueOf(elements[3]);
-            String description = elements[4];
+            Integer id = Integer.parseInt(record.get(0));
+            Subordination subordination = Subordination.valueOf(record.get(1));
+            String name = record.get(2);
+            Status status = Status.valueOf(record.get(3));
+            String description = record.get(4);
             LocalDateTime dateTime;
-            if (!"null".equals(elements[5])) {
-                dateTime = LocalDateTime.of(LocalDate.ofEpochDay(Long.parseLong(elements[5])),
-                        LocalTime.ofSecondOfDay(Long.parseLong(elements[6])));
-            } else {
+            if (record.get(5).isEmpty()) {
                 dateTime = null;
-            }
-            Duration duration;
-            if (!"null".equals(elements[7])) {
-                duration = Duration.ofSeconds(Long.parseLong(elements[7]));
             } else {
-                duration = null;
+                dateTime = LocalDateTime.of(LocalDate.ofEpochDay(Long.parseLong(record.get(5))),
+                        LocalTime.ofSecondOfDay(Long.parseLong(record.get(6))));
             }
+            Duration duration = (record.get(7).isEmpty()) ? null : Duration.ofSeconds(Long.parseLong(record.get(7)));
             Task task = switch (subordination) {
                 case SELF -> new Selftask(name, description, dateTime, duration);
                 case EPIC -> {
@@ -100,7 +115,7 @@ public class FileBackedHistoryManager extends LinkedHashHistoryManager {
                     yield epic;
                 }
                 case SUBTASK -> {
-                    int epicId = Integer.parseInt(elements[8]);
+                    int epicId = Integer.parseInt(record.get(8));
                     yield new Subtask(name, description, dateTime, duration, epicId);
                 }
             };
@@ -132,10 +147,11 @@ public class FileBackedHistoryManager extends LinkedHashHistoryManager {
 
     private void save(List<Task> tasks) {
         try (BufferedWriter writer = Files.newBufferedWriter(file, StandardOpenOption.TRUNCATE_EXISTING)) {
-            writer.write(HEADER);
+            CSVPrinter printer = new CSVPrinter(writer, csvFormat);
             for (Task task : tasks) {
-                writer.write(String.join(DELIMITER, task.convertToStringArray()).concat("\n"));
+                printer.printRecord(task.convertToObjectArray());
             }
+            printer.flush();
         } catch (IOException e) {
             throw new ManagerSaveException(String.format("Error writing the task history file %s!", file), e);
         }
