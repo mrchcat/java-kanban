@@ -190,7 +190,7 @@ class FileBackedHistoryManagerTest {
     }
 
     String fillInHistoryManagerBySameTasks(HistoryManager historyManager) {
-        LocalDateTime dateTime = LocalDateTime.of(2024, 04, 01, 13, 20);
+        LocalDateTime dateTime = LocalDateTime.of(2024, 4, 1, 13, 20);
         Duration duration = Duration.ofDays(3);
         ArrayList<Task> list = new ArrayList<>();
         for (int i = 0; i <= 5; i++) {

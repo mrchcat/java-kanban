@@ -30,10 +30,6 @@ public abstract class Task {
         return !isNull(startTime);
     }
 
-    public LocalDateTime getEndTime() {
-        return startTime.plus(duration);
-    }
-
     public Duration getDuration() {
         return duration;
     }
