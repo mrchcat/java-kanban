@@ -94,7 +94,7 @@ public class FileBackedHistoryManager extends LinkedHashHistoryManager {
             Task task = switch (subordination) {
                 case SELF -> new Selftask(name, description, dateTime, duration);
                 case EPIC -> {
-                    Epictask epic = new Epictask(name, description);
+                    Epictask epic = new Epictask(name, description, null, null);
                     epic.setStartTime(dateTime);
                     epic.setDuration(duration);
                     yield epic;

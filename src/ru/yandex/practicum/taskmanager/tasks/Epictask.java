@@ -1,8 +1,11 @@
 package ru.yandex.practicum.taskmanager.tasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Epictask extends Task {
 
-    public Epictask(String name, String description) {
+    public Epictask(String name, String description, LocalDateTime startTime, Duration duration) {
         super(name, description, null, null);
     }
 
@@ -18,7 +21,7 @@ public class Epictask extends Task {
 
     @Override
     public Epictask copy() {
-        Epictask copy = new Epictask(name, description);
+        Epictask copy = new Epictask(name, description, null, null);
         copy.setId(id);
         copy.setStatus(status);
         copy.setStartTime(startTime);

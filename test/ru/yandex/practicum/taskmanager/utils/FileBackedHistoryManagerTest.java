@@ -123,11 +123,11 @@ class FileBackedHistoryManagerTest {
     }
 
     String fillInHistoryManagerByEpictasks(HistoryManager historyManager) {
-        Task task1 = new Epictask("name1", "desc1");
+        Task task1 = new Epictask("name1", "desc1", null, null);
         task1.setId(1);
-        Task task2 = new Epictask("name2", "desc2");
+        Task task2 = new Epictask("name2", "desc2", null, null);
         task2.setId(2);
-        Task task3 = new Epictask("name3", "desc3");
+        Task task3 = new Epictask("name3", "desc3", null, null);
         task3.setId(3);
         historyManager.add(task1);
         historyManager.add(task2);

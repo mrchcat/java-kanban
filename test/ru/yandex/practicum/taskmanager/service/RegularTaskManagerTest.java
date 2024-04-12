@@ -45,9 +45,9 @@ class RegularTaskManagerTest {
 
     static Stream<Epictask> getEpicTasks() {
         return Stream.of(
-                new Epictask("пойти на рыбалку", "Селигер в районе оз Волго"),
-                new Epictask("жениться", "родители просят внуков"),
-                new Epictask("отпуск", "отпуск конец августа")
+                new Epictask("пойти на рыбалку", "Селигер в районе оз Волго", null, null),
+                new Epictask("жениться", "родители просят внуков", null, null),
+                new Epictask("отпуск", "отпуск конец августа", null, null)
         );
     }
 
@@ -188,9 +188,9 @@ class RegularTaskManagerTest {
     void getAllEpicTaskTest() {
         HashSet<Task> set = new HashSet<>();
         List<Epictask> taskList = List.of(
-                new Epictask("пойти на рыбалку", "Селигер в районе оз Волго"),
-                new Epictask("жениться", "родители просят внуков"),
-                new Epictask("отпуск", "отпуск конец августа")
+                new Epictask("пойти на рыбалку", "Селигер в районе оз Волго", null, null),
+                new Epictask("жениться", "родители просят внуков", null, null),
+                new Epictask("отпуск", "отпуск конец августа", null, null)
         );
         for (Epictask task : taskList) {
             set.add(taskManager.add(task));
@@ -208,7 +208,8 @@ class RegularTaskManagerTest {
     @Tag("subList")
     @Test
     void getAllSubsFromEpicFilledTest() {
-        Epictask epic = new Epictask("пойти на рыбалку", "Селигер в районе оз Волго");
+        Epictask epic = new Epictask("пойти на рыбалку", "Селигер в районе оз Волго",
+                null, null);
         epic = taskManager.add(epic);
 
         LocalDateTime startDateTime1 = LocalDateTime.of(2019, 1, 1, 1, 1);
@@ -241,7 +242,7 @@ class RegularTaskManagerTest {
     @Tag("subList")
     @Test
     void getAllSubsFromEpicEmptyTest() {
-        Epictask epic = new Epictask("отпуск", "отпуск конец августа");
+        Epictask epic = new Epictask("отпуск", "отпуск конец августа", null, null);
         epic = taskManager.add(epic);
         List<Subtask> list = taskManager.getAllSubs(epic.getId());
         assertEquals(Collections.emptyList(), list);
@@ -252,7 +253,8 @@ class RegularTaskManagerTest {
     @Test
     void getSubTaskFromWholeListTest() {
         Epictask epic = taskManager.add(
-                new Epictask("пойти на рыбалку", "Селигер в районе оз Волго"));
+                new Epictask("пойти на рыбалку", "Селигер в районе оз Волго",
+                        null, null));
         int epicId = epic.getId();
         Subtask sub1 = taskManager.add(
                 new Subtask("купить удочку", "магазин Охотник проспект Ленина 20",
@@ -381,7 +383,8 @@ class RegularTaskManagerTest {
     @Test
     void deleteEpicTest() {
         Epictask epic = taskManager.add(
-                new Epictask("пойти на рыбалку", "Селигер в районе оз Волго"));
+                new Epictask("пойти на рыбалку", "Селигер в районе оз Волго", null,
+                        null));
 
         LocalDateTime startDateTime1 = LocalDateTime.of(2014, 1, 1, 1, 1);
         Duration duration1 = Duration.ofDays(2);
@@ -412,7 +415,8 @@ class RegularTaskManagerTest {
     @Test
     void deleteSubTest() {
         Epictask epic = taskManager.add(
-                new Epictask("пойти на рыбалку", "Селигер в районе оз Волго"));
+                new Epictask("пойти на рыбалку", "Селигер в районе оз Волго",
+                        null, null));
 
         LocalDateTime startDateTime1 = LocalDateTime.of(2014, 1, 1, 1, 1);
         Duration duration1 = Duration.ofDays(2);
@@ -517,7 +521,7 @@ class RegularTaskManagerTest {
         String oldDesc = "Иванов";
         String newDesc = "Петров";
         Status newStatus = Status.IN_PROGRESS;
-        Task task = taskManager.add(new Epictask(oldName, oldDesc));
+        Task task = taskManager.add(new Epictask(oldName, oldDesc, null, null));
         assertAll(
                 () -> assertEquals(task.getName(), oldName),
                 () -> assertEquals(task.getDescription(), oldDesc),
@@ -545,7 +549,7 @@ class RegularTaskManagerTest {
         String newDesc = "Петров";
         Status newStatus = Status.IN_PROGRESS;
 
-        Epictask epic = new Epictask("sss", "sss");
+        Epictask epic = new Epictask("sss", "sss", null, null);
         epic = taskManager.add(epic);
         int epicId = epic.getId();
 
@@ -587,9 +591,9 @@ class RegularTaskManagerTest {
     @Tag("equality")
     @Test
     void checkIfEqualEpicTasksTest() {
-        Epictask epicTask1 = new Epictask("ss", "ffff");
+        Epictask epicTask1 = new Epictask("ss", "ffff", null, null);
         epicTask1.setId(555);
-        Epictask epicTask2 = new Epictask("arsgfs", "cdb gfv");
+        Epictask epicTask2 = new Epictask("arsgfs", "cdb gfv", null, null);
         epicTask2.setId(555);
         assertEquals(epicTask1, epicTask2);
     }
@@ -620,7 +624,7 @@ class RegularTaskManagerTest {
     @Tag("SubEpic")
     @Test
     void subCanNotBeEpicTest() {
-        Epictask epic = new Epictask("ss", "ffff");
+        Epictask epic = new Epictask("ss", "ffff", null, null);
         epic = taskManager.add(epic);
         Subtask sub1 = new Subtask("sss", "sss", startDateTime, duration, epic.getId());
         sub1 = taskManager.add(sub1);
@@ -644,7 +648,7 @@ class RegularTaskManagerTest {
     @Test
     void isIdGetFromManagerForEpicTaskTest() {
         int fakeId = -1_000_000;
-        Epictask task = new Epictask("sss", "sss");
+        Epictask task = new Epictask("sss", "sss", null, null);
         task.setId(fakeId);
         task = taskManager.add(task);
         assertNotEquals(fakeId, task.getId());
@@ -655,7 +659,7 @@ class RegularTaskManagerTest {
     @Test
     void isIdGetFromManagerForSubTaskTest() {
         int fakeId = -1_000_000;
-        Epictask epic = new Epictask("sss", "sss");
+        Epictask epic = new Epictask("sss", "sss", null, null);
         epic = taskManager.add(epic);
         Subtask sub = new Subtask("sss", "sss", startDateTime, duration, epic.getId());
         sub.setId(fakeId);
@@ -667,7 +671,8 @@ class RegularTaskManagerTest {
     @Tag("SUbEpic")
     @Test
     void epicStatusTest() {
-        Epictask epic = taskManager.add(new Epictask("пойти на рыбалку", "Селигер в районе оз Волго"));
+        Epictask epic = taskManager.add(new Epictask("пойти на рыбалку", "Селигер в районе оз Волго",
+                null, null));
 
         LocalDateTime startDateTime1 = LocalDateTime.of(2014, 1, 1, 1, 1);
         Duration duration1 = Duration.ofDays(2);
@@ -715,7 +720,8 @@ class RegularTaskManagerTest {
     @Test
     void historyNotUpdatedTest() {
         Epictask epic = taskManager.add(
-                new Epictask("пойти на рыбалку", "Селигер в районе оз Волго"));
+                new Epictask("пойти на рыбалку", "Селигер в районе оз Волго",
+                        null, null));
 
         LocalDateTime startDateTime1 = LocalDateTime.of(2014, 1, 1, 1, 1);
         Duration duration1 = Duration.ofDays(2);
@@ -803,7 +809,7 @@ class RegularTaskManagerTest {
     @Tag("datetime")
     @Test
     void addEpicTaskWithoutTimeTest() {
-        Epictask epictask = taskManager.add(new Epictask("задача1", "описание1"));
+        Epictask epictask = taskManager.add(new Epictask("задача1", "описание1", null, null));
         assertFalse(taskManager.get(epictask.getId()).isTimeDefined());
     }
 
@@ -811,7 +817,8 @@ class RegularTaskManagerTest {
     @Tag("datetime")
     @Test
     void addSubTaskWithTimeTest() {
-        Epictask epictask = taskManager.add(new Epictask("задача1", "описание1"));
+        Epictask epictask = taskManager.add(new Epictask("задача1", "описание1",
+                null, null));
         LocalDateTime localDateTime = LocalDateTime.of(2025, 12, 12, 3, 5);
         Duration duration = Duration.ofDays(10);
         Subtask subtask = taskManager.add(new Subtask("задача1", "описание1",
@@ -827,7 +834,8 @@ class RegularTaskManagerTest {
     @Tag("datetime")
     @Test
     void addEpicAndSubTaskWithTimeTest() {
-        Epictask epictask = taskManager.add(new Epictask("задача1", "описание1"));
+        Epictask epictask = taskManager.add(new Epictask("задача1", "описание1",
+                null, null));
         assertFalse(taskManager.get(epictask.getId()).isTimeDefined());
 
         LocalDateTime localDateTime = LocalDateTime.of(2025, 12, 12, 3, 5);
@@ -846,7 +854,8 @@ class RegularTaskManagerTest {
     @Tag("datetime")
     @Test
     void addEpicAndSubTaskWithTimeAndDeleteSubTest() {
-        Epictask epictask = taskManager.add(new Epictask("задача1", "описание1"));
+        Epictask epictask = taskManager.add(new Epictask("задача1", "описание1",
+                null, null));
 
         LocalDateTime localDateTime = LocalDateTime.of(2025, 12, 12, 3, 5);
         Duration duration = Duration.ofDays(10);
@@ -866,7 +875,8 @@ class RegularTaskManagerTest {
     @Tag("datetime")
     @Test
     void changeSubtasksTimeAndCheckEpicTest() {
-        Epictask epictask = taskManager.add(new Epictask("задача1", "описание1"));
+        Epictask epictask = taskManager.add(new Epictask("задача1", "описание1",
+                null, null));
         assertFalse(taskManager.get(epictask.getId()).isTimeDefined());
 
         LocalDateTime localDateTime1 = LocalDateTime.of(2024, 4, 4, 0, 0);
@@ -911,7 +921,8 @@ class RegularTaskManagerTest {
     @Tag("datetime")
     @Test
     void epicTimeWhenDeleteSubs() {
-        Epictask epictask = taskManager.add(new Epictask("задача1", "описание1"));
+        Epictask epictask = taskManager.add(new Epictask("задача1", "описание1",
+                null, null));
         int epicId = epictask.getId();
 
         LocalDateTime time1 = LocalDateTime.of(2000, 1, 1, 0, 0);
@@ -969,7 +980,8 @@ class RegularTaskManagerTest {
     @Tag("datetime")
     @Test
     void epicTimeWhenUpdateSubs() {
-        Epictask epictask = taskManager.add(new Epictask("задача1", "описание1"));
+        Epictask epictask = taskManager.add(new Epictask("задача1", "описание1",
+                null, null));
         int epicId = epictask.getId();
 
         LocalDateTime time = LocalDateTime.of(2000, 1, 1, 0, 0);
@@ -1038,7 +1050,7 @@ class RegularTaskManagerTest {
     @Tag("timeline")
     @Test
     void addSubTimelineTest() {
-        Epictask epic = taskManager.add(new Epictask("a", "s"));
+        Epictask epic = taskManager.add(new Epictask("a", "s", null, null));
         int epicId = epic.getId();
 
         LocalDateTime time1 = LocalDateTime.of(2000, 1, 1, 0, 0);
@@ -1071,7 +1083,7 @@ class RegularTaskManagerTest {
     @Tag("timeline")
     @Test
     void addEpicTimelineTest() {
-        Epictask epic = taskManager.add(new Epictask("a", "s"));
+        Epictask epic = taskManager.add(new Epictask("a", "s", null, null));
         assertNotNull(epic);
     }
 
@@ -1224,7 +1236,7 @@ class RegularTaskManagerTest {
     @Tag("add")
     @Test
     void addSubTaskWithoutStart() {
-        Epictask epic = taskManager.add(new Epictask("пойти на рыбалку", "Селигер, в районе оз Волго"));
+        Epictask epic = taskManager.add(new Epictask("пойти на рыбалку", "Селигер, в районе оз Волго", null, null));
         Duration duration1 = Duration.ofDays(1);
         Subtask task1 = taskManager.add(new Subtask("name", "descript", null,
                 duration1, epic.getId()));
@@ -1262,7 +1274,7 @@ class RegularTaskManagerTest {
     @Tag("timeline")
     @Test
     void addSubTaskWithWithoutStart() {
-        Epictask epic = taskManager.add(new Epictask("пойти на рыбалку", "Селигер, в районе оз Волго"));
+        Epictask epic = taskManager.add(new Epictask("пойти на рыбалку", "Селигер, в районе оз Волго", null, null));
         int epicId = epic.getId();
         LocalDateTime time1 = LocalDateTime.of(1, 1, 1, 1, 1, 1);
         Duration duration1 = Duration.ofDays(1);
