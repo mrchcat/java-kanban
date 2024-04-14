@@ -1,4 +1,1 @@
 id,subordination,name,status,description,startdate,starttime,duration,epicId
-1,SELF,name1,NEW,decr1,19826,79922,86400,null
-3,SELF,name3,NEW,decr3,20556,79922,86400,null
-2,SELF,name2,NEW,decr2,20191,79922,86400,null

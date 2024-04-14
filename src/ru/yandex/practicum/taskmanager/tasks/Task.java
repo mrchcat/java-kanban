@@ -3,7 +3,6 @@ package ru.yandex.practicum.taskmanager.tasks;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 
@@ -27,7 +26,7 @@ public abstract class Task {
     }
 
     public boolean isTimeDefined() {
-        return !isNull(startTime);
+        return nonNull(startTime);
     }
 
     public Duration getDuration() {
