@@ -125,7 +125,8 @@ public abstract class Task {
 
     @Override
     public String toString() {
-        return getSubordination().toString() +
+        return "{" +
+                getSubordination().toString() +
                 ": id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
@@ -134,4 +135,5 @@ public abstract class Task {
                 ", duration=" + duration +
                 '}';
     }
+
 }

@@ -442,6 +442,24 @@ public class RegularTaskManager implements TaskManager {
         return (Subtask) oldTask.copy();
     }
 
+    public List<Task> getAllSelftasks() {
+        return getAll().stream()
+                .filter(u -> u.getSubordination() == Subordination.SELF)
+                .toList();
+    }
+
+    public List<Task> getAllSubtasks() {
+        return getAll().stream()
+                .filter(u -> u.getSubordination() == Subordination.SUBTASK)
+                .toList();
+    }
+
+    public List<Task> getAllEpictasks() {
+        return getAll().stream()
+                .filter(u -> u.getSubordination() == Subordination.EPIC)
+                .toList();
+    }
+
     private boolean isAllSubsNew(Epictask epic) {
         return subordinates.get(epic.getId()).stream().map(u -> tasks.get(u).getStatus()).allMatch(Status.NEW::equals);
     }
