@@ -55,9 +55,21 @@ public class HttpTaskServer {
     }
 
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) {
         HttpTaskServer httpTaskServer = new HttpTaskServer("localhost", 8080);
         httpTaskServer.start();
+    }
+
+    public void start() {
+        server.start();
+        String message = String.format("Server started on %s:%d", host, port);
+        System.out.println(message);
+    }
+
+    public void stop() {
+        server.stop(1);
+        String message = String.format("Server stopped on %s:%d", host, port);
+        System.out.println(message);
     }
 
     public TaskManager getTaskManager() {
@@ -140,7 +152,7 @@ public class HttpTaskServer {
         try (exchange) {
             String method = exchange.getRequestMethod();
             String path = exchange.getRequestURI().getPath();
-            if (method.equals("GET") && path.matches("^\\/prioritized\\/?$")) {
+            if (method.equals("GET") && path.matches("^/prioritized/?$")) {
                 List<Task> taskList = taskManager.getPrioritizedTasks();
                 List<TaskDTO> dtoList = taskList.stream().map(TaskDTO::get).toList();
                 sendText(exchange, gson.toJson(dtoList), 200);
@@ -156,7 +168,7 @@ public class HttpTaskServer {
         try (exchange) {
             String method = exchange.getRequestMethod();
             String path = exchange.getRequestURI().getPath();
-            if (method.equals("GET") && path.matches("^\\/history\\/?$")) {
+            if (method.equals("GET") && path.matches("^/history/?$")) {
                 List<Task> taskList = taskManager.getHistory();
                 List<TaskDTO> dtoList = taskList.stream().map(TaskDTO::get).toList();
                 sendText(exchange, gson.toJson(dtoList), 200);
@@ -182,13 +194,13 @@ public class HttpTaskServer {
         try (exchange) {
             switch (method) {
                 case "GET" -> {
-                    if (path.matches("^\\/tasks\\/?$")) {
+                    if (path.matches("^/tasks/?$")) {
                         List<Task> taskList = taskManager.getAllSelftasks();
                         List<TaskDTO> dtoList = taskList.stream().map(TaskDTO::get).toList();
                         sendText(exchange, gson.toJson(dtoList), 200);
                         return;
                     }
-                    if (path.matches("^\\/tasks\\/\\d+$")) {
+                    if (path.matches("^/tasks/\\d+$")) {
                         Integer id = parseId(path.substring("/tasks/".length()));
                         if (nonNull(id)) {
                             Selftask selftask = taskManager.getSelftask(id);
@@ -204,7 +216,7 @@ public class HttpTaskServer {
                 }
 
                 case "POST" -> {
-                    if (path.matches("^\\/tasks\\/?$")) {
+                    if (path.matches("^/tasks/?$")) {
                         Selftask selftask = parseSelftask(exchange.getRequestBody());
                         if (isNull(selftask)) {
                             exchange.sendResponseHeaders(405, 0);
@@ -225,7 +237,7 @@ public class HttpTaskServer {
                 }
 
                 case "DELETE" -> {
-                    if (path.matches("^\\/tasks\\/\\d+$")) {
+                    if (path.matches("^/tasks/\\d+$")) {
                         Integer id = parseId(path.substring("/tasks/".length()));
                         if (nonNull(id)) {
                             Task task = taskManager.delete(id);
@@ -252,13 +264,13 @@ public class HttpTaskServer {
         try (exchange) {
             switch (method) {
                 case "GET" -> {
-                    if (path.matches("^\\/epics\\/?$")) {
+                    if (path.matches("^/epics/?$")) {
                         List<Task> taskList = taskManager.getAllEpictasks();
                         List<TaskDTO> dtoList = taskList.stream().map(TaskDTO::get).toList();
                         sendText(exchange, gson.toJson(dtoList), 200);
                         return;
                     }
-                    if (path.matches("^\\/epics\\/\\d+$")) {
+                    if (path.matches("^/epics/\\d+$")) {
                         Integer id = parseId(path.substring("/epics/".length()));
                         if (nonNull(id)) {
                             Epictask epictask = taskManager.getEpic(id);
@@ -274,7 +286,7 @@ public class HttpTaskServer {
                 }
 
                 case "POST" -> {
-                    if (path.matches("^\\/epics\\/?$")) {
+                    if (path.matches("^/epics/?$")) {
                         Epictask epictask = parseEpictask(exchange.getRequestBody());
                         if (isNull(epictask)) {
                             exchange.sendResponseHeaders(405, 0);
@@ -295,7 +307,7 @@ public class HttpTaskServer {
                 }
 
                 case "DELETE" -> {
-                    if (path.matches("^\\/epics\\/\\d+$")) {
+                    if (path.matches("^/epics/\\d+$")) {
                         Integer id = parseId(path.substring("/epics/".length()));
                         if (nonNull(id)) {
                             Task task = taskManager.delete(id);
@@ -316,31 +328,19 @@ public class HttpTaskServer {
         }
     }
 
-    public void start() {
-        server.start();
-        String message = String.format("Server started on %s:%d", host, port);
-        System.out.println(message);
-    }
-
-    public void stop() {
-        server.stop(1);
-        String message = String.format("Server stopped on %s:%d", host, port);
-        System.out.println(message);
-    }
-
     private void subHandler(HttpExchange exchange) {
         String method = exchange.getRequestMethod();
         String path = exchange.getRequestURI().getPath();
         try (exchange) {
             switch (method) {
                 case "GET" -> {
-                    if (path.matches("^\\/subtasks\\/?$")) {
+                    if (path.matches("^/subtasks/?$")) {
                         List<Task> taskList = taskManager.getAllSubtasks();
                         List<TaskDTO> dtoList = taskList.stream().map(TaskDTO::get).toList();
                         sendText(exchange, gson.toJson(dtoList), 200);
                         return;
                     }
-                    if (path.matches("^\\/subtasks\\/\\d+$")) {
+                    if (path.matches("^/subtasks/\\d+$")) {
                         Integer id = parseId(path.substring("/subtasks/".length()));
                         if (nonNull(id)) {
                             Subtask subtask = taskManager.getSubtask(id);
@@ -356,7 +356,7 @@ public class HttpTaskServer {
                 }
 
                 case "POST" -> {
-                    if (path.matches("^\\/subtasks\\/?$")) {
+                    if (path.matches("^/subtasks/?$")) {
                         Subtask subtask = parseSubtask(exchange.getRequestBody());
                         if (isNull(subtask)) {
                             exchange.sendResponseHeaders(405, 0);
@@ -377,7 +377,7 @@ public class HttpTaskServer {
                 }
 
                 case "DELETE" -> {
-                    if (path.matches("^\\/subtasks\\/\\d+$")) {
+                    if (path.matches("^/subtasks/\\d+$")) {
                         Integer id = parseId(path.substring("/subtasks/".length()));
                         if (nonNull(id)) {
                             Task task = taskManager.delete(id);

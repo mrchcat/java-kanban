@@ -62,7 +62,7 @@ class HttpTaskServerTest {
     void addNewSelftasksTest() throws IOException, InterruptedException {
         Selftask newTask = new Selftask("name",
                 "decr",
-                LocalDateTime.of(2024, 04, 13, 22, 12, 2),
+                LocalDateTime.of(2024, 4, 13, 22, 12, 2),
                 Duration.ofDays(1));
         uri = URI.create("http://localhost:8080/tasks");
         HttpRequest httpRequest = HttpRequest.newBuilder()
@@ -86,15 +86,15 @@ class HttpTaskServerTest {
     void add3NewSelftasksTest() throws IOException, InterruptedException {
         Selftask task1 = new Selftask("name1",
                 "decr1",
-                LocalDateTime.of(2024, 04, 13, 22, 12, 2),
+                LocalDateTime.of(2024, 4, 13, 22, 12, 2),
                 Duration.ofDays(1));
         Selftask task2 = new Selftask("name2",
                 "decr2",
-                LocalDateTime.of(2025, 04, 13, 22, 12, 2),
+                LocalDateTime.of(2025, 4, 13, 22, 12, 2),
                 Duration.ofDays(1));
         Selftask task3 = new Selftask("name3",
                 "decr3",
-                LocalDateTime.of(2026, 04, 13, 22, 12, 2),
+                LocalDateTime.of(2026, 4, 13, 22, 12, 2),
                 Duration.ofDays(1));
         uri = URI.create("http://localhost:8080/tasks");
         HttpRequest httpRequestAddTask1 = HttpRequest.newBuilder()
@@ -143,15 +143,15 @@ class HttpTaskServerTest {
     void add3NewSelftasksAndGetOneByIdTest() throws IOException, InterruptedException {
         Selftask task1 = new Selftask("name1",
                 "decr1",
-                LocalDateTime.of(2024, 04, 13, 22, 12, 2),
+                LocalDateTime.of(2024, 4, 13, 22, 12, 2),
                 Duration.ofDays(1));
         Selftask task2 = new Selftask("name2",
                 "decr2",
-                LocalDateTime.of(2025, 04, 13, 22, 12, 2),
+                LocalDateTime.of(2025, 4, 13, 22, 12, 2),
                 Duration.ofDays(1));
         Selftask task3 = new Selftask("name3",
                 "decr3",
-                LocalDateTime.of(2026, 04, 13, 22, 12, 2),
+                LocalDateTime.of(2026, 4, 13, 22, 12, 2),
                 Duration.ofDays(1));
         uri = URI.create("http://localhost:8080/tasks");
         HttpRequest httpRequestAddTask1 = HttpRequest.newBuilder()
@@ -188,7 +188,7 @@ class HttpTaskServerTest {
     void addNewSelftaskAndGetOneByBadIdTest() throws IOException, InterruptedException {
         Selftask task1 = new Selftask("name1",
                 "decr1",
-                LocalDateTime.of(2024, 04, 13, 22, 12, 2),
+                LocalDateTime.of(2024, 4, 13, 22, 12, 2),
                 Duration.ofDays(1));
         uri = URI.create("http://localhost:8080/tasks");
         HttpRequest httpRequestAddTask1 = HttpRequest.newBuilder()
@@ -212,11 +212,11 @@ class HttpTaskServerTest {
     void addSelftaskWithIntersection() throws InterruptedException, IOException {
         Selftask task1 = new Selftask("name1",
                 "decr1",
-                LocalDateTime.of(2024, 04, 13, 22, 12, 2),
+                LocalDateTime.of(2024, 4, 13, 22, 12, 2),
                 Duration.ofDays(1));
         Selftask task2 = new Selftask("name2",
                 "decr2",
-                LocalDateTime.of(2024, 04, 13, 22, 12, 2),
+                LocalDateTime.of(2024, 4, 13, 22, 12, 2),
                 Duration.ofDays(1));
         uri = URI.create("http://localhost:8080/tasks");
         HttpRequest httpRequestAddTask1 = HttpRequest.newBuilder()
@@ -239,7 +239,7 @@ class HttpTaskServerTest {
     void addSelfTaskWithEmptyFieldsTest() throws IOException, InterruptedException {
         Selftask task1 = new Selftask(null,
                 "decr1",
-                LocalDateTime.of(2024, 04, 13, 22, 12, 2),
+                LocalDateTime.of(2024, 4, 13, 22, 12, 2),
                 Duration.ofDays(1));
         uri = URI.create("http://localhost:8080/tasks");
         HttpRequest httpRequestAddTask1 = HttpRequest.newBuilder()
@@ -256,7 +256,7 @@ class HttpTaskServerTest {
     void addNewSelftaskAndGetOneByBrokendTest() throws IOException, InterruptedException {
         Selftask task1 = new Selftask("name1",
                 "decr1",
-                LocalDateTime.of(2024, 04, 13, 22, 12, 2),
+                LocalDateTime.of(2024, 4, 13, 22, 12, 2),
                 Duration.ofDays(1));
         uri = URI.create("http://localhost:8080/tasks");
         HttpRequest httpRequestAddTask1 = HttpRequest.newBuilder()
@@ -297,7 +297,7 @@ class HttpTaskServerTest {
     void updateSelftaskTest() throws IOException, InterruptedException {
         Selftask task = new Selftask("name1",
                 "decr1",
-                LocalDateTime.of(2024, 04, 13, 22, 12, 2),
+                LocalDateTime.of(2024, 4, 13, 22, 12, 2),
                 Duration.ofDays(1));
         uri = URI.create("http://localhost:8080/tasks");
         HttpRequest httpRequestAddTask = HttpRequest.newBuilder()
@@ -334,15 +334,15 @@ class HttpTaskServerTest {
     void addSelftasksAndDeleteOneTest() throws IOException, InterruptedException {
         Selftask task1 = new Selftask("name1",
                 "decr1",
-                LocalDateTime.of(2024, 04, 13, 22, 12, 2),
+                LocalDateTime.of(2024, 4, 13, 22, 12, 2),
                 Duration.ofDays(1));
         Selftask task2 = new Selftask("name2",
                 "decr2",
-                LocalDateTime.of(2025, 04, 13, 22, 12, 2),
+                LocalDateTime.of(2025, 4, 13, 22, 12, 2),
                 Duration.ofDays(1));
         Selftask task3 = new Selftask("name3",
                 "decr3",
-                LocalDateTime.of(2026, 04, 13, 22, 12, 2),
+                LocalDateTime.of(2026, 4, 13, 22, 12, 2),
                 Duration.ofDays(1));
         uri = URI.create("http://localhost:8080/tasks");
         HttpRequest httpRequestAddTask1 = HttpRequest.newBuilder()
@@ -400,7 +400,7 @@ class HttpTaskServerTest {
     void addSelftasksAndDeleteBadIdTest() throws IOException, InterruptedException {
         Selftask task1 = new Selftask("name1",
                 "decr1",
-                LocalDateTime.of(2024, 04, 13, 22, 12, 2),
+                LocalDateTime.of(2024, 4, 13, 22, 12, 2),
                 Duration.ofDays(1));
         uri = URI.create("http://localhost:8080/tasks");
         HttpRequest httpRequestAddTask1 = HttpRequest.newBuilder()
@@ -529,19 +529,19 @@ class HttpTaskServerTest {
     void getPriorotizedTest() throws IOException, InterruptedException {
         Selftask task1 = new Selftask("name1",
                 "decr1",
-                LocalDateTime.of(2024, 04, 13, 22, 12, 2),
+                LocalDateTime.of(2024, 4, 13, 22, 12, 2),
                 Duration.ofDays(1));
         Selftask task2 = new Selftask("name2",
                 "decr2",
-                LocalDateTime.of(2023, 04, 13, 22, 12, 2),
+                LocalDateTime.of(2023, 4, 13, 22, 12, 2),
                 Duration.ofDays(1));
         Selftask task3 = new Selftask("name3",
                 "decr3",
-                LocalDateTime.of(2025, 04, 13, 22, 12, 2),
+                LocalDateTime.of(2025, 4, 13, 22, 12, 2),
                 Duration.ofDays(1));
         Selftask task4 = new Selftask("name3",
                 "decr3",
-                LocalDateTime.of(2020, 04, 13, 22, 12, 2),
+                LocalDateTime.of(2020, 4, 13, 22, 12, 2),
                 Duration.ofDays(1));
 
         uri = URI.create("http://localhost:8080/tasks");
@@ -581,13 +581,13 @@ class HttpTaskServerTest {
     @Test
     void getHistoryTest() throws IOException, InterruptedException {
         Selftask task1 = new Selftask("name1", "decr1",
-                LocalDateTime.of(2024, 04, 13, 22, 12, 2), Duration.ofDays(1));
+                LocalDateTime.of(2024, 4, 13, 22, 12, 2), Duration.ofDays(1));
         Selftask task2 = new Selftask("name2", "decr2",
-                LocalDateTime.of(2023, 04, 13, 22, 12, 2), Duration.ofDays(1));
+                LocalDateTime.of(2023, 4, 13, 22, 12, 2), Duration.ofDays(1));
         Selftask task3 = new Selftask("name3", "decr3",
-                LocalDateTime.of(2025, 04, 13, 22, 12, 2), Duration.ofDays(1));
+                LocalDateTime.of(2025, 4, 13, 22, 12, 2), Duration.ofDays(1));
         Selftask task4 = new Selftask("name4", "decr4",
-                LocalDateTime.of(2020, 04, 13, 22, 12, 2), Duration.ofDays(1));
+                LocalDateTime.of(2020, 4, 13, 22, 12, 2), Duration.ofDays(1));
 
         uri = URI.create("http://localhost:8080/tasks");
         HttpRequest httpRequestAddTask1 = HttpRequest.newBuilder()
