@@ -280,7 +280,7 @@ class HttpTaskServerTest {
     void addToBadURITest() throws IOException, InterruptedException {
         Selftask task1 = new Selftask("name1",
                 "decr1",
-                LocalDateTime.of(2024, 04, 13, 22, 12, 2),
+                LocalDateTime.of(2024, 4, 13, 22, 12, 2),
                 Duration.ofDays(1));
         uri = URI.create("http://localhost:8080/task");
         HttpRequest httpRequestAddTask1 = HttpRequest.newBuilder()
