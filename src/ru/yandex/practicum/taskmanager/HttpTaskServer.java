@@ -54,12 +54,6 @@ public class HttpTaskServer {
         }
     }
 
-
-    public static void main(String[] args) {
-        HttpTaskServer httpTaskServer = new HttpTaskServer("localhost", 8080);
-        httpTaskServer.start();
-    }
-
     public void start() {
         server.start();
         String message = String.format("Server started on %s:%d", host, port);
