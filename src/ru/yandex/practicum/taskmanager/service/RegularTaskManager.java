@@ -97,6 +97,7 @@ public class RegularTaskManager implements TaskManager {
         Selftask copy = task.copy();
         Integer id = generator.getId();
         copy.setId(id);
+        copy.setStatus(Status.NEW);
         tasks.put(id, copy);
         if (isTimeDefined) {
             addToTimeline(copy);
@@ -112,6 +113,7 @@ public class RegularTaskManager implements TaskManager {
         Epictask copy = task.copy();
         Integer id = generator.getId();
         copy.setId(id);
+        copy.setStatus(Status.NEW);
         tasks.put(id, copy);
         subordinates.put(id, new ArrayList<>());
         return copy.copy();
@@ -134,6 +136,7 @@ public class RegularTaskManager implements TaskManager {
         Subtask copy = task.copy();
         Integer id = generator.getId();
         copy.setId(id);
+        copy.setStatus(Status.NEW);
         tasks.put(id, copy);
         subordinates.get(epicId).add(id);
         if (isTimeDefined) {
@@ -249,8 +252,8 @@ public class RegularTaskManager implements TaskManager {
                 if (listOfSubs.isEmpty()) {
                     epic.setStatus(Status.NEW);
                 }
-                updateEpicTimeWhenDeleteUpdateSub(epic, listOfSubs);
                 if (taskToDeleted.isTimeDefined()) {
+                    updateEpicTimeWhenDeleteUpdateSub(epic, listOfSubs);
                     deleteFromTimeline(taskToDeleted);
                 }
             }
@@ -440,6 +443,24 @@ public class RegularTaskManager implements TaskManager {
             default -> throw new IllegalArgumentException("Некорректный статус задачи");
         }
         return (Subtask) oldTask.copy();
+    }
+
+    public List<Task> getAllSelftasks() {
+        return getAll().stream()
+                .filter(u -> u.getSubordination() == Subordination.SELF)
+                .toList();
+    }
+
+    public List<Task> getAllSubtasks() {
+        return getAll().stream()
+                .filter(u -> u.getSubordination() == Subordination.SUBTASK)
+                .toList();
+    }
+
+    public List<Task> getAllEpictasks() {
+        return getAll().stream()
+                .filter(u -> u.getSubordination() == Subordination.EPIC)
+                .toList();
     }
 
     private boolean isAllSubsNew(Epictask epic) {

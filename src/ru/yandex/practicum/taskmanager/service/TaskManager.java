@@ -45,4 +45,12 @@ public interface TaskManager {
     Task update(Task task);
 
     List<Task> getPrioritizedTasks();
+
+    List<Task> getAllSelftasks();
+
+    List<Task> getAllSubtasks();
+
+    List<Task> getAllEpictasks();
+
+
 }
